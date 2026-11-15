@@ -103,13 +103,14 @@ export function useSlide<E extends HTMLElement>(sel: string, dep: unknown) {
 
 // Tooltip: shows on hover, keyboard focus and tap (focus), dismisses with Esc. The child must be focusable
 // (a button, or an element with tabIndex 0); it is linked to the tip with aria-describedby.
-export function Tip({ tip, children, className }: { tip: string; children: ReactElement<Record<string, unknown>>; className?: string }) {
+// `end`: open aligned to the trigger's right edge (for triggers near the right side), so the pop never sticks out.
+export function Tip({ tip, children, className, end }: { tip: string; children: ReactElement<Record<string, unknown>>; className?: string; end?: boolean }) {
   const id = useId();
   const [hide, setHide] = useState(false);
   return <span className={cn("group/tip relative inline-flex", className)} data-off={hide || undefined} onMouseLeave={() => setHide(false)} onFocus={() => setHide(false)}
     onKeyDown={(e) => e.key === "Escape" && setHide(true)}>
     {cloneElement(children, { "aria-describedby": id })}
-    <span role="tooltip" id={id} className={tw.tipPop}>{tip}</span>
+    <span role="tooltip" id={id} className={cn(tw.tipPop, end && "right-0 left-auto after:right-4 after:left-auto")}>{tip}</span>
   </span>;
 }
 
@@ -221,7 +222,7 @@ export function Sheet() {
     <div className="mx-auto mt-2 h-1 w-10 rounded-sm bg-line-strong" aria-hidden="true" />
     <div className="flex items-center justify-between px-4 py-2"><h2 id="sheetTitle">{sheet?.title}</h2>
       <button className={tw.iconBtn} type="button" onClick={() => ref.current!.close()}><Icon name="x" label={T["btn.close"]} /></button></div>
-    <div className="sheet-body grid gap-3 overflow-y-auto px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] [&_ol]:m-0 [&_ol]:grid [&_ol]:list-decimal [&_ol]:gap-2 [&_ol]:pl-5 [&_ul]:m-0 [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">{sheet && <sheet.Body />}</div>
+    <div className="sheet-body grid gap-3 overflow-x-clip overflow-y-auto px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] [&_ol]:m-0 [&_ol]:grid [&_ol]:list-decimal [&_ol]:gap-2 [&_ol]:pl-5 [&_ul]:m-0 [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">{sheet && <sheet.Body />}</div>
   </dialog>;
 }
 export const closeSheet = () => (document.getElementById("sheet") as HTMLDialogElement | null)?.close();

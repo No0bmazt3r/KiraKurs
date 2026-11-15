@@ -86,7 +86,7 @@ export function Shell() {
           </button>
           <div className="grid gap-2 px-4 pb-4">
             {x.sources.length > 0 && <ul className="m-0! grid list-none! grid-cols-2 gap-x-4 gap-y-2 p-0! text-xs" aria-label={T["sources.title"]}>
-              {x.sources.map((src) => <li key={src.k} className="min-w-0"><Tip tip={src.by} className="max-w-full">
+              {x.sources.map((src, i) => <li key={src.k} className="min-w-0"><Tip tip={src.by} end={i % 2 === 1} className="max-w-full">
                 <span tabIndex={0} className="grid cursor-help rounded-sm outline-offset-2">
                   <span className="truncate text-muted">{src.k}</span>
                   <span className="font-semibold underline decoration-line-strong decoration-dotted underline-offset-4">{src.date}</span>
