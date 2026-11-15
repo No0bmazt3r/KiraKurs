@@ -12,6 +12,7 @@ import { randomWindow, day } from "./Play";
 
 const P = PRESETS.snapshot;
 const base = makeVars(P);
+const titled = (s: string) => { const i = s.indexOf(": "); return i < 0 ? s : <><strong>{s.slice(0, i)}</strong>{s[i + 2]!.toUpperCase() + s.slice(i + 3)}</>; };
 const vars = (o: Record<string, string>) => ({ s: { ...base.s, ...o }, num: base.num });
 const H = HISTORY;
 const hv = vars({ start: day(H.first), end: day(H.last), rLo: fx(H.lo.r, 4), rHi: fx(H.hi.r, 4), gapRM: rm((H.hi.r - H.lo.r) * P.T) });
@@ -41,17 +42,25 @@ export function Welcome() {
   const r = (i: number, cls?: string) => ({ className: cx("rise", cls), style: { "--i": i } as React.CSSProperties });
 
   return <div className="welcome">
-    {scene(0, "ink hero-scene", labels[0]!, <div className="wel-inner">
-      <h1 {...r(0, "wel-h1")}>{T["wel.h1a"]} <span className="wel-mark" aria-hidden="true" /> {T["wel.h1b"]}</h1>
+    {scene(0, "ink hero-scene", labels[0]!, <div className="wel-inner gap-10 lg:grid-cols-[3fr_2fr] lg:items-end lg:gap-16">
+      <h1 {...r(0, "wel-h1 lg:col-span-2")}>{T["wel.h1a"]} <span className="wel-mark" aria-hidden="true" /> {T["wel.h1b"]}</h1>
+      <div className="stack gap-6">
       <p {...r(1, "wel-lead")}>{fill(T["wel.lead"]!, base)}</p>
       <div {...r(2, "row")}>
         <button className="btn primary big" type="button" onClick={start}>{T["wel.start"]}<Icon name="right" /></button>
         <button className="btn on-field" type="button" onClick={skip}>{T["wel.skip"]}</button>
       </div>
       <p {...r(3, "wel-scroll")}><Icon name="chevron" />{T["wel.scroll"]}</p>
+      </div>
+      <dl {...r(2, "wel-bill")}>
+        <div className="col-span-2"><dt className="label">{T["wel.bill.h"]}</dt><dd className="caption">{fill(T["wel.bill.due"]!, base)}</dd></div>
+        <div className="tile lock"><dt className="tile-head"><Icon name="lock" />{T["wel.bill.lock"]}</dt><dd className="value">{base.s.A}</dd></div>
+        <div className="tile wait"><dt className="tile-head"><Icon name="hourglass" />{T["wel.bill.wait"]}</dt><dd className="value">{base.s.C_ppp}</dd></div>
+        <dd className="caption col-span-2">{fill(T["wel.bill.range"]!, base)}</dd>
+      </dl>
     </div>)}
 
-    {scene(1, "ground", labels[1]!, <div className="wel-inner two">
+    {scene(1, "ground", labels[1]!, <div className="wel-inner gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16">
       <div className="stack">
         <h2 {...r(0, "wel-h2")}>{T["wel.s2.h"]}</h2>
         <p {...r(1, "wel-p")}>{fill(T["wel.s2.p"]!, hv)}</p>
@@ -59,11 +68,11 @@ export function Welcome() {
       <figure {...r(2, "wel-chart")}><HistoryChart /><figcaption className="caption">{fill(T["wel.s2.chart"]!, hv)}</figcaption></figure>
     </div>)}
 
-    {scene(2, "teal", labels[2]!, <div className="wel-inner two">
+    {scene(2, "teal", labels[2]!, <div className="wel-inner gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16">
       <div className="stack">
         <h2 {...r(0, "wel-h2")}>{T["wel.s3.h"]}</h2>
-        <p {...r(1, "wel-p")}><Icon name="lock" /> {T["wel.s3.lock"]}</p>
-        <p {...r(2, "wel-p")}><Icon name="hourglass" /> {T["wel.s3.wait"]}</p>
+        <p {...r(1, "wel-p")}>{titled(T["wel.s3.lock"]!)}</p>
+        <p {...r(2, "wel-p")}>{titled(T["wel.s3.wait"]!)}</p>
       </div>
       <TryIt />
     </div>)}
@@ -71,13 +80,13 @@ export function Welcome() {
     {scene(3, "ground", labels[3]!, <div className="wel-inner">
       <h2 {...r(0, "wel-h2")}>{T["wel.s4.h"]}</h2>
       <ul className="wel-list">{["irp", "ppp", "fisher", "ife"].map((k, i) =>
-        <li key={k} {...r(i + 1)}>{T["wel.s4." + k]}</li>)}</ul>
+        <li key={k} {...r(i + 1)}>{titled(T["wel.s4." + k]!)}</li>)}</ul>
     </div>)}
 
     {scene(4, "amber", labels[4]!, <div className="wel-inner">
       <h2 {...r(0, "wel-h2")}>{T["wel.s5.h"]}</h2>
       <ol className="wel-list stops">{(["learn", "map", "coach", "play"] as const).map((k, i) =>
-        <li key={k} {...r(i + 1)}>{T["wel.s5." + k]}</li>)}</ol>
+        <li key={k} {...r(i + 1)}>{titled(T["wel.s5." + k]!)}</li>)}</ol>
     </div>)}
 
     {scene(5, "ink", labels[5]!, <div className="wel-inner">

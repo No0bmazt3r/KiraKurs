@@ -32,13 +32,16 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
     else onDone(answers.current);
   };
 
-  return <div className="stack">
+  return <div className="grid items-start gap-5 lg:grid-cols-2">
+    <div className="stack">
     <div className="row">
       <div className="dots" aria-hidden="true">{items.map((_, k) => <span key={k} className={k <= i ? "on" : ""} />)}</div>
       <span className="small">{fill(T["pre.dots"]!, { s: { qn: String(i + 1), qtotal: String(items.length) }, num: {} })}</span>
     </div>
     <h2 ref={stemRef} tabIndex={-1}>{stem}</h2>
     {q.pick2 && <p className="small">{T["pre.pickTwo"]}</p>}
+    </div>
+    <div className="stack">
     <Choices key={q.id} label={stem} options={q.options} multi={q.pick2 ? 2 : 1} value={answer} onChange={setAnswer}
       locked={checked} correct={q.pick2 ? q.correctSet : q.correct} />
     <p className="label">{T["pre.confidence"]}</p>
@@ -47,5 +50,6 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
     <button className="btn primary" type="button" disabled={!ready} onClick={next}>
       {withFeedback && !checked ? T["btn.check"] : <>{T["btn.next"]}<Icon name="right" /></>}
     </button>
+    </div>
   </div>;
 }

@@ -39,6 +39,8 @@ export function Coach() {
 
   return <div className="screen">
     <header><h1>{T["coach.h1"]}</h1><p className="muted">{T["coach.sub"]}</p></header>
+    <div className="grid items-start gap-5 xl:grid-cols-2">
+    <div className="stack gap-4">
     <Maths summary={T["coach.bill.title"]!} icon="sliders">
       <p className="small">{fl("coach.bill.note")}</p>
       <Field label={fl("lbl.T")} raw={raw.T} error={d.errors.T} hint={d.hints.T} onInput={(x) => setRaw({ T: x })} />
@@ -68,6 +70,8 @@ export function Coach() {
       <Live className="small">{fl(range ? "coach.split.c" : "coach.split.cNoRange")}</Live>
       <p className="caption">{T["coach.staging"]}</p>
     </section>
+    </div>
+    <div className="stack gap-4">
     <section className="card"><h2 className="card-title">{T["coach.chart.title"]}</h2><Chart inp={d.inp} vars={v} /><Badge /></section>
     <details className="maths card theory">
       <summary><Icon name="calc" />{T["coach.al.title"]}</summary>
@@ -95,5 +99,7 @@ export function Coach() {
     <p className="caption">{T["coach.access"]}</p>
     <p className="caption">{T["coach.disclaimer"]}</p>
     <AskButton />
+    </div>
+    </div>
   </div>;
 }

@@ -20,7 +20,13 @@ no mascots, no claymorphism, no confetti. Inspiration and what we take from each
 6. **Forgiving inputs.** Sliders for exploration, number fields for precision, and a reset on every screen.
 
 ## 2. Tokens (`styles.css` §1)
-> **v6.1 restyle (15 Nov):** pastel tints dropped. Surfaces are separated by a tone step (no borders or shadows at rest); hero blocks
+> **v6.2 (15 Nov): Tailwind v4.** `styles.css` = Tailwind tokens (`@theme inline` maps the semantic colours to utilities such as
+> `bg-surface`, `text-muted`), base, and component primitives (`.btn`, `.card`, `.field`, `.tile` …) built with `@apply`; layout is
+> utilities in the JSX. Type is IBM Plex Sans only (400/500/600), headings semibold with modest sizes. Corners are 2–6 px (no pills
+> or circles). The root font size is fluid (`clamp(15px, …, ~18px)`) and everything is in rem, so the UI scales with the window.
+> Screens fill the width up to 110 rem with responsive columns (Map/Play: inputs + outputs; Coach, Check, Learn: two columns on xl).
+>
+> **v6.1 restyle (15 Nov, superseded where v6.2 differs):** pastel tints dropped. Surfaces are separated by a tone step (no borders or shadows at rest); hero blocks
 > and the Lock tile are solid `--field` (ink in light, teal in dark), the Wait tile solid `--risk-fill` (amber); selected options and
 > the active tab are solid ink. Headings use Bricolage Grotesque 800 with tight tracking; body and numbers stay Inter. Big numbers
 > (`.value`, `.hero-value`) count up from the old value in 450 ms (off under reduced motion). Buttons are pill-shaped. The tables

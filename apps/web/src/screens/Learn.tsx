@@ -27,19 +27,22 @@ export function Learn() {
     <header><h1>{T["learn.h1"]}</h1>
       <button className="btn ghost" type="button" onClick={() => { set({ unlocked: true }); go("map"); }}>{T["learn.skip"]}<Icon name="right" /></button>
     </header>
-    <div className="card row" style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
+    <div className="grid items-start gap-5 xl:grid-cols-2">
+    <div className="stack gap-4">
+    <div className="card flex items-start gap-3">
       <div className="avatar" aria-hidden="true">A</div>
       <div className="stack"><p>{fl("learn.intro")}</p><p className="caption">{T["persona.tag"]}</p></div>
     </div>
     <details className="maths"><summary><Icon name="book" />{T["learn.objTitle"]}</summary>
       <div><ol>{L["learn.obj"]!.map((o) => <li key={o}>{o}</li>)}</ol></div></details>
-    <ol className="steps card">{[1, 2, 3, 4].map((k) => <li key={k} hidden={k > shown}>
+    <ol className="steps card p-5">{[1, 2, 3, 4].map((k) => <li key={k} hidden={k > shown}>
       <Rich text={fl("learn.step" + k)} />
       {k === 2 && <Rich className="formula" text={fl("map.m.ppp")} />}
       {k === 3 && <Rich className="formula" text={fl("map.m.fwd")} />}
     </li>)}</ol>
     <Badge preset="snapshot" />
-    {shown < 4 && <button className="btn secondary" type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}</button>}
+    {shown < 4 && <button className="btn secondary justify-self-start" type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}</button>}
+    </div>
     <section className="card theory" hidden={shown < 4}>
       <p className="label">{fl("learn.taskPrompt")}</p>
       <Choices label={fl("learn.taskPrompt")} options={[["up", T["learn.taskUp"]!], ["down", T["learn.taskDown"]!], ["same", T["learn.taskSame"]!]]}
@@ -56,5 +59,6 @@ export function Learn() {
       </div>
       <p role="status">{committed && atTarget ? T[committed === "up" ? "learn.revealRight" : "learn.revealWrong"] : fill(T["learn.taskMove"]!, v)}</p>
     </section>
+    </div>
   </div>;
 }

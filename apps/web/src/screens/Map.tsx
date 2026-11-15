@@ -26,7 +26,7 @@ export function InputsCard({ full = true }: { full?: boolean }) {
     else setRaw({ iF: toPctInput(nominalFromReal(realRate(inp.iH, inp.piH), inp.piF)) });
     toast(T["map.equalToast"]!);
   };
-  return <section className="card inputs">
+  return <section className="card inputs lg:sticky lg:top-20 lg:col-start-1 lg:row-start-1">
     <h2 className="card-title"><Icon name="sliders" />{T["map.inputs"]}</h2>
     <label className="switch"><input type="checkbox" role="switch" checked={L} onChange={(e) => setLinked(e.target.checked)} />{T["map.linked"]}</label>
     {L && <p className="banner"><Icon name="info" />{T["map.linkedBanner"]}</p>}
@@ -49,12 +49,12 @@ export function MapScreen() {
 
   return <div className="screen">
     <header><h1>{fl("map.h1")}</h1><p className="small">{fl("convention")}</p></header>
-    <div className="map-layout">
-      <div className="stack outputs">
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr]">
+      <div className="stack outputs gap-4 lg:col-start-2 lg:row-start-1">
         <section className="card lock tint-lock hero-card"><Live className={ok ? "hero-value" : "hero-value dim"}>{v.finite ? fl("map.hero") : T.outOfRange!}</Live><Badge /></section>
         <Kira inp={inp} />
         <p className="field-error" hidden={ok}>{T.fixInput}</p>
-        <div className={ok ? "grid2" : "grid2 dim"}>
+        <div className={(ok ? "grid2" : "grid2 dim") + " sm:grid-cols-2 2xl:grid-cols-4"}>
           <Card title={T["map.card.fwd"]!} variant="lock">
             <div><Live as="span" className="value">{"RM " + v.s.F}</Live> <span className="unit">{fl("map.perUnit")}</span></div>
             <div><Arrow dir={m.F >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} /></div>

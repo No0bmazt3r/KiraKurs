@@ -21,6 +21,7 @@ export function Check() {
   all.sort((a, b) => a[0].piH - b[0].piH);
 
   return <div className="screen"><h1>{T["check.h1"]}</h1>
+    <div className="grid items-start gap-5 xl:grid-cols-[3fr_2fr]">
     <section className="card">
       <Field label={T["lbl.piH"]!} raw={raw.piH} error={d.errors.piH} hint={d.hints.piH} suffix="%" slider={{ min: 0, max: 6, step: 0.01 }} onInput={(x) => setRaw({ piH: x })} />
       <div className="table-wrap"><table>
@@ -35,6 +36,7 @@ export function Check() {
       <Badge />
     </section>
     <section className="card stack"><PostQuiz /></section>
+    </div>
   </div>;
 }
 

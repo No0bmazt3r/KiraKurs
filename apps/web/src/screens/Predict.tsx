@@ -14,7 +14,9 @@ export function Predict() {
   const check = () => { set((s) => ({ progress: { ...s.progress, predict: picked }, dismissedReveal: false })); setChecked(true); };
 
   return <div className="screen">
+    <div className="grid items-start gap-5 lg:grid-cols-2">
     <h1>{fill(T["predict.h1"]!, v)}</h1>
+    <div className="stack">
     <Choices label={T["predict.h1"]!} options={(["up", "down", "same"] as const).map((k) => [k, T["predict." + k]!])}
       value={picked} onChange={setPicked} locked={checked} correct="up" />
     {!checked && <button className="btn primary" type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
@@ -22,5 +24,7 @@ export function Predict() {
       onContinue={() => { set({ unlocked: true }); go("map"); }} />}
     <p className="caption">{T["predict.note"]}</p>
     <Badge preset="snapshot" />
+    </div>
+    </div>
   </div>;
 }

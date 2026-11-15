@@ -33,8 +33,8 @@ export function Play() {
   return <div className="screen">
     <header><h1>{T["play.h1"]}</h1><p className="muted">{T["play.sub"]}</p></header>
 
-    <div className="map-layout play-layout">
-      <div className="stack outputs">
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr] [&_.inputs]:max-lg:order-first">
+      <div className="stack outputs gap-4 lg:col-start-2 lg:row-start-1">
         <h2>{T["play.missions"]} <span className="small">· {fill(T["play.done"]!, counts)}</span></h2>
         <section className="card readout">
           <div><p className="small">{T["play.readout.F"]}</p><Live as="div" className="value">{"RM " + v.s["F.4"]}</Live></div>
@@ -43,13 +43,15 @@ export function Play() {
           <p className="caption">{fill(T.convention!, v)}</p>
         </section>
         <Kira inp={inp} />
-        {MISSIONS.map((m) => <MissionCard key={m.id} m={m} v={v} done={done.includes(m.id) || m.done(ctx)} />)}
+        <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">{MISSIONS.map((m) => <MissionCard key={m.id} m={m} v={v} done={done.includes(m.id) || m.done(ctx)} />)}</div>
       </div>
       <InputsCard full={false} />
     </div>
 
-    <FeeDay />
-    <ShareCard done={done.length} />
+    <div className="grid items-start gap-5 xl:grid-cols-[2fr_1fr]">
+      <FeeDay />
+      <ShareCard done={done.length} />
+    </div>
   </div>;
 }
 

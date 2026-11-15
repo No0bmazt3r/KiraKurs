@@ -30,8 +30,8 @@ disagree, **these documents win** (they are newer and were reconciled against th
    value. Say "the 6 Nov rate". "Now" appears only in "set aside now" / "convert now" (Aina's decision moment). Every card and
    chart carries the data badge (DESIGN.md §5.6). A test enforces this (CONTENT.md §0).
 7. **Small, fixed stack.** pnpm workspace: `packages/core` (engine, format, copy, presets, quiz scoring; pure TypeScript, no
-   runtime deps), `apps/web` (Vite + React + TypeScript, TanStack Router with clean paths (`/learn`; `BASE` env for sub-path hosting), Zustand, one global `styles.css`),
-   `apps/api` (Cloudflare Worker). Strict TypeScript. No UI kit, no CSS framework, no chart library: inline SVG for the chart and
+   runtime deps), `apps/web` (Vite + React + TypeScript, TanStack Router with clean paths (`/learn`; `BASE` env for sub-path hosting), Zustand, Tailwind CSS v4 via `@tailwindcss/vite`: tokens and component primitives in `styles.css`, page layout as utilities in the JSX),
+   `apps/api` (Cloudflare Worker). Strict TypeScript. No UI kit (Tailwind is the only styling dependency), no chart library: inline SVG for the chart and
    icons. The only external requests allowed are Google Fonts and (stretch) the Ask API, and the app must look fine if fonts fail.
 8. **Accessibility is part of done:** visible labels, keyboard operable, focus visible, contrast ≥ 4.5:1, `prefers-reduced-motion`
    honoured, works at 375 px wide with no horizontal scroll.
