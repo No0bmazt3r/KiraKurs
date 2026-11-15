@@ -4,6 +4,7 @@ import { T, QUIZ, fill, makeVars } from "@kirakurs/core/content";
 import { PRESETS } from "@kirakurs/core/presets";
 import { itemScore, type Answer, type Answers, type Form } from "@kirakurs/core/quiz";
 import { Choices, Feedback, Icon } from "../ui";
+import { tw, cn } from "../tw";
 import { ThinkFigure } from "../figures";
 
 const v = makeVars(PRESETS.snapshot);
@@ -52,10 +53,10 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
       <div className="grid content-start gap-3">
         <Choices key={q.id} label={stem} options={q.options} multi={q.pick2 ? 2 : 1} value={answer} onChange={setAnswer}
           locked={checked} correct={q.pick2 ? q.correctSet : q.correct} />
-        <p className="label mt-2">{T["pre.confidence"]}</p>
+        <p className={cn(tw.label, "mt-2")}>{T["pre.confidence"]}</p>
         <Choices seg label={T["pre.confidence"]!} options={[["1", T["pre.conf1"]!], ["2", T["pre.conf2"]!], ["3", T["pre.conf3"]!]]} value={conf} onChange={setConf} />
         {checked && <Feedback ok={ok} text={msg} />}
-        <button className="btn primary justify-self-start" type="button" disabled={!ready} onClick={next}>
+        <button className={cn(tw.btn, tw.primary, "justify-self-start")} type="button" disabled={!ready} onClick={next}>
           {withFeedback && !checked ? T["btn.check"] : <>{T["btn.next"]}<Icon name="right" /></>}
         </button>
       </div>

@@ -20,6 +20,12 @@ no mascots, no claymorphism, no confetti. Inspiration and what we take from each
 6. **Forgiving inputs.** Sliders for exploration, number fields for precision, and a reset on every screen.
 
 ## 2. Tokens (`styles.css` §1)
+> **v6.11 (16 Nov): utilities everywhere.** Every component and screen is styled with Tailwind utilities in its JSX. Shared
+> building blocks (button, card, tile, field, option, segmented control, details, tooltip) are class recipes in `src/tw.ts`,
+> combined with `cn()` (tailwind-merge) so variants override cleanly. `styles.css` keeps only theme tokens, element defaults
+> (headings, tables, range sliders) and motion (scroll-driven reveals, page transitions, keyframes). Short names such as
+> `card`, `tile`, `option`, `value` stay in the markup as unstyled hooks for e2e tests and the motion rules.
+>
 > **v6.2 (15 Nov): Tailwind v4.** `styles.css` = Tailwind tokens (`@theme inline` maps the semantic colours to utilities such as
 > `bg-surface`, `text-muted`), base, and component primitives (`.btn`, `.card`, `.field`, `.tile` …) built with `@apply`; layout is
 > utilities in the JSX. Type is IBM Plex Sans only (400/500/600), headings semibold with modest sizes. Corners are 2–6 px (no pills

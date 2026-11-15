@@ -5,6 +5,7 @@ import { PRESETS } from "@kirakurs/core/presets";
 import type { Answers } from "@kirakurs/core/quiz";
 import { useApp, set } from "../store";
 import { Badge, Icon } from "../ui";
+import { tw, cn } from "../tw";
 import type { IconName } from "../icons";
 import { useGo } from "../Shell";
 import { Quiz } from "./Quiz";
@@ -26,7 +27,7 @@ export function Precheck() {
   ];
   const enter = "animate-[slide-in_480ms_var(--ease-out)_both]";
 
-  return <div className="screen gap-8">
+  return <div className={cn(tw.screen, "gap-8")}>
     {phase === "intro" && <div key="intro" className={"grid items-center gap-10 lg:min-h-[calc(100dvh-14rem)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16 " + enter}>
       <div className="grid gap-8">
         <div className="grid gap-4">
@@ -42,8 +43,8 @@ export function Precheck() {
           </li>)}
         </ul>
         <div className="flex flex-wrap items-center gap-3">
-          <button className="btn primary big" type="button" onClick={() => setPhase("quiz")}>{T["btn.start"]}<Icon name="right" /></button>
-          <button className="btn secondary big" type="button" onClick={() => { finish(null); go("learn"); }}>{T["btn.skip"]}</button>
+          <button className={cn(tw.btn, tw.primary, tw.big)} type="button" onClick={() => setPhase("quiz")}>{T["btn.start"]}<Icon name="right" /></button>
+          <button className={cn(tw.btn, tw.secondary, tw.big)} type="button" onClick={() => { finish(null); go("learn"); }}>{T["btn.skip"]}</button>
         </div>
         <div className="grid gap-3">
           <p className="flex items-start gap-2 text-sm text-muted"><Icon name="shield" />{T["pre.consent"]}</p>
@@ -56,8 +57,8 @@ export function Precheck() {
       <Quiz form={form} withFeedback={false} onDone={(a) => { finish(a); setPhase("done"); }} /></div>}
     {phase === "done" && <div key="done" className={"grid justify-items-start gap-6 " + enter}>
       <h1>{T["pre.h1"]}</h1>
-      <p className="value">{T["pre.done"]}</p>
-      <button className="btn primary big" type="button" autoFocus onClick={() => go("learn")}>{T["btn.continue"]}<Icon name="right" /></button>
+      <p className={cn(tw.value)}>{T["pre.done"]}</p>
+      <button className={cn(tw.btn, tw.primary, tw.big)} type="button" autoFocus onClick={() => go("learn")}>{T["btn.continue"]}<Icon name="right" /></button>
     </div>}
   </div>;
 }

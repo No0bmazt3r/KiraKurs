@@ -3,6 +3,7 @@ import { useState } from "react";
 import { T, fill } from "@kirakurs/core/content";
 import { useApp, set, useData, type Dir } from "../store";
 import { Badge, Choices, Feedback } from "../ui";
+import { tw, cn } from "../tw";
 import { useGo } from "../Shell";
 
 export function Predict() {
@@ -13,16 +14,16 @@ export function Predict() {
   const [checked, setChecked] = useState(!!saved);
   const check = () => { set((s) => ({ progress: { ...s.progress, predict: picked }, dismissedReveal: false })); setChecked(true); };
 
-  return <div className="screen">
+  return <div className={cn(tw.screen)}>
     <div className="grid items-start gap-5 lg:grid-cols-2">
     <h1>{fill(T["predict.h1"]!, v)}</h1>
-    <div className="stack">
+    <div className={cn(tw.stack)}>
     <Choices label={T["predict.h1"]!} options={(["up", "down", "same"] as const).map((k) => [k, T["predict." + k]!])}
       value={picked} onChange={setPicked} locked={checked} correct="up" />
-    {!checked && <button className="btn primary" type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
+    {!checked && <button className={cn(tw.btn, tw.primary)} type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
     {checked && picked && <Feedback ok={picked === "up"} text={fill(T["predict.fb." + picked]!, v)}
       onContinue={() => { set({ unlocked: true }); go("map"); }} />}
-    <p className="caption">{T["predict.note"]}</p>
+    <p className={cn(tw.caption)}>{T["predict.note"]}</p>
     <Badge preset="snapshot" />
     </div>
     </div>

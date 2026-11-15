@@ -204,7 +204,8 @@ KiraKurs/
 │   ├── src/ui.tsx              Field, Choices, Rich (glossary), Live (count-up), Badge, Kira, Sheet, skeletons
 │   ├── src/chart.tsx           inline-SVG sensitivity chart
 │   ├── src/figures.tsx         rigged SVG figures with looping motion
-│   ├── src/styles.css          Tailwind tokens, base, component primitives, motion
+│   ├── src/tw.ts               Tailwind class recipes for shared building blocks (cn = tailwind-merge)
+│   ├── src/styles.css          Tailwind theme tokens, element defaults, motion only
 │   ├── src/screens/            Welcome Precheck Learn Predict Map Coach Play Check Quiz Ask
 │   ├── public/                 app icons (light/dark), apple-touch icon
 │   └── e2e/smoke.ts            headless-Chrome smoke test
@@ -274,7 +275,7 @@ user input → Field (parse via format.ts) → store.setRaw(patch)
 |---|---|
 | Engine | Pure TypeScript, zero deps |
 | App | React 19, Vite 8, TanStack Router (clean paths, lazy routes, view transitions), Zustand (persisted) |
-| Styling | Tailwind CSS v4 via `@tailwindcss/vite`: semantic colour tokens for light/dark, component primitives with `@apply`, layout as utilities |
+| Styling | Tailwind CSS v4 via `@tailwindcss/vite`: utilities in every component, shared recipes in `src/tw.ts` merged with `tailwind-merge`, semantic colour tokens for light/dark |
 | Charts, icons, figures | Inline SVG only (Lucide icon bodies, ISC); figures animated with SVG `<animateTransform>` |
 | Font | IBM Plex Sans (Google Fonts, OFL), tabular figures |
 | API | Cloudflare Worker + Groq `openai/gpt-oss-20b`, rate-limited, enum-only replies |

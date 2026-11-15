@@ -4,6 +4,7 @@ import { nominalFromReal, realRate } from "@kirakurs/core/engine";
 import { fx, signedPct, toPctInput } from "@kirakurs/core/format";
 import { useApp, setRaw, setLinked, setPreset, toast, useData, type RawKey } from "../store";
 import { Arrow, Badge, Field, Icon, Kira, Live, Maths, Rich } from "../ui";
+import { tw, cn } from "../tw";
 import { useMaths } from "../Shell";
 import { AskButton } from "./Ask";
 
@@ -26,17 +27,17 @@ export function InputsCard({ full = true }: { full?: boolean }) {
     else setRaw({ iF: toPctInput(nominalFromReal(realRate(inp.iH, inp.piH), inp.piF)) });
     toast(T["map.equalToast"]!);
   };
-  return <section className="card inputs lg:sticky lg:top-20 lg:col-start-1 lg:row-start-1">
+  return <section className={cn(tw.card, "inputs lg:sticky lg:top-20 lg:col-start-1 lg:row-start-1")}>
     <h2>{T["map.inputs"]}</h2>
-    <label className="switch"><input type="checkbox" role="switch" checked={L} onChange={(e) => setLinked(e.target.checked)} />{T["map.linked"]}</label>
-    {L && <p className="banner"><Icon name="info" />{T["map.linkedBanner"]}</p>}
+    <label className={tw.switch}><input type="checkbox" role="switch" className={tw.switchInput} checked={L} onChange={(e) => setLinked(e.target.checked)} />{T["map.linked"]}</label>
+    {L && <p className={cn(tw.banner)}><Icon name="info" />{T["map.linkedBanner"]}</p>}
     {field("piH")}{field("piF")}
-    {L ? <>{field("rH")}{field("rF")}{derived("iH")}{derived("iF")}<p className="caption">{T["map.derived"]}</p></> : <>{field("iH")}{field("iF")}</>}
+    {L ? <>{field("rH")}{field("rF")}{derived("iH")}{derived("iF")}<p className={cn(tw.caption)}>{T["map.derived"]}</p></> : <>{field("iH")}{field("iF")}</>}
     {full && <>{field("n", "days")}
       <Field label={fl("lbl.T")} raw={r.T} error={errors.T} hint={hints.T} onInput={(x) => setRaw({ T: x })} /></>}
-    <div className="row">
-      {full && <button className="btn secondary" type="button" onClick={setEqual}><Icon name="scale" />{T["map.equalBtn"]}</button>}
-      <button className="btn ghost" type="button" onClick={() => { setPreset(preset); toast(fl("toast.reset")); }}><Icon name="reset" /><span>{fl("btn.reset")}</span></button>
+    <div className={cn(tw.row)}>
+      {full && <button className={cn(tw.btn, tw.secondary)} type="button" onClick={setEqual}><Icon name="scale" />{T["map.equalBtn"]}</button>}
+      <button className={cn(tw.btn, tw.ghost)} type="button" onClick={() => { setPreset(preset); toast(fl("toast.reset")); }}><Icon name="reset" /><span>{fl("btn.reset")}</span></button>
     </div>
   </section>;
 }
@@ -47,15 +48,15 @@ export function MapScreen() {
   const fl = (k: string) => fill(T[k]!, v);
   const m = v.results.m;
 
-  return <div className="screen">
-    <header><h1>{fl("map.h1")}</h1><p className="small">{fl("convention")}</p></header>
+  return <div className={cn(tw.screen)}>
+    <header className={tw.header}><h1>{fl("map.h1")}</h1><p className={cn(tw.small)}>{fl("convention")}</p></header>
     <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr]">
-      <div className="stack outputs gap-4 lg:col-start-2 lg:row-start-1">
-        <section className="card lock tint-lock hero-card"><Live className={ok ? "hero-value" : "hero-value dim"}>{v.finite ? fl("map.hero") : T.outOfRange!}</Live><Badge /></section>
+      <div className={cn(tw.stack, "outputs gap-4 lg:col-start-2 lg:row-start-1")}>
+        <section className={cn(tw.card, "lock tint-lock gap-3 border-transparent bg-field text-on-field")}><Live className={cn(tw.heroValue, !ok && "opacity-50")}>{v.finite ? fl("map.hero") : T.outOfRange!}</Live><Badge /></section>
         <Kira inp={inp} />
-        <p className="field-error" hidden={ok}>{T.fixInput}</p>
-        <section className={"card rates" + (ok ? "" : " dim")} aria-label={T["map.ratesTitle"]}>
-          <h2>{T["map.ratesTitle"]}</h2>
+        <p className={tw.fieldError} hidden={ok}>{T.fixInput}</p>
+        <section className={cn(tw.card, "rates gap-0", !ok && "dim opacity-50")} aria-label={T["map.ratesTitle"]}>
+          <h2 className="pb-3">{T["map.ratesTitle"]}</h2>
           <Rate title={T["map.card.fwd"]!} value={"RM " + v.s.F} unit={fl("map.perUnit")}
             arrow={<Arrow dir={m.F >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} />}
             text={fl("map.card.fwd.s")} note={fl("map.fwd.bank")} lock />
@@ -66,19 +67,19 @@ export function MapScreen() {
           <Rate title={T["map.card.real"]!} value={fl("map.card.real.v")} text={fl("map.card.real.s")} />
           <Badge />
         </section>
-        <Rich className="small" text={Math.abs(m.parityGapPP) < 1e-9 ? T["map.gapZero"]! : fl("map.gap")} />
+        <Rich className={cn(tw.small)} text={Math.abs(m.parityGapPP) < 1e-9 ? T["map.gapZero"]! : fl("map.gap")} />
       </div>
       <InputsCard />
     </div>
 
     <Maths summary={T["btn.showMaths"]!} open={openMaths}>
       <h3>{T["map.m.formulas"]}</h3>
-      {["t", "fwd", "ppp", "ife", "fisher", "gap"].map((k) => <Rich key={k} className="formula" text={fl("map.m." + k)} />)}
+      {["t", "fwd", "ppp", "ife", "fisher", "gap"].map((k) => <Rich key={k} className={cn(tw.formula)} text={fl("map.m." + k)} />)}
       <h3>{T["map.m.oneYear"]}</h3><p>{fl("map.m.oneYearV")}</p>
       <h3>{T["map.m.bank"]}</h3><p>{fl("map.m.bankNote")}</p>
       <h3>{T["map.m.forecasts"]}</h3>
-      <div className="table-wrap"><table>
-        <caption className="small">{T["map.m.forecastsCaption"]}</caption>
+      <div className={cn("overflow-x-auto")}><table>
+        <caption className={cn(tw.small)}>{T["map.m.forecastsCaption"]}</caption>
         <thead><tr><th scope="col">{T["map.m.colTheory"]}</th><th scope="col">{fl("map.m.colRate")}</th><th scope="col">{T["map.m.colChange"]}</th></tr></thead>
         <tbody>{m.forecasts.map((x) => <tr key={x.id}><th scope="row"><Rich as="span" text={T["map.m.f." + x.id]!} /></th><td>{fx(x.value, 4)}</td><td>{signedPct(x.value / inp.S - 1, 4)}</td></tr>)}</tbody>
       </table></div>
@@ -90,8 +91,8 @@ export function MapScreen() {
 
 // One row of the reference-rates table: name and explanation on the left, the figure right-aligned.
 function Rate({ title, value, unit, arrow, text, note, lock }: { title: string; value: string; unit?: string; arrow?: React.ReactNode; text: string; note?: string; lock?: boolean }) {
-  return <div className={"rate" + (lock ? " lock" : "")}>
-    <div className="rate-text"><h3>{title}</h3><Rich className="small" text={text} />{note && <Live className="caption">{note}</Live>}</div>
-    <div className="rate-fig"><Live as="div" className="value">{value}</Live>{unit && <span className="unit">{unit}</span>}{arrow}</div>
+  return <div className={cn("rate grid gap-2 border-t border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-8", lock && "lock")}>
+    <div className="grid content-start gap-1"><h3>{title}</h3><Rich className={cn(tw.small)} text={text} />{note && <Live className={cn(tw.caption)}>{note}</Live>}</div>
+    <div className="grid content-start gap-0.5 sm:justify-items-end sm:text-right"><Live as="div" className={cn(tw.value, "whitespace-nowrap", lock && "text-primary-ink")}>{value}</Live>{unit && <span className={cn(tw.unit)}>{unit}</span>}{arrow}</div>
   </div>;
 }

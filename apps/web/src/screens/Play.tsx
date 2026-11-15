@@ -7,6 +7,7 @@ import { PRESETS } from "@kirakurs/core/presets";
 import { rm, signedRM, fx } from "@kirakurs/core/format";
 import { useApp, set, toast, useData } from "../store";
 import { Badge, Choices, Icon, Kira, Live, Rich, cx } from "../ui";
+import { tw, cn } from "../tw";
 import { InputsCard } from "./Map";
 
 const dateFmt = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
@@ -30,17 +31,17 @@ export function Play() {
   });   // runs after every render: cheap (5 predicates)
 
   const counts = { s: { doneCount: String(done.length), missionTotal: String(MISSIONS.length) }, num: {} };
-  return <div className="screen">
-    <header><h1>{T["play.h1"]}</h1><p className="muted">{T["play.sub"]}</p></header>
+  return <div className={cn(tw.screen)}>
+    <header className={tw.header}><h1>{T["play.h1"]}</h1><p className={cn("text-muted")}>{T["play.sub"]}</p></header>
 
     <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr] [&_.inputs]:max-lg:order-first">
-      <div className="stack outputs gap-4 lg:col-start-2 lg:row-start-1">
-        <h2>{T["play.missions"]} <span className="small">· {fill(T["play.done"]!, counts)}</span></h2>
-        <section className="card readout">
-          <div><p className="small">{T["play.readout.F"]}</p><Live as="div" className="value">{"RM " + v.s["F.4"]}</Live></div>
-          <div><p className="small">{T["play.readout.P"]}</p><Live as="div" className="value">{"RM " + v.s["EPPP.4"]}</Live></div>
-          <div><p className="small">{T["play.readout.D"]}</p><Live as="div" className="value">{v.s.diffSigned!}</Live></div>
-          <p className="caption">{fill(T.convention!, v)}</p>
+      <div className={cn(tw.stack, "outputs gap-4 lg:col-start-2 lg:row-start-1")}>
+        <h2>{T["play.missions"]} <span className={cn(tw.small)}>· {fill(T["play.done"]!, counts)}</span></h2>
+        <section className={cn(tw.card, "grid-cols-3 gap-3 [&_.value]:text-base [&_.value]:whitespace-nowrap sm:[&_.value]:text-xl [&_.caption]:col-span-full")}>
+          <div><p className={cn(tw.small)}>{T["play.readout.F"]}</p><Live as="div" className={cn(tw.value)}>{"RM " + v.s["F.4"]}</Live></div>
+          <div><p className={cn(tw.small)}>{T["play.readout.P"]}</p><Live as="div" className={cn(tw.value)}>{"RM " + v.s["EPPP.4"]}</Live></div>
+          <div><p className={cn(tw.small)}>{T["play.readout.D"]}</p><Live as="div" className={cn(tw.value)}>{v.s.diffSigned!}</Live></div>
+          <p className={cn(tw.caption)}>{fill(T.convention!, v)}</p>
         </section>
         <Kira inp={inp} />
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">{MISSIONS.map((m) => <MissionCard key={m.id} m={m} v={v} done={done.includes(m.id) || m.done(ctx)} />)}</div>
@@ -55,16 +56,16 @@ export function Play() {
 function MissionCard({ m, v, done }: { m: Mission; v: FullVars; done: boolean }) {
   const [level, setLevel] = useState(0);   // hint ladder: 0 none → 1 nudge → 2 explanation → 3 the maths
   const next = [T["play.hint"], T["play.moreHint"], T["play.showMaths"]][level];
-  return <section className={cx("card mission", done && "done")}>
-    <div className="mission-head">
+  return <section className={cn(tw.card, "mission gap-2", done && "done")}>
+    <div className="flex items-center gap-2 [&_h3]:m-0 [&_h3]:flex-1 [&_h3]:text-base">
       <Icon name={done ? "ok" : "flag"} /><h3>{m.title}</h3>
-      <span className={cx("pill", done && "ok")}>{done ? T["play.complete"] : T["play.notYet"]}</span>
+      <span className={cn(tw.pill, done && tw.pillOk)}>{done ? T["play.complete"] : T["play.notYet"]}</span>
     </div>
     <p>{fill(m.goal, v)}</p>
-    {level >= 1 && <p className="hint">{fill(m.hints[0], v)}</p>}
-    {level >= 2 && <p className="hint">{fill(m.hints[1], v)}</p>}
-    {level >= 3 && <Rich className="formula" text={fill(T[m.maths]!, v)} />}
-    {!done && next && <button className="btn ghost" type="button" onClick={() => setLevel(level + 1)}><Icon name="info" />{next}</button>}
+    {level >= 1 && <p className={cn(tw.hint)}>{fill(m.hints[0], v)}</p>}
+    {level >= 2 && <p className={cn(tw.hint)}>{fill(m.hints[1], v)}</p>}
+    {level >= 3 && <Rich className={cn(tw.formula)} text={fill(T[m.maths]!, v)} />}
+    {!done && next && <button className={cn(tw.btn, tw.ghost)} type="button" onClick={() => setLevel(level + 1)}><Icon name="info" />{next}</button>}
   </section>;
 }
 
@@ -85,31 +86,31 @@ function FeeDay() {
   const diffs = rounds.map((x) => x.diff);
   const s = (o: Record<string, string>) => ({ s: { ...v.s, ...o }, num: v.num });
 
-  return <section className="card stack feeday" aria-labelledby="feeH">
+  return <section className={cn(tw.card, tw.stack, "feeday")} aria-labelledby="feeH">
     <h2 id="feeH"><Icon name="dice" /> {T["fee.h2"]}</h2>
     <p>{fill(T["fee.intro"]!, v)}</p>
-    <p className="hint">{fill(T["fee.theory"]!, v)}</p>
+    <p className={cn(tw.hint)}>{fill(T["fee.theory"]!, v)}</p>
     {!r && <>
       <Choices label={T["fee.h2"]!} options={[["lock", T["fee.lock"]!], ["wait", T["fee.wait"]!], ["split", T["fee.split"]!]]}
         value={choice} onChange={setChoice} />
-      <button className="btn primary" type="button" disabled={!choice} onClick={go}><Icon name="dice" />{T["fee.go"]}</button>
+      <button className={cn(tw.btn, tw.primary)} type="button" disabled={!choice} onClick={go}><Icon name="dice" />{T["fee.go"]}</button>
     </>}
-    {r && <div className="stack" role="status">
+    {r && <div className={cn(tw.stack)} role="status">
       <p>{fill(T["fee.period"]!, s({ start: day(r.start), end: day(r.end), s0: fx(r.s0, 4), s1: fx(r.s1, 4),
         move: T[r.s1 > r.s0 ? "fee.weaker" : r.s1 < r.s0 ? "fee.stronger" : "fee.flat"]! }))}</p>
-      <div className="decision three">
-        <div className="tile lock"><div className="tile-head"><Icon name="lock" />{T["fee.outLock"]}</div><div className="value">{rm(r.lock)}</div></div>
-        <div className="tile wait"><div className="tile-head"><Icon name="hourglass" />{T["fee.outWait"]}</div><div className="value">{rm(r.wait)}</div></div>
-        <div className="tile you"><div className="tile-head"><Icon name="ok" />{T["fee.outYou"]}</div><div className="value">{rm(r.you)}</div></div>
+      <div className="grid grid-cols-3 gap-3 [&_.value]:text-base sm:[&_.value]:text-xl">
+        <div className={cn(tw.tile, tw.tileLock)}><div className={cn(tw.tileHead)}><Icon name="lock" />{T["fee.outLock"]}</div><div className={cn(tw.value)}>{rm(r.lock)}</div></div>
+        <div className={cn(tw.tile, tw.tileWait)}><div className={cn(tw.tileHead)}><Icon name="hourglass" />{T["fee.outWait"]}</div><div className={cn(tw.value)}>{rm(r.wait)}</div></div>
+        <div className={cn(tw.tile, tw.tileYou)}><div className={cn(tw.tileHead)}><Icon name="ok" />{T["fee.outYou"]}</div><div className={cn(tw.value)}>{rm(r.you)}</div></div>
       </div>
-      <p className="value-sm">{fill(T[r.diff > 0 ? "fee.verdict.more" : "fee.verdict.less"]!, s({ absDiff: rm(Math.abs(r.diff)) }))}</p>
+      <p className={cn("font-semibold")}>{fill(T[r.diff > 0 ? "fee.verdict.more" : "fee.verdict.less"]!, s({ absDiff: rm(Math.abs(r.diff)) }))}</p>
       <p>{T["fee.risk." + r.choice]}</p>
-      <button className="btn secondary" type="button" autoFocus onClick={() => { setShown(null); setChoice(null); }}>{T["fee.again"]}<Icon name="right" /></button>
+      <button className={cn(tw.btn, tw.secondary)} type="button" autoFocus onClick={() => { setShown(null); setChoice(null); }}>{T["fee.again"]}<Icon name="right" /></button>
     </div>}
-    <p className="caption">{T["fee.label"]}</p>
+    <p className={cn(tw.caption)}>{T["fee.label"]}</p>
     {rounds.length > 0 && <>
       <h3>{T["fee.history"]}</h3>
-      <ol className="rounds small">{rounds.map((x, k) => <li key={k}>
+      <ol className={cn(tw.small, "m-0 grid list-decimal gap-0.5 pl-5 tabular-nums")}>{rounds.map((x, k) => <li key={k}>
         {`${day(x.start)} → ${day(x.end)} · ${T["fee." + x.choice]} · ${signedRM(x.diff)}`}</li>)}</ol>
       {rounds.length > 1 && <p>{fill(T["fee.summary"]!, s({ rounds: String(rounds.length),
         minDiff: signedRM(Math.min(...diffs)), maxDiff: signedRM(Math.max(...diffs)) }))}</p>}

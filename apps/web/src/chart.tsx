@@ -29,25 +29,25 @@ export function Chart({ inp, vars }: { inp: Inputs; vars: FullVars }) {
   const cx = X(Math.min(Math.max(inp.piH, 0), 0.06)), cy = Y(cur.diff);
   const here = `${T["coach.chart.here"]} ${signedRM(cur.diff)}`;
 
-  return <div className="chart" ref={box}>
+  return <div className="[&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:overflow-visible [&_text]:fill-muted [&_text]:text-[12px]" ref={box}>
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={fill(T["coach.chart.aria"]!, vars)}>
       {/* line rises left→right, so top-left and bottom-right stay clear for region labels */}
-      <text x={Lm + 6} y={Tp + 14} className="strong">{T["coach.chart.up"]}</text>
-      <text x={W - R - 6} y={H - B - 8} className="strong" textAnchor="end">{T["coach.chart.down"]}</text>
-      <line x1={Lm} x2={Lm} y1={Tp} y2={H - B} className="axis" /><line x1={Lm} x2={W - R} y1={H - B} y2={H - B} className="axis" />
+      <text x={Lm + 6} y={Tp + 14} className="fill-ink! font-semibold">{T["coach.chart.up"]}</text>
+      <text x={W - R - 6} y={H - B - 8} className="fill-ink! font-semibold" textAnchor="end">{T["coach.chart.down"]}</text>
+      <line x1={Lm} x2={Lm} y1={Tp} y2={H - B} className="stroke-line-strong stroke-1" /><line x1={Lm} x2={W - R} y1={H - B} y2={H - B} className="stroke-line-strong stroke-1" />
       {ticks.map((x) => <text key={x} x={X(x)} y={H - B + 18} textAnchor="middle">{pct(x, 0)}</text>)}
       <text x={(Lm + W - R) / 2} y={H - 6} textAnchor="middle">{T["coach.chart.x"]}</text>
       {[lo + pad, 0, hi - pad].map((y, k) => <text key={k} x={Lm - 6} y={Y(y) + 4} textAnchor="end">{signedRM(y)}</text>)}
-      <line x1={Lm} x2={W - R} y1={Y(0)} y2={Y(0)} className="zero" />
+      <line x1={Lm} x2={W - R} y1={Y(0)} y2={Y(0)} className="stroke-muted stroke-1" />
       {be >= 0 && be <= 0.06 && <>
-        <line x1={X(be)} x2={X(be)} y1={Tp} y2={H - B} className="be" />
+        <line x1={X(be)} x2={X(be)} y1={Tp} y2={H - B} className="stroke-theory stroke-[1.5] [stroke-dasharray:5_4]" />
         <text x={Math.max(Lm, Math.min(X(be) + 6, W - R - 190))} y={Tp - 10}>{fill(T["coach.chart.be"]!, vars)}</text>
       </>}
-      <path d={pts.map(([x, y], i) => `${i ? "L" : "M"}${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join("")} className="line" />
-      <circle cx={cx} cy={cy} r={7} className="dot" tabIndex={0}><title>{`${T["coach.chart.here"]}: ${pct(inp.piH)} · ${signedRM(cur.diff)}`}</title></circle>
+      <path d={pts.map(([x, y], i) => `${i ? "L" : "M"}${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join("")} className="fill-none stroke-risk stroke-3 [stroke-linecap:round]" />
+      <circle cx={cx} cy={cy} r={7} className="fill-primary stroke-surface stroke-2" tabIndex={0}><title>{`${T["coach.chart.here"]}: ${pct(inp.piH)} · ${signedRM(cur.diff)}`}</title></circle>
       {cx > Lm + 150
-        ? <text x={cx - 12} y={cy - 12} className="strong" textAnchor="end">{here}</text>
-        : <text x={cx + 12} y={cy + 22} className="strong">{here}</text>}
+        ? <text x={cx - 12} y={cy - 12} className="fill-ink! font-semibold" textAnchor="end">{here}</text>
+        : <text x={cx + 12} y={cy + 22} className="fill-ink! font-semibold">{here}</text>}
     </svg>
     {/* visually hidden table alternative: the five fixed sensitivity rows */}
     <div className="sr-only"><table>

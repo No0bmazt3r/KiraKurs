@@ -7,7 +7,8 @@ import { PRESETS } from "@kirakurs/core/presets";
 import { rm, fx } from "@kirakurs/core/format";
 import { useApp, set } from "../store";
 import { useGo } from "../Shell";
-import { Icon, cx } from "../ui";
+import { Icon } from "../ui";
+import { tw, cn } from "../tw";
 import { randomWindow, day } from "./Play";
 import { HeroFigure, ThinkFigure, TwoPathsFigure, IdeasFigure, StopsFigure, ReadyFigure } from "../figures";
 
@@ -16,6 +17,20 @@ const base = makeVars(P);
 const titled = (s: string) => { const i = s.indexOf(": "); return i < 0 ? s : <><strong>{s.slice(0, i)}</strong>{s[i + 2]!.toUpperCase() + s.slice(i + 3)}</>; };
 const vars = (o: Record<string, string>) => ({ s: { ...base.s, ...o }, num: base.num });
 const H = HISTORY;
+
+// Section shell. `wel-sec`, `hero-scene`, `in`, `rise`, `wel-inner`, `wel-list`, `fig-slot` are hooks for the scroll motion in styles.css.
+const SEC = "wel-sec grid scroll-mt-14 items-center px-[clamp(1rem,3vw,3rem)] py-[clamp(3.5rem,7vw,7rem)] sm:pr-[max(clamp(1rem,3vw,3rem),4.5rem)] [&_.caption]:text-inherit [&_.caption]:opacity-85 [&_.label]:text-inherit [&_.label]:opacity-85";
+const KIND: Record<string, string> = {
+  ink: "bg-field text-on-field [--fig-accent:var(--field-accent)]", teal: "bg-primary text-on-primary [--fig-accent:var(--field-accent)]",
+  ground: "bg-bg", amber: "bg-surface", "hero-scene": "hero-scene min-h-[calc(100svh-3.5rem)]",
+};
+const INNER = "wel-inner mx-auto grid w-full max-w-[110rem] content-center gap-6";
+const H1 = "max-w-none text-5xl leading-none font-semibold tracking-tight sm:text-6xl 2xl:text-7xl";
+const LEAD = "max-w-[38ch] text-lg leading-relaxed lg:text-xl";
+const H2 = "max-w-[20ch] text-3xl leading-tight font-semibold tracking-tight lg:text-5xl";
+const PARA = "wel-p max-w-[46ch] text-base leading-relaxed lg:text-lg [&_strong]:block [&_strong]:font-semibold";
+const CHART = "m-0 grid gap-2 rounded-md bg-surface p-4 text-ink [&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:overflow-visible";
+const LIST = "wel-list m-0 grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2 xl:grid-cols-4 [&_li]:text-base [&_li]:leading-relaxed lg:[&_li]:text-lg [&_strong]:mb-1 [&_strong]:block [&_strong]:font-semibold";
 const hv = vars({ start: day(H.first), end: day(H.last), rLo: fx(H.lo.r, 4), rHi: fx(H.hi.r, 4), gapRM: rm((H.hi.r - H.lo.r) * P.T) });
 
 export function Welcome() {
@@ -37,77 +52,78 @@ export function Welcome() {
   }, []);
 
   const scene = (k: number, cls: string, label: string, body: React.ReactNode) =>
-    <section key={k} className={cx("wel-sec", cls)} aria-label={label} ref={(el) => { refs.current[k] = el; }}>{body}</section>;
+    <section key={k} className={cn(SEC, ...cls.split(" ").map((t) => KIND[t] ?? t))} aria-label={label} ref={(el) => { refs.current[k] = el; }}>{body}</section>;
   const labels = [T["wel.h1a"] + " " + T["wel.h1b"], T["wel.s2.h"]!, T["wel.s3.h"]!, T["wel.s4.h"]!, T["wel.s5.h"]!, T["wel.s6.h"]!];
-  const r = (i: number, cls?: string) => ({ className: cx("rise", cls), style: { "--i": i } as React.CSSProperties });
+  const r = (i: number, cls?: string) => ({ className: cn("rise", cls), style: { "--i": i } as React.CSSProperties });
 
   return <div className="welcome">
-    {scene(0, "ink hero-scene", labels[0]!, <div className="wel-inner gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-14">
-      <div className="stack gap-6">
-      <h1 {...r(0, "wel-h1")}>{T["wel.h1a"]} <span className="wel-mark" aria-hidden="true" /> {T["wel.h1b"]}</h1>
-      <p {...r(1, "wel-lead")}>{fill(T["wel.lead"]!, base)}</p>
-      <div {...r(2, "row")}>
-        <button className="btn primary big" type="button" onClick={start}>{T["wel.start"]}<Icon name="right" /></button>
-        <button className="btn on-field" type="button" onClick={skip}>{T["wel.skip"]}</button>
+    {scene(0, "ink hero-scene", labels[0]!, <div className={cn(INNER, "gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-14")}>
+      <div className={cn(tw.stack, "gap-6")}>
+      <h1 {...r(0, H1)}>{T["wel.h1a"]} <span className="inline-block size-[0.85em] rounded-[0.18em] bg-(image:--logo) bg-contain bg-center bg-no-repeat align-[-0.08em]" aria-hidden="true" /> {T["wel.h1b"]}</h1>
+      <p {...r(1, LEAD)}>{fill(T["wel.lead"]!, base)}</p>
+      <div {...r(2, tw.row)}>
+        <button className={cn(tw.btn, tw.fieldPrimary, tw.big)} type="button" onClick={start}>{T["wel.start"]}<Icon name="right" /></button>
+        <button className={cn(tw.btn, tw.onField)} type="button" onClick={skip}>{T["wel.skip"]}</button>
       </div>
       <div className="fig-slot max-w-sm"><HeroFigure /></div>
       </div>
-      <div {...r(2, "stack gap-4")}>
-      <figure className="wel-hero-chart m-0"><HeroChart /></figure>
-      <dl className="wel-bill">
-        <div className="col-span-2"><dt className="label">{T["wel.bill.h"]}</dt><dd className="caption">{fill(T["wel.bill.due"]!, base)}</dd></div>
-        <div className="tile lock"><dt className="tile-head"><Icon name="lock" />{T["wel.bill.lock"]}</dt><dd className="value">{base.s.A}</dd></div>
-        <div className="tile wait"><dt className="tile-head"><Icon name="hourglass" />{T["wel.bill.wait"]}</dt><dd className="value">{base.s.C_ppp}</dd></div>
-        <dd className="caption col-span-2">{fill(T["wel.bill.range"]!, base)}</dd>
+      <div {...r(2, "grid gap-4")}>
+      <figure className="m-0 [&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:overflow-visible"><HeroChart /></figure>
+      <dl className="m-0 grid grid-cols-2 gap-3 [&_dd]:m-0">
+        <div className="col-span-2"><dt className={cn(tw.label)}>{T["wel.bill.h"]}</dt><dd className={cn(tw.caption)}>{fill(T["wel.bill.due"]!, base)}</dd></div>
+        <div className={cn(tw.tile, tw.tileLock, "bg-on-field text-field [&_.value]:text-field")}><dt className={cn(tw.tileHead)}><Icon name="lock" />{T["wel.bill.lock"]}</dt><dd className={cn(tw.value)}>{base.s.A}</dd></div>
+        <div className={cn(tw.tile, tw.tileWait)}><dt className={cn(tw.tileHead)}><Icon name="hourglass" />{T["wel.bill.wait"]}</dt><dd className={cn(tw.value)}>{base.s.C_ppp}</dd></div>
+        <dd className={cn(tw.caption, "col-span-2")}>{fill(T["wel.bill.range"]!, base)}</dd>
       </dl>
       </div>
     </div>)}
 
-    {scene(1, "ground", labels[1]!, <div className="wel-inner gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16">
-      <div className="stack">
-        <h2 {...r(0, "wel-h2")}>{T["wel.s2.h"]}</h2>
-        <p {...r(1, "wel-p")}>{fill(T["wel.s2.p"]!, hv)}</p>
+    {scene(1, "ground", labels[1]!, <div className={cn(INNER, "gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16")}>
+      <div className={cn(tw.stack)}>
+        <h2 {...r(0, H2)}>{T["wel.s2.h"]}</h2>
+        <p {...r(1, PARA)}>{fill(T["wel.s2.p"]!, hv)}</p>
         <div className="fig-slot mt-4 max-w-sm"><ThinkFigure /></div>
       </div>
-      <figure {...r(2, "wel-chart")}><HistoryChart /><figcaption className="caption">{fill(T["wel.s2.chart"]!, hv)}</figcaption></figure>
+      <figure {...r(2, CHART)}><HistoryChart /><figcaption className={cn(tw.caption)}>{fill(T["wel.s2.chart"]!, hv)}</figcaption></figure>
     </div>)}
 
-    {scene(2, "teal", labels[2]!, <div className="wel-inner gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16">
-      <div className="stack">
-        <h2 {...r(0, "wel-h2")}>{T["wel.s3.h"]}</h2>
-        <p {...r(1, "wel-p")}>{titled(T["wel.s3.lock"]!)}</p>
-        <p {...r(2, "wel-p")}>{titled(T["wel.s3.wait"]!)}</p>
+    {scene(2, "teal", labels[2]!, <div className={cn(INNER, "gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16")}>
+      <div className={cn(tw.stack)}>
+        <h2 {...r(0, H2)}>{T["wel.s3.h"]}</h2>
+        <p {...r(1, PARA)}>{titled(T["wel.s3.lock"]!)}</p>
+        <p {...r(2, PARA)}>{titled(T["wel.s3.wait"]!)}</p>
         <div className="fig-slot mt-4 max-w-md"><TwoPathsFigure /></div>
       </div>
       <TryIt />
     </div>)}
 
-    {scene(3, "ground", labels[3]!, <div className="wel-inner">
-      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,24rem)]"><h2 {...r(0, "wel-h2")}>{T["wel.s4.h"]}</h2><div className="fig-slot"><IdeasFigure /></div></div>
-      <ul className="wel-list">{["irp", "ppp", "fisher", "ife"].map((k, i) =>
+    {scene(3, "ground", labels[3]!, <div className={INNER}>
+      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,24rem)]"><h2 {...r(0, H2)}>{T["wel.s4.h"]}</h2><div className="fig-slot"><IdeasFigure /></div></div>
+      <ul className={LIST}>{["irp", "ppp", "fisher", "ife"].map((k, i) =>
         <li key={k} {...r(i + 1)}>{titled(T["wel.s4." + k]!)}</li>)}</ul>
     </div>)}
 
-    {scene(4, "amber", labels[4]!, <div className="wel-inner">
-      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,28rem)]"><h2 {...r(0, "wel-h2")}>{T["wel.s5.h"]}</h2><div className="fig-slot"><StopsFigure /></div></div>
-      <ol className="wel-list stops">{(["learn", "map", "coach", "play"] as const).map((k, i) =>
+    {scene(4, "amber", labels[4]!, <div className={INNER}>
+      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,28rem)]"><h2 {...r(0, H2)}>{T["wel.s5.h"]}</h2><div className="fig-slot"><StopsFigure /></div></div>
+      <ol className={LIST}>{(["learn", "map", "coach", "play"] as const).map((k, i) =>
         <li key={k} {...r(i + 1)}>{titled(T["wel.s5." + k]!)}</li>)}</ol>
     </div>)}
 
-    {scene(5, "ink", labels[5]!, <div className="wel-inner items-center gap-10 lg:grid-cols-[1fr_minmax(0,22rem)]">
-      <div className="stack gap-6">
-      <h2 {...r(0, "wel-h2 big")}>{T["wel.s6.h"]}</h2>
-      <p {...r(1, "wel-p")}>{T["wel.s6.p"]}</p>
-      <div {...r(2, "row")}>
-        <button className="btn primary big" type="button" onClick={start}>{T["wel.s6.start"]}<Icon name="right" /></button>
-        <button className="btn on-field" type="button" onClick={skip}>{T["wel.s6.lecturer"]}</button>
+    {scene(5, "ink", labels[5]!, <div className={cn(INNER, "items-center gap-10 lg:grid-cols-[1fr_minmax(0,22rem)]")}>
+      <div className={cn(tw.stack, "gap-6")}>
+      <h2 {...r(0, H2)}>{T["wel.s6.h"]}</h2>
+      <p {...r(1, PARA)}>{T["wel.s6.p"]}</p>
+      <div {...r(2, tw.row)}>
+        <button className={cn(tw.btn, tw.fieldPrimary, tw.big)} type="button" onClick={start}>{T["wel.s6.start"]}<Icon name="right" /></button>
+        <button className={cn(tw.btn, tw.onField)} type="button" onClick={skip}>{T["wel.s6.lecturer"]}</button>
       </div>
       </div>
       <div className="fig-slot"><ReadyFigure /></div>
     </div>)}
 
-    <nav className="wel-dots" aria-label={T["wel.dots"]}>
+    <nav className="fixed top-1/2 right-3 z-10 hidden -translate-y-1/2 gap-1 rounded-md bg-surface p-1 text-ink sm:grid" aria-label={T["wel.dots"]}>
       {labels.map((l, k) => <button key={k} type="button" aria-label={l} aria-current={active === k || undefined}
+        className="grid size-7 cursor-pointer place-items-center border-0 bg-transparent p-0 after:size-2 after:rounded-xs after:bg-current after:opacity-35 after:transition after:content-[''] aria-[current=true]:after:scale-150 aria-[current=true]:after:opacity-100"
         onClick={() => refs.current[k]?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} />)}
     </nav>
   </div>;
@@ -130,23 +146,23 @@ function HeroChart() {
   const hist = hero.past.map((p, i) => `${(x0 + (i / (n - 1)) * (xT - x0)).toFixed(1)},${y(i === n - 1 ? hero.S : p.r).toFixed(1)}`).join(" ");
   const yS = y(hero.S), v = hero.v;
   return <svg viewBox={`0 0 ${W} ${Ht}`} role="img" aria-label={fill(T["wel.hero.aria"]!, v)}>
-    <polygon className="hc-band" points={`${xT},${yS} ${xP},${y(hero.hi)} ${xP},${y(hero.lo)}`} />
-    <polyline className="hc-hist" points={hist} pathLength={1} />
-    <line className="hc-today" x1={xT} x2={xT} y1={top - 8} y2={Ht - bot + 8} />
-    <line className="hc-pay" x1={xP} x2={xP} y1={top - 8} y2={Ht - bot + 8} />
-    <line className="hc-lock" x1={xT} y1={yS} x2={xP} y2={y(hero.F)} pathLength={1} />
-    <line className="hc-ppp" x1={xT} y1={yS} x2={xP} y2={y(hero.E)} pathLength={1} />
-    <circle className="hc-dot" cx={xT} cy={yS} r="6" />
-    <circle className="hc-end lock" cx={xP} cy={y(hero.F)} r="6" />
-    <text x={x0} y={top - 14} className="hc-t dim">{fill(T["wel.hero.unit"]!, v)}</text>
-    <text x={x0} y={Ht - 14} className="hc-t dim">{T["wel.hero.past"]}</text>
-    <text x={xT} y={Ht - 14} className="hc-t" textAnchor="middle">{T["wel.hero.today"]}</text>
-    <text x={xP} y={Ht - 14} className="hc-t" textAnchor="middle">{T["wel.hero.pay"]}</text>
-    <text x={xP + 14} y={y(hero.F) + (hero.F >= hero.E ? -6 : 18)} className="hc-t strong">{fill(T["wel.hero.lock"]!, v)}</text>
-    <text x={xP + 14} y={y(hero.E) + (hero.F >= hero.E ? 18 : -6)} className="hc-t risk">{fill(T["wel.hero.ppp"]!, v)}</text>
-    <text x={xP + 14} y={y(hero.hi) + 4} className="hc-t dim">{"RM " + v.s.rHi}</text>
-    <text x={xP + 14} y={y(hero.lo) + 4} className="hc-t dim">{"RM " + v.s.rLo}</text>
-    <text x={(xT + xP) / 2} y={y(hero.lo) + 22} className="hc-t risk" textAnchor="middle">{T["wel.hero.band"]}</text>
+    <polygon className="hc-band fill-risk-fill [fill-opacity:.3]" points={`${xT},${yS} ${xP},${y(hero.hi)} ${xP},${y(hero.lo)}`} />
+    <polyline className="hc-hist fill-none stroke-on-field stroke-[2.5] [stroke-linejoin:round] [stroke-opacity:.75]" points={hist} pathLength={1} />
+    <line className="stroke-on-field stroke-1 [stroke-dasharray:3_5] [stroke-opacity:.3]" x1={xT} x2={xT} y1={top - 8} y2={Ht - bot + 8} />
+    <line className="stroke-on-field stroke-1 [stroke-dasharray:3_5] [stroke-opacity:.3]" x1={xP} x2={xP} y1={top - 8} y2={Ht - bot + 8} />
+    <line className="hc-lock stroke-field-accent stroke-4 [stroke-linecap:round]" x1={xT} y1={yS} x2={xP} y2={y(hero.F)} pathLength={1} />
+    <line className="hc-ppp stroke-risk-fill stroke-[2.5]" x1={xT} y1={yS} x2={xP} y2={y(hero.E)} pathLength={1} />
+    <circle className="fill-on-field" cx={xT} cy={yS} r="6" />
+    <circle className="hc-end fill-field-accent" cx={xP} cy={y(hero.F)} r="6" />
+    <text x={x0} y={top - 14} className="fill-on-field text-[15px] font-medium opacity-70">{fill(T["wel.hero.unit"]!, v)}</text>
+    <text x={x0} y={Ht - 14} className="fill-on-field text-[15px] font-medium opacity-70">{T["wel.hero.past"]}</text>
+    <text x={xT} y={Ht - 14} className="fill-on-field text-[15px] font-medium" textAnchor="middle">{T["wel.hero.today"]}</text>
+    <text x={xP} y={Ht - 14} className="fill-on-field text-[15px] font-medium" textAnchor="middle">{T["wel.hero.pay"]}</text>
+    <text x={xP + 14} y={y(hero.F) + (hero.F >= hero.E ? -6 : 18)} className="fill-on-field text-[15px] font-medium fill-field-accent font-semibold">{fill(T["wel.hero.lock"]!, v)}</text>
+    <text x={xP + 14} y={y(hero.E) + (hero.F >= hero.E ? 18 : -6)} className="fill-on-field text-[15px] font-medium fill-risk-fill">{fill(T["wel.hero.ppp"]!, v)}</text>
+    <text x={xP + 14} y={y(hero.hi) + 4} className="fill-on-field text-[15px] font-medium opacity-70">{"RM " + v.s.rHi}</text>
+    <text x={xP + 14} y={y(hero.lo) + 4} className="fill-on-field text-[15px] font-medium opacity-70">{"RM " + v.s.rLo}</text>
+    <text x={(xT + xP) / 2} y={y(hero.lo) + 22} className="fill-on-field text-[15px] font-medium fill-risk-fill" textAnchor="middle">{T["wel.hero.band"]}</text>
   </svg>;
 }
 
@@ -160,11 +176,11 @@ function HistoryChart() {
   const pts = H.months.map((m, i) => `${x(i).toFixed(1)},${y(m.r).toFixed(1)}`).join(" ");
   const iLo = at(H.lo.d), iHi = at(H.hi.d);
   return <svg viewBox={`0 0 ${W} ${Ht + 28}`} role="img" aria-label={fill(T["wel.s2.chart"]!, hv)}>
-    <polyline className="wel-line" points={pts} pathLength={1} />
-    <circle className="wel-pt hi" cx={x(iHi)} cy={y(hi)} r="7" />
-    <circle className="wel-pt lo" cx={x(iLo)} cy={y(lo)} r="7" />
-    <text x={x(iHi)} y={y(hi) - 14} textAnchor={iHi > n * 0.7 ? "end" : "middle"} className="strong">{fill(T["wel.s2.high"]!, hv)}</text>
-    <text x={x(iLo)} y={y(lo) + 26} textAnchor={iLo < n * 0.3 ? "start" : "middle"} className="strong">{fill(T["wel.s2.low"]!, hv)}</text>
+    <polyline className="wel-line fill-none stroke-primary stroke-3 [stroke-linecap:round] [stroke-linejoin:round]" points={pts} pathLength={1} />
+    <circle className="fill-risk-fill" cx={x(iHi)} cy={y(hi)} r="7" />
+    <circle className="fill-primary" cx={x(iLo)} cy={y(lo)} r="7" />
+    <text x={x(iHi)} y={y(hi) - 14} textAnchor={iHi > n * 0.7 ? "end" : "middle"} className="fill-ink text-[15px] font-semibold">{fill(T["wel.s2.high"]!, hv)}</text>
+    <text x={x(iLo)} y={y(lo) + 26} textAnchor={iLo < n * 0.3 ? "start" : "middle"} className="fill-ink text-[15px] font-semibold">{fill(T["wel.s2.low"]!, hv)}</text>
   </svg>;
 }
 
@@ -172,16 +188,16 @@ function HistoryChart() {
 function TryIt() {
   const [round, setRound] = useState<Round | null>(null);
   const play = (c: Choice) => setRound(replay(randomWindow(), P.T, c));
-  return <div className="tryit" role="group" aria-label={T["wel.s3.try"]}>
-    <p className="label">{T["wel.s3.try"]}</p>
-    <div className="row">
-      <button className="btn big lockbtn" type="button" onClick={() => play("lock")}><Icon name="lock" />{T["fee.lock"]}</button>
-      <button className="btn big waitbtn" type="button" onClick={() => play("wait")}><Icon name="hourglass" />{T["fee.wait"]}</button>
+  return <div className="tryit grid gap-3 rounded-md bg-field p-6 text-on-field" role="group" aria-label={T["wel.s3.try"]}>
+    <p className={cn(tw.label)}>{T["wel.s3.try"]}</p>
+    <div className={cn(tw.row)}>
+      <button className={cn(tw.btn, tw.big, "lockbtn flex-1 bg-on-field text-field")} type="button" onClick={() => play("lock")}><Icon name="lock" />{T["fee.lock"]}</button>
+      <button className={cn(tw.btn, tw.big, "waitbtn flex-1 bg-risk-fill text-on-risk")} type="button" onClick={() => play("wait")}><Icon name="hourglass" />{T["fee.wait"]}</button>
     </div>
-    <div role="status" className="stack">{round && <>
-      <p className="tryit-result">{fill(T["wel.s3.result"]!, vars({ start: day(round.start), end: day(round.end), lockRM: rm(round.lock), waitRM: rm(round.wait) }))}</p>
+    <div role="status" className={cn(tw.stack)}>{round && <>
+      <p className="tryit-result text-xl leading-snug font-semibold tracking-tight animate-[up_350ms_var(--ease-out)] lg:text-2xl">{fill(T["wel.s3.result"]!, vars({ start: day(round.start), end: day(round.end), lockRM: rm(round.lock), waitRM: rm(round.wait) }))}</p>
       <p>{fill(T[round.diff > 0 ? "fee.verdict.more" : "fee.verdict.less"]!, vars({ absDiff: rm(Math.abs(round.diff)) }))}</p>
-      <p className="caption">{T["fee.label"]}</p>
+      <p className={cn(tw.caption)}>{T["fee.label"]}</p>
     </>}</div>
   </div>;
 }

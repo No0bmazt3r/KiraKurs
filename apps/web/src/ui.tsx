@@ -5,8 +5,9 @@ import { parseNumber, type Inputs } from "@kirakurs/core/engine";
 import { PRESETS, type PresetId } from "@kirakurs/core/presets";
 import { P, type IconName } from "./icons";
 import { useApp, openSheet, set } from "./store";
+import { tw, cn } from "./tw";
 
-export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+export const cx = cn;
 
 export function Icon({ name, label }: { name: IconName; label?: string }) {
   const a11y = label ? { role: "img", "aria-label": label } : { "aria-hidden": true };
@@ -69,10 +70,10 @@ export function Rich({ text, className, as: Tag = "p" }: { text: string; classNa
   const parts = tipParts(text);
   return <>
     <Tag ref={el} className={className}>{parts.map((part, k) => typeof part === "string" ? part :
-      <button key={k} className="term" type="button" aria-expanded={open === k} aria-controls={`${id}-${k}`}
+      <button key={k} className="cursor-pointer border-0 bg-transparent p-0 text-inherit underline decoration-theory decoration-dotted decoration-2 underline-offset-[3px] [font:inherit]" type="button" aria-expanded={open === k} aria-controls={`${id}-${k}`}
         onClick={() => setOpen(open === k ? null : k)} onKeyDown={(e) => e.key === "Escape" && setOpen(null)}>{part.text}</button>)}
     </Tag>
-    {open != null && <span className="tip" id={`${id}-${open}`} role="note">{TIPS[(parts[open] as { tip: string }).tip]}</span>}
+    {open != null && <span className="my-2 block rounded-sm bg-surface-2 px-3 py-2 text-sm animate-[up_320ms_var(--ease-out)]" id={`${id}-${open}`} role="note">{TIPS[(parts[open] as { tip: string }).tip]}</span>}
   </>;
 }
 
@@ -105,10 +106,10 @@ export function useSlide<E extends HTMLElement>(sel: string, dep: unknown) {
 export function Tip({ tip, children, className }: { tip: string; children: ReactElement<Record<string, unknown>>; className?: string }) {
   const id = useId();
   const [hide, setHide] = useState(false);
-  return <span className={cx("tipwrap", hide && "tip-off", className)} onMouseLeave={() => setHide(false)} onFocus={() => setHide(false)}
+  return <span className={cn("group/tip relative inline-flex", className)} data-off={hide || undefined} onMouseLeave={() => setHide(false)} onFocus={() => setHide(false)}
     onKeyDown={(e) => e.key === "Escape" && setHide(true)}>
     {cloneElement(children, { "aria-describedby": id })}
-    <span role="tooltip" id={id} className="tip-pop">{tip}</span>
+    <span role="tooltip" id={id} className={tw.tipPop}>{tip}</span>
   </span>;
 }
 
@@ -117,18 +118,19 @@ export function Badge({ preset: fixed }: { preset?: PresetId }) {
   const chosen = useApp((s) => s.preset), userEdited = useApp((s) => s.edited);
   const p = PRESETS[fixed ?? chosen], edited = !fixed && userEdited;
   return <Tip tip={T[p.kind === "dated" ? "badge.tipDated" : "badge.tipPractice"]!} className="justify-self-start">
-    <button className={cx("badge", p.kind !== "dated" && "illustrative")} type="button" onClick={(e) => openSources(e.currentTarget)}>
+    <button className={cn("badge inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-sm border border-primary bg-transparent px-2.5 py-1 text-left text-xs text-current in-[.tint-lock]:border-field-accent [&_svg]:size-4",
+      p.kind !== "dated" && "border-theory")} type="button" onClick={(e) => openSources(e.currentTarget)}>
       <Icon name="calendar" /><span className="badge-text">{p.badge + (edited ? " " + T.edited : "")}</span>
     </button>
   </Tip>;
 }
 
 export function Card({ title, variant = "neutral", children }: { title: string; variant?: string; children: ReactNode }) {
-  return <section className={`card ${variant}`}><h2 className="card-title">{title}</h2>{children}</section>;
+  return <section className={cn(tw.card, variant)}><h2 className={tw.cardTitle}>{title}</h2>{children}</section>;
 }
 
 export function Arrow({ dir, words }: { dir: "up" | "down"; words: string }) {
-  return <span className="arrow"><Icon name={dir} /><span>{words}</span></span>;
+  return <span className="inline-flex items-start gap-1 text-sm text-muted"><Icon name={dir} /><span>{words}</span></span>;
 }
 
 // A labelled number field (+ optional slider). The text box keeps a draft while focused; commit on Enter or blur.
@@ -142,26 +144,26 @@ export function Field({ label, raw, error, hint, suffix, slider, readonly, onInp
   useEffect(() => { if (document.activeElement !== ref.current) setDraft(raw); }, [raw]);
   const x = parseNumber(raw);
   const shown = raw + (suffix === "%" ? "%" : "");
-  const box = <div className="input-wrap">
-    <input ref={ref} id={id} type="text" inputMode="decimal" autoComplete="off" readOnly={readonly} aria-label={label}
+  const box = <div className={cn(tw.inputWrap, readonly && "border-dashed", error && "border-2 border-danger")}>
+    <input ref={ref} id={id} type="text" className={tw.input} inputMode="decimal" autoComplete="off" readOnly={readonly} aria-label={label}
       aria-describedby={errId} aria-invalid={error ? "true" : "false"} value={readonly ? raw : draft}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={() => draft !== raw && onInput?.(draft)}
       onKeyDown={(e) => e.key === "Enter" && onInput?.(draft)} />
-    {suffix && <span className="suffix" aria-hidden="true">{suffix}</span>}
+    {suffix && <span className="px-3 text-muted" aria-hidden="true">{suffix}</span>}
   </div>;
-  return <div className={cx("field", readonly && "readonly", error && "invalid")}>
-    <div className="field-head"><label htmlFor={id}>{label}</label>{slider && <output htmlFor={id}>{shown}</output>}</div>
+  return <div className={cn(tw.field, readonly && "readonly", error && "invalid")}>
+    <div className="flex items-baseline justify-between gap-2"><label htmlFor={id} className="font-medium">{label}</label>{slider && <output htmlFor={id}>{shown}</output>}</div>
     {slider ? <>
-      <div className="slider-row">
+      <div className="grid grid-cols-[1fr_6rem] items-center gap-3">
         <input type="range" min={slider.min} max={slider.max} step={slider.step} aria-label={label} disabled={readonly}
           value={Number.isFinite(x) ? x : slider.min} aria-valuetext={`${label} ${raw}${suffix === "%" ? " percent" : ""}`}
           onChange={(e) => onInput?.(e.target.value)} />
         {box}
       </div>
-      <div className="minmax" aria-hidden="true"><span>{slider.min + (suffix ?? "")}</span><span>{slider.max + (suffix ?? "")}</span></div>
+      <div className="-mt-1.5 flex justify-between text-xs text-muted" aria-hidden="true"><span>{slider.min + (suffix ?? "")}</span><span>{slider.max + (suffix ?? "")}</span></div>
     </> : box}
-    <div className={error ? "field-error" : "field-hint"} id={errId} aria-live="polite">
+    <div className={error ? tw.fieldError : tw.fieldHint} id={errId} aria-live="polite">
       {error ? <><Icon name="no" />{error}</> : hint}
     </div>
   </div>;
@@ -184,23 +186,23 @@ export function Choices({ options, label, multi = 1, value, onChange, seg, locke
     e.preventDefault(); btns[(i + d + btns.length) % btns.length]!.focus();
   };
   const slide = useSlide<HTMLDivElement>('[aria-checked="true"]', picked.join());
-  return <div ref={seg ? slide : undefined} className={seg ? "segmented" : "options"} role={multi > 1 ? "group" : "radiogroup"} aria-label={label} onKeyDown={multi === 1 ? keys : undefined}>
+  return <div ref={seg ? slide : undefined} className={seg ? cn(tw.slideBox, tw.segmented) : tw.options} role={multi > 1 ? "group" : "radiogroup"} aria-label={label} onKeyDown={multi === 1 ? keys : undefined}>
     {options.map(([id, text]) => <button key={id} type="button" role={multi > 1 ? "checkbox" : "radio"} aria-checked={picked.includes(id)}
-      className={cx(!seg && "option", locked && (right.includes(id) ? "correct" : picked.includes(id) && "wrong"))}
+      className={seg ? tw.segBtn : cn(tw.option, locked && (right.includes(id) ? tw.optionRight : picked.includes(id) && tw.optionWrong))}
       disabled={locked} onClick={() => click(id)}>{text}</button>)}
   </div>;
 }
 
 export function Feedback({ ok, text, onContinue, continueText = T["btn.continue"]! }: { ok: boolean; text: string; onContinue?: () => void; continueText?: string }) {
-  return <div className={`feedback ${ok ? "ok" : "no"}`} role="status">
-    <div className="fb-head"><Icon name={ok ? "ok" : "no"} />{T[ok ? "fb.correct" : "fb.wrong"]}</div>
+  return <div className={cn(tw.feedback, ok ? "ok text-success" : "no text-danger")} role="status">
+    <div className="flex items-center gap-2 font-semibold"><Icon name={ok ? "ok" : "no"} />{T[ok ? "fb.correct" : "fb.wrong"]}</div>
     <p>{text}</p>
-    {onContinue && <button className="btn primary" type="button" autoFocus onClick={onContinue}>{continueText}<Icon name="right" /></button>}
+    {onContinue && <button className={cn(tw.btn, tw.primary)} type="button" autoFocus onClick={onContinue}>{continueText}<Icon name="right" /></button>}
   </div>;
 }
 
 export function Maths({ summary, open, children }: { summary: string; open?: boolean; icon?: IconName; children: ReactNode }) {
-  return <details className="maths" open={open || undefined}><summary>{summary}</summary><div>{children}</div></details>;
+  return <details className={tw.details} open={open || undefined}><summary className={tw.summary}>{summary}</summary><div className={tw.detailsBody}>{children}</div></details>;
 }
 
 // ---- sheet (single <dialog>) and toast, driven by the store ----
@@ -213,13 +215,13 @@ export function Sheet() {
     if (sheet) { trigger.current = sheet.trigger; if (!d.open) d.showModal(); d.querySelector(".sheet-body")!.scrollTop = 0; }
     else if (d.open) d.close();
   }, [sheet]);
-  return <dialog className="sheet" id="sheet" aria-labelledby="sheetTitle" ref={ref}
+  return <dialog className="m-0 mx-auto mt-auto w-full max-w-160 rounded-t-md border-0 bg-surface p-0 text-ink shadow-[0_-8px_32px_rgb(0_0_0/.18)] max-h-[85vh] backdrop:bg-black/45 open:flex open:flex-col open:animate-[up_300ms_var(--ease-out)] lg:ml-auto lg:mr-0 lg:h-dvh lg:max-h-dvh lg:max-w-md lg:rounded-none" id="sheet" aria-labelledby="sheetTitle" ref={ref}
     onClick={(e) => e.target === e.currentTarget && ref.current!.close()}
     onClose={() => { set({ sheet: null }); (trigger.current as HTMLElement | null)?.focus?.(); }}>
-    <div className="sheet-handle" aria-hidden="true" />
-    <div className="sheet-head"><h2 id="sheetTitle">{sheet?.title}</h2>
-      <button className="icon-btn" type="button" onClick={() => ref.current!.close()}><Icon name="x" label={T["btn.close"]} /></button></div>
-    <div className="sheet-body">{sheet && <sheet.Body />}</div>
+    <div className="mx-auto mt-2 h-1 w-10 rounded-sm bg-line-strong" aria-hidden="true" />
+    <div className="flex items-center justify-between px-4 py-2"><h2 id="sheetTitle">{sheet?.title}</h2>
+      <button className={tw.iconBtn} type="button" onClick={() => ref.current!.close()}><Icon name="x" label={T["btn.close"]} /></button></div>
+    <div className="sheet-body grid gap-3 overflow-y-auto px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] [&_ol]:m-0 [&_ol]:grid [&_ol]:list-decimal [&_ol]:gap-2 [&_ol]:pl-5 [&_ul]:m-0 [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">{sheet && <sheet.Body />}</div>
   </dialog>;
 }
 export const closeSheet = () => (document.getElementById("sheet") as HTMLDialogElement | null)?.close();
@@ -233,7 +235,8 @@ export function Toast() {
     const id = setTimeout(() => setShow(false), 4000);
     return () => clearTimeout(id);
   }, [t]);
-  return <div className={cx("toast", show && "show")} role="status" aria-live="polite">{t?.msg}</div>;
+  return <div className={cn("toast pointer-events-none fixed bottom-38 left-1/2 z-50 max-w-[calc(100vw-2rem)] -translate-x-1/2 translate-y-5 rounded-md bg-ink px-4 py-3 text-sm text-bg opacity-0 transition duration-200",
+    show && "translate-y-0 opacity-100")} role="status" aria-live="polite">{t?.msg}</div>;
 }
 
 export function openSources(trigger?: Element) {
@@ -245,7 +248,7 @@ export function openLimits(trigger?: Element) {
   openSheet(T["limits.title"]!, () => <>
     <h3>{T["limits.assumeTitle"]}</h3><ul>{L["limits.assume"]!.map((x) => <li key={x}>{x}</li>)}</ul>
     <h3>{T["limits.limitsTitle"]}</h3><ol>{L["limits.list"]!.map((x) => <li key={x}>{x}</li>)}</ol>
-    <button className="btn ghost" type="button" onClick={() => openSources(trigger)}>{T["sources.title"]}</button>
+    <button className={cn(tw.btn, tw.ghost)} type="button" onClick={() => openSources(trigger)}>{T["sources.title"]}</button>
   </>, trigger);
 }
 
@@ -261,28 +264,28 @@ export function Kira({ inp }: { inp: Inputs }) {
     const e = explainChange(p, inp);
     if (e) setMsg(e);
   }, [inp]);
-  return <div className="kira" role="status" aria-live="polite">
-    <div className="avatar kira-mark" aria-hidden="true" />
-    <div className="stack-sm">
-      <p className="label">{T["kira.name"]}</p>
-      <p key={msg?.text ?? ""} className="fade-in">{msg ? msg.text : T["kira.start"]}</p>
-      {msg && <p className="small">{msg.why}</p>}
+  return <div className="kira flex items-start gap-3 rounded-md bg-surface-2 p-4" role="status" aria-live="polite">
+    <div className="size-9 shrink-0 rounded-sm bg-(image:--logo) bg-contain bg-center bg-no-repeat" aria-hidden="true" />
+    <div className="grid gap-1">
+      <p className={tw.label}>{T["kira.name"]}</p>
+      <p key={msg?.text ?? ""} className="animate-[up_320ms_var(--ease-out)]">{msg ? msg.text : T["kira.start"]}</p>
+      {msg && <p className={tw.small}>{msg.why}</p>}
     </div>
   </div>;
 }
 
 // Loading placeholders: a screen-shaped skeleton (route chunks) and a few text lines (Ask). Shimmer stops under reduced motion.
 export function ScreenSkeleton() {
-  return <div className="screen" role="status" aria-label={T["loading"]}>
-    <div className="sk h-9 w-2/3 max-w-xl" />
-    <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr]">
-      <div className="sk h-[28rem]" />
-      <div className="grid gap-4"><div className="sk h-28" /><div className="sk h-16" /><div className="sk h-72" /></div>
+  return <div className={tw.screen} role="status" aria-label={T["loading"]}>
+    <div className={cn(tw.sk, "h-9 w-2/3 max-w-xl")} />
+    <div className={tw.splitLayout}>
+      <div className={cn(tw.sk, "h-[28rem]")} />
+      <div className="grid gap-4"><div className={cn(tw.sk, "h-28")} /><div className={cn(tw.sk, "h-16")} /><div className={cn(tw.sk, "h-72")} /></div>
     </div>
   </div>;
 }
 export function LinesSkeleton({ n = 3 }: { n?: number }) {
   return <div className="grid gap-2" role="status" aria-label={T["loading"]}>
-    {Array.from({ length: n }, (_, k) => <div key={k} className="sk h-4" style={{ width: `${92 - k * 17}%` }} />)}
+    {Array.from({ length: n }, (_, k) => <div key={k} className={cn(tw.sk, "h-4")} style={{ width: `${92 - k * 17}%` }} />)}
   </div>;
 }

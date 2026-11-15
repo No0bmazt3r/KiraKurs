@@ -6,6 +6,7 @@ import { pct, rm, signedRM } from "@kirakurs/core/format";
 import { score, otherForm, resultCode } from "@kirakurs/core/quiz";
 import { useApp, set, setRaw, toast, useData } from "../store";
 import { Badge, Choices, Field, Icon, Live, Rich, openLimits, openSources } from "../ui";
+import { tw, cn } from "../tw";
 import { Quiz } from "./Quiz";
 
 const ROWS = [0.01, 0.018, 0.03, 0.04, 0.05];
@@ -20,22 +21,22 @@ export function Check() {
   if (!all.some(([, here]) => here)) all.push([live, true]);
   all.sort((a, b) => a[0].piH - b[0].piH);
 
-  return <div className="screen"><h1>{T["check.h1"]}</h1>
+  return <div className={cn(tw.screen)}><h1>{T["check.h1"]}</h1>
     <div className="grid items-start gap-5 xl:grid-cols-[3fr_2fr]">
-    <section className="card">
+    <section className={cn(tw.card)}>
       <Field label={T["lbl.piH"]!} raw={raw.piH} error={d.errors.piH} hint={d.hints.piH} suffix="%" slider={{ min: 0, max: 6, step: 0.01 }} onInput={(x) => setRaw({ piH: x })} />
-      <div className="table-wrap"><table>
+      <div className={cn("overflow-x-auto")}><table>
         <thead><tr>{L["check.th"]!.map((t) => <th key={t} scope="col">{t}</th>)}</tr></thead>
-        <tbody>{all.map(([r, here]) => <tr key={r.piH} className={here ? "here" : ""}>
+        <tbody>{all.map(([r, here]) => <tr key={r.piH} className={here ? "here bg-primary-soft! font-semibold" : undefined}>
           <td>{pct(r.piH, here ? 2 : 1)}{here && <span className="sr-only">{" " + T["check.youAreHere"]}</span>}</td>
           <td>{pct(r.rH)}</td><td>{rm(r.Cppp)}</td><td>{signedRM(r.diff)}</td>
         </tr>)}</tbody>
       </table></div>
-      <Rich className="small" text={fill(T["check.why"]!, v)} />
-      <Live className="small">{fill(T["check.linked"]!, v)}</Live>
+      <Rich className={cn(tw.small)} text={fill(T["check.why"]!, v)} />
+      <Live className={cn(tw.small)}>{fill(T["check.linked"]!, v)}</Live>
       <Badge />
     </section>
-    <section className="card stack"><PostQuiz /></section>
+    <section className={cn(tw.card, tw.stack)}><PostQuiz /></section>
     </div>
   </div>;
 }
@@ -48,7 +49,7 @@ function PostQuiz() {
     set((s) => ({ quiz: { ...s.quiz, post }, progress: { ...s.progress, check: true } }))} />;
   return <>
     <h2>{T["check.postTitle"]}</h2><p>{T["check.postIntro"]}</p>
-    <button className="btn primary" type="button" onClick={() => setRunning(true)}>{T["check.startPost"]}</button>
+    <button className={cn(tw.btn, tw.primary)} type="button" onClick={() => setRunning(true)}>{T["check.startPost"]}</button>
   </>;
 }
 
@@ -65,20 +66,20 @@ function Results() {
     <h2>{T["check.changed"]}</h2>
     <Choices seg label={T["check.changed"]!} options={L["check.changedOpts"]!.map((o) => [o, o])} value={q.changedDecision}
       onChange={(c: string) => set((s) => ({ quiz: { ...s.quiz, changedDecision: c } }))} />
-    <p className="value">{fill(T[pre ? "check.results" : "check.resultsNoPre"]!, vars)}</p>
+    <p className={cn(tw.value)}>{fill(T[pre ? "check.results" : "check.resultsNoPre"]!, vars)}</p>
     <h3>{T["check.objTitle"]}</h3>
-    <div className="objbars">{Object.entries(post.perObj).map(([obj, [got, max]], k) => {
+    <div className="grid gap-2">{Object.entries(post.perObj).map(([obj, [got, max]], k) => {
       const pg = pre ? pre.perObj[obj]![0] : 0;
-      return <div className="objbar" key={obj}><span>{L["check.objShort"]![k]}</span>
-        <div className="bars" aria-hidden="true"><span className="pre" style={{ width: `${(pg / max) * 100}%` }} /><span className="post" style={{ width: `${(got / max) * 100}%` }} /></div>
+      return <div className="grid grid-cols-[7.5rem_1fr_3.5rem] items-center gap-2 text-sm" key={obj}><span>{L["check.objShort"]![k]}</span>
+        <div className="grid gap-[3px] [&>span]:h-2 [&>span]:rounded-xs [&>span]:transition-[width] [&>span]:duration-600" aria-hidden="true"><span className="bg-line-strong" style={{ width: `${(pg / max) * 100}%` }} /><span className="bg-primary" style={{ width: `${(got / max) * 100}%` }} /></div>
         <span className="num">{`${pre ? pg + " → " : ""}${got}/${max}`}</span></div>;
     })}</div>
-    <p>{T["check.code"]}</p><p className="code">{code}</p>
-    <button className="btn secondary" type="button" onClick={copy}><Icon name="copy" />{T["btn.copy"]}</button>
-    <p className="caption">{T["check.codeNote"]}</p>
-    <div className="row">
-      <button className="btn ghost" type="button" onClick={(e) => openLimits(e.currentTarget)}>{T["limits.title"]}</button>
-      <button className="btn ghost" type="button" onClick={(e) => openSources(e.currentTarget)}>{T["sources.title"]}</button>
+    <p>{T["check.code"]}</p><p className="code text-2xl font-semibold tracking-wider tabular-nums select-all">{code}</p>
+    <button className={cn(tw.btn, tw.secondary)} type="button" onClick={copy}><Icon name="copy" />{T["btn.copy"]}</button>
+    <p className={cn(tw.caption)}>{T["check.codeNote"]}</p>
+    <div className={cn(tw.row)}>
+      <button className={cn(tw.btn, tw.ghost)} type="button" onClick={(e) => openLimits(e.currentTarget)}>{T["limits.title"]}</button>
+      <button className={cn(tw.btn, tw.ghost)} type="button" onClick={(e) => openSources(e.currentTarget)}>{T["sources.title"]}</button>
     </div>
   </>;
 }
