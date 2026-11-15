@@ -1,8 +1,8 @@
 // Shared components (docs/DESIGN.md §5). Copy is rendered as text only; icons are static SVG strings.
 import { useEffect, useId, useRef, useState, type ElementType, type KeyboardEvent, type ReactNode } from "react";
-import { T, L, TIPS, SOURCES, tipParts } from "@kirakurs/core/content";
-import { parseNumber } from "@kirakurs/core/engine";
-import { PRESETS } from "@kirakurs/core/presets";
+import { T, L, TIPS, SOURCES, tipParts, explainChange } from "@kirakurs/core/content";
+import { parseNumber, type Inputs } from "@kirakurs/core/engine";
+import { PRESETS, type PresetId } from "@kirakurs/core/presets";
 import { P, type IconName } from "./icons";
 import { useApp, openSheet, set } from "./store";
 
@@ -25,23 +25,32 @@ export function Live({ as: Tag = "p", className, children, ...rest }: { as?: Ele
   return <Tag key={n} className={cx(className, n > 0 && "flash")} {...rest}>{children}</Tag>;
 }
 
+// "[[tip|text]]" markup → plain text (for aria-live and share text).
+export const plain = (s: string) => s.replace(/\[\[\w+\|([^\]]+)\]\]/g, "$1");
+
 // Copy with [[tip|text]] markup → glossary buttons. A tip opens inline below its paragraph.
-export function Rich({ text }: { text: string }) {
+export function Rich({ text, className, as: Tag = "p" }: { text: string; className?: string; as?: ElementType }) {
   const id = useId();
   const [open, setOpen] = useState<number | null>(null);
+  const prev = useRef(text);
+  const [n, setN] = useState(0);   // flash on change, like <Live>
+  useEffect(() => {
+    if (prev.current !== text) { prev.current = text; if (!reduced()) setN((x) => x + 1); }
+  }, [text]);
   const parts = tipParts(text);
   return <>
-    <p>{parts.map((part, k) => typeof part === "string" ? part :
+    <Tag key={n} className={cx(className, n > 0 && "flash")}>{parts.map((part, k) => typeof part === "string" ? part :
       <button key={k} className="term" type="button" aria-expanded={open === k} aria-controls={`${id}-${k}`}
         onClick={() => setOpen(open === k ? null : k)} onKeyDown={(e) => e.key === "Escape" && setOpen(null)}>{part.text}</button>)}
-    </p>
+    </Tag>
     {open != null && <span className="tip" id={`${id}-${open}`} role="note">{TIPS[(parts[open] as { tip: string }).tip]}</span>}
   </>;
 }
 
-export function Badge() {
-  const preset = useApp((s) => s.preset), edited = useApp((s) => s.edited);
-  const p = PRESETS[preset];
+// Data badge. `preset` pins it (screens that always use the Snapshot); otherwise it follows the chosen preset.
+export function Badge({ preset: fixed }: { preset?: PresetId }) {
+  const chosen = useApp((s) => s.preset), userEdited = useApp((s) => s.edited);
+  const p = PRESETS[fixed ?? chosen], edited = !fixed && userEdited;
   return <button className={cx("badge", p.kind !== "dated" && "illustrative")} type="button" onClick={(e) => openSources(e.currentTarget)}>
     <Icon name="calendar" /><span className="badge-text">{p.badge + (edited ? " " + T.edited : "")}</span>
   </button>;
@@ -170,4 +179,26 @@ export function openLimits(trigger?: Element) {
     <h3>{T["limits.limitsTitle"]}</h3><ol>{L["limits.list"]!.map((x) => <li key={x}>{x}</li>)}</ol>
     <button className="btn ghost" type="button" onClick={() => openSources(trigger)}>{T["sources.title"]}</button>
   </>, trigger);
+}
+
+// Kira: the hint guide. States what the last input change did, from engine output (no AI).
+export function Kira({ inp }: { inp: Inputs }) {
+  const prev = useRef(inp);
+  const [msg, setMsg] = useState<{ text: string; why: string } | null>(null);
+  useEffect(() => {
+    const p = prev.current;
+    prev.current = inp;
+    if (p === inp) return;
+    if (p.id !== inp.id) return setMsg(null);          // preset switch: start over
+    const e = explainChange(p, inp);
+    if (e) setMsg(e);
+  }, [inp]);
+  return <div className="kira" role="status" aria-live="polite">
+    <div className="avatar" aria-hidden="true">K</div>
+    <div className="stack-sm">
+      <p className="label">{T["kira.name"]}</p>
+      <p>{msg ? msg.text : T["kira.start"]}</p>
+      {msg && <p className="small">{msg.why}</p>}
+    </div>
+  </div>;
 }

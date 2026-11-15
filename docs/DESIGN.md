@@ -82,7 +82,7 @@ Measure: max 65ch for paragraphs. `text-wrap: balance` on h1/h2.
 └───────────────────────────────────────┘
 ```
 - ≥ 1024 px: the tab bar moves into the top bar as text tabs, and "Show the maths" opens in a right panel (360 px) instead of inline.
-- Footer (end of the scroll, not sticky): `Engine v1.1.0 · Not financial advice · Sources · Clear my data`.
+- Footer (end of the scroll, not sticky): `Engine v1.2.0 · Not financial advice · Sources · Clear my data`.
 
 ## 4. Iconography
 Lucide icons, inline SVG, 24 px, 2 px stroke, `currentColor`. Set: `lock` (lock option), `hourglass` (wait), `scale` (compare),

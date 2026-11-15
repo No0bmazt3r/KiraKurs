@@ -63,6 +63,20 @@ Pre-check → Learn → Predict → Parity Map → Coach → Check     Tab bar: 
 4. Results: pre → post per objective (5 small bars), the result code, Copy, and links to Limitations and Sources.
    - Code format: `KK-{firstForm}{pre}-{post}` e.g. `KK-A5-7`; pre = `x` if skipped.
 
+### 2.6 Play (v6, between Coach and Check)
+Built 15 Nov from `../idea-v6-addendum.md` §B. Copy in `packages/core/src/content.ts` (`kira.*`, `play.*`, `fee.*`, `share.*`, `MISSIONS`).
+1. **Inputs + live readout:** the shared inputs card (inflation and interest, Fisher link) and a 3-number readout (bank lock, prices
+   theory, waiting vs locking). On phones the inputs come first.
+2. **Kira** (also on the Map): after each input change, one sentence stating what moved and in which direction, plus the reason.
+   Generated from engine output by `explainChange()`; no AI.
+3. **Missions (5):** flip the bank lock (IRP), weaken the ringgit (PPP), find the break-even (Fisher/real rates), link interest to
+   inflation, feel the risk (3 Fee Day rounds). Each has a hint ladder: nudge → explanation → the maths. Completion is stored locally.
+4. **Fee Day:** choose lock / wait / lock half, then replay a random real 270-day period (ECB USD/MYR, starts 2016-01-04 to the last
+   start whose window ends by 6 Nov 2026). Lock = that period's starting rate × (1 + the Snapshot 270-day forward premium), labelled
+   illustrative because historical interest rates are not in the project. Shows dates, both costs, the learner's cost, the risk taken
+   (none / half / full), a history list and the spread across rounds. Never scores "wins".
+5. **Share card:** play style (cautious locker / risk taker / balanced splitter) and counts only; Web Share or copy.
+
 ## 3. Presets
 - The preset chip in the top bar opens a sheet: Scenario 1 · Classroom (illustrative), Scenario 2 · Snapshot 6 Nov 2026 (dated),
   plus (stretch) GBP/AUD classroom.

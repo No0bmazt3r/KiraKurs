@@ -46,6 +46,8 @@ whose message starts with its ID.
 | X-AI | Ask KiraKurs: Worker (`apps/api/src/index.ts`) → Groq `openai/gpt-oss-20b`; M5 makes the Groq account + Worker secret; set repo variable `VITE_ASK_URL` (idea §10). Build first, after D1; cut at 20:00 16 Nov | 3 h |
 | X-PWA | manifest + sw.js + update toast | 1 h |
 | X-CCY | GBP and AUD classroom presets | 45 m |
+| V6-FIX | Panel 15 Nov fixes: Learn reveal waits for the slider; glossary tips on Map/Coach/Check; worked formulas in Learn; `h` 0–100 validation + extreme-rate hint (engine 1.2.0); range-bar clamp; allowance collapsed + explained; IFE units; bank-quote line; equal-rate wording; CIRP taxes/default; badges on Learn/Predict/Pre-check; pick-two feedback; Ask notice | done 15 Nov |
+| V6-PLAY | Play screen: Kira guide, 5 missions with hint ladder, Fee Day replay, share card; "Use my own bill" on Coach | done 15 Nov |
 
 ## Critical path
 S0 → S1 → E1–E3 → (C1 ∥ U1 ∥ U2) → P3 → P4 → P4b → D1 → V1 → PO / VI. The poster and video need working screens, so P3/P4 must be

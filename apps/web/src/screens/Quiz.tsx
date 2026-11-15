@@ -21,7 +21,8 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
   const q = items[i]!;
   const ready = q.pick2 ? Array.isArray(answer) && answer.length === 2 : answer != null;
   const ok = itemScore(q, answer) === (q.pick2 ? 2 : 1);
-  const msg = typeof q.fb === "string" ? q.fb : ok ? T["fb.correct"] + "." : q.fb[answer as string] ?? "";
+  const wrongPick = q.pick2 && Array.isArray(answer) ? answer.find((a) => q.fbWrong?.[a]) : undefined;
+  const msg = wrongPick ? q.fbWrong![wrongPick]! : typeof q.fb === "string" ? q.fb : ok ? T["fb.correct"] + "." : q.fb[answer as string] ?? "";
   const stem = fill(q.stem, v).replace("US$1", (form === "B" ? "£" : "US$") + "1");
 
   const next = () => {

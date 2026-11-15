@@ -2,7 +2,7 @@
 // Quote: S = MYR per 1 unit of foreign currency. Rates are decimals per annum. t = n / 365.
 // Teaching model: annual effective rates compounded over t, so every identity holds at any n.
 
-export const ENGINE_VERSION = "1.1.0";
+export const ENGINE_VERSION = "1.2.0";
 
 export type Ccy = "USD" | "GBP" | "AUD";
 export interface Inputs {
@@ -126,11 +126,12 @@ export function validate(raw: Record<string, string>) {
     else if (field === "T" && !(x > 0 && x <= 1e8)) errors[field] = "Amount must be above 0 and at most 100,000,000.";
     else if (field === "n" && !(Number.isInteger(x) && x >= 1 && x <= 3650)) errors[field] = "Days must be a whole number from 1 to 3,650.";
     else if (field === "margin" && !(x >= 0 && x <= 10)) errors[field] = "Bank margin must be between 0% and 10%.";
-    else if (field === "h") { /* slider only */ }
+    else if (field === "h" && !(x >= 0 && x <= 100)) errors[field] = "Split must be between 0% and 100%.";
     else if (RATE_LABEL[field]) {
       if (!(x > -100)) errors[field] = `${RATE_LABEL[field]} must be above −100%.`;
       else if (x > 100) errors[field] = "Above 100% a year is outside this teaching model.";
       else if (x !== 0 && Math.abs(x) < 0.5) hints[field] = `Did you mean ${+(x * 100).toFixed(4)}%? (Ignore if you meant it.)`;
+      else if (x < -10 || x > 50) hints[field] = "This is far outside normal rates, so results may be extreme.";
     }
     if (!errors[field]) values[field] = PCT.has(field) ? Number((x / 100).toPrecision(15)) : x; // 1.8/100 → 0.018, not 0.018000000000000002
   }

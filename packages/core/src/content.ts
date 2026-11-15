@@ -26,7 +26,7 @@ export const T: Record<string, string> = {
   "fixInput": "Fix the highlighted input to update.",
   "clearData.confirm": "Delete your quiz answers and progress from this browser?",
   "edited": "(edited)",
-  "progress": "Step {{step}} of 6",
+  "progress": "Step {{step}} of {{total}}",
   "preset.title": "Choose the numbers",
   "theme.toggle": "Switch light or dark theme",
   "noscript": "KiraKurs needs JavaScript to calculate.",
@@ -73,19 +73,19 @@ export const T: Record<string, string> = {
   "map.h1": "What do the theories expect for Aina's {{n}} days?",
   "map.hero": "Lock: set aside {{A}} now.",
   "map.card.fwd": "Bank lock (forward)",
-  "map.card.fwd.s": "A bank lock for {{n}} days is about RM {{F.2}} per dollar, {{belowAbove}} the {{rateDate}} rate of RM {{S.2}}, because {{higherRateCountry}} savings pay more interest.",
+  "map.card.fwd.s": "A [[forward|bank lock]] for {{n}} days is about RM {{F.2}} per dollar, {{belowAbove}} the {{rateDate}} rate of RM {{S.2}}, {{rateReason}}.",
   "map.card.ppp": "Prices theory (PPP)",
-  "map.card.ppp.s": "{{fasterCountry}} prices rise faster ({{fasterPi}} vs {{slowerPi}}), so this theory expects each dollar to cost {{fewerMore}} ringgit by Aina's payment date.",
+  "map.card.ppp.s": "{{inflationReason}}, so this [[ppp|theory]] expects each dollar to cost {{fewerMore}} ringgit by Aina's payment date.",
   "map.card.ife": "Interest theory (IFE)",
-  "map.card.ife.s": "Same number as the bank lock: this theory says higher-interest savings just make up for a currency expected to weaken. Real data often disagree.",
+  "map.card.ife.s": "Same number as the bank lock: [[ife|this theory]] says higher-interest savings just make up for a currency expected to weaken. Real data often disagree.",
   "map.card.real": "After-inflation interest (real rates)",
   "map.card.real.v": "MY {{rH}} · {{country}} {{rF}}",
-  "map.card.real.s": "Malaysian savings earn {{rH}} a year after inflation; {{country}} savings earn {{rF}}. The higher one decides whether waiting is expected to pay.",
+  "map.card.real.s": "Malaysian savings earn {{rH}} a year [[real|after inflation]]; {{country}} savings earn {{rF}}. The higher one decides whether waiting is expected to pay.",
   "map.fwd.arrow": "{{belowAbove}} the {{rateDate}} rate of {{S.2}} · MYR per {{ccy}}1 · ↑ = ringgit weaker",
   "map.ppp.arrow": "{{ePPP}} vs the {{rateDate}} rate · MYR per {{ccy}}1 · ↑ = ringgit weaker",
   "err.number": "Enter a number.",
   "map.perUnit": "per {{ccy}}1",
-  "map.gap": "The two theories disagree by {{gapPP}} because the two countries' after-inflation interest rates differ. Make them equal and the theories agree.",
+  "map.gap": "The two theories disagree by {{gapPP}} ([[pp|percentage points]]) because the two countries' after-inflation interest rates differ. Make them equal and the theories agree.",
   "map.gapZero": "After-inflation interest rates are equal, so the two theories agree.",
   "map.inputs": "Change the world",
   "lbl.piH": "Malaysian inflation %", "lbl.piF": "{{country}} inflation %", "lbl.iH": "Malaysian interest rate %",
@@ -101,11 +101,11 @@ export const T: Record<string, string> = {
   "map.m.oneYear": "1-year view",
   "map.m.bank": "Bank convention",
   "map.m.bankNote": "Banks use simple interest with day counts (MYR Act/365, US$ Act/360): F = {{bankF.4}} vs {{F.4}}, a small difference from the day-count convention.",
-  "map.m.forecasts": "Four forecasts side by side",
+  "map.m.forecasts": "Four reference rates (none is a reliable forecast)",
   "map.m.forecastsCaption": "The forward is not a reliable forecast of the future rate (Fama 1984). Each row is a theory, not a prediction.",
-  "map.m.f.forward": "Bank lock (forward)", "map.m.f.ppp": "Prices theory (PPP)", "map.m.f.ife": "Interest theory (IFE)", "map.m.f.rw": "No change (random walk)",
+  "map.m.f.forward": "Bank lock (forward)", "map.m.f.ppp": "Prices theory (PPP)", "map.m.f.ife": "Interest theory (IFE)", "map.m.f.rw": "No change ([[rw|random walk]])",
   "map.m.t": "t = {{n}} / 365 = {{t4}} years. Rates are annual, compounded over t.",
-  "map.m.fwd": "Bank lock: F = S × ((1 + MY interest) / (1 + {{country}} interest))^t = {{S.4}} × ({{gH}} / {{gF}})^{{t4}} = {{F.4}}. Premium F/S − 1 = {{premium.4}}.",
+  "map.m.fwd": "Bank lock ([[irp|interest rate parity]]): F = S × ((1 + MY interest) / (1 + {{country}} interest))^t = {{S.4}} × ({{gH}} / {{gF}})^{{t4}} = {{F.4}}. [[premium|Premium]] F/S − 1 = {{premium.4}}.",
   "map.m.ppp": "Prices theory: e = ((1 + MY inflation) / (1 + {{country}} inflation))^t − 1 = {{ePPP.4}}, so E = S(1 + e) = {{EPPP.4}}.",
   "map.m.ife": "Interest theory: e = ((1 + MY interest) / (1 + {{country}} interest))^t − 1 = {{eIFE.4}}, so E = {{EIFE.4}}, the same as F.",
   "map.m.fisher": "Fisher: real = (1 + interest) / (1 + inflation) − 1. MY {{rH.4}} (≈ interest − inflation = {{rHapprox}}); {{country}} {{rF.4}} (≈ {{rFapprox}}).",
@@ -123,7 +123,7 @@ export const T: Record<string, string> = {
   "coach.wait": "Wait", "coach.wait.note": "about, if the prices theory holds",
   "coach.range": "Range {{lo}} – {{hi}}",
   "coach.rangeLegend": "Amber band: 8 of 10 past {{n}}-day moves · teal mark: lock",
-  "coach.verdict": "Lock: set aside {{A}} now, for certain. Wait: about {{lessMore diff.ppp}} if the prices theory holds, {{lessMore diff.rw}} if the exchange rate stays at its {{rateDate}} level, and anywhere from {{lo}} to {{hi}} in 8 of 10 past periods. Locking buys certainty.",
+  "coach.verdict": "Lock: set aside {{A}} now, for certain. Wait: about {{lessMore diff.ppp}} if the prices theory holds, {{lessMore diff.rw}} if the exchange rate stays at its {{rateDate}} level, and anywhere from {{lo}} to {{hi}} in [[range|8 of 10 past periods]]. Locking buys certainty.",
   "coach.verdict.noRange": "Lock: set aside {{A}} now, for certain. Wait: about {{lessMore diff.ppp}} if the prices theory holds, {{lessMore diff.rw}} if the exchange rate stays at its {{rateDate}} level. Locking buys certainty. Illustrative numbers.",
   "rule.wait": "Malaysia's after-inflation interest is higher, so the prices theory expects waiting to cost a little less.",
   "rule.lock": "Malaysia's after-inflation interest is lower, so the prices theory expects waiting to cost more.",
@@ -150,17 +150,17 @@ export const T: Record<string, string> = {
   "coach.chart.aria": "Line chart of waiting minus locking against Malaysian inflation from 0% to 6%. It crosses zero at the break-even {{be}}. At {{piH}} the difference is {{diffSigned}}.",
   "coach.access": "Bank forwards are offered by licensed onshore banks; individual access depends on the bank. Residents may convert ringgit into a foreign-currency account for overseas education with documentary proof (BNM FEP FAQs, Part 1, Q18 and Q20).",
   "coach.reveal": "You predicted \"{{yourAnswer}}\". With Malaysian inflation at {{target}}, waiting costs {{C_at_target}} vs {{C_at_base}}: it went up. {{rightWrong}}",
-  "coach.reveal.right": "You were right.", "coach.reveal.wrong": "Now you know why.",
+  "coach.reveal.right": "You were right.", "coach.reveal.wrong": "Why: higher Malaysian prices make each ringgit buy less, so the prices theory expects more ringgit per dollar, and waiting costs more.",
   "coach.disclaimer": "Parity theory, not a prediction. PPP holds poorly over months (Rogoff 1996). Not financial advice.",
   "coach.m.title": "The maths behind the Coach",
-  "coach.m.ab": "Convert now: S·T / (1 + US$ interest)^t = {{A.2}}. Bank lock: F·T / (1 + RM interest)^t = {{B.2}}. Same cost (covered interest parity).",
+  "coach.m.ab": "Convert now: S·T / (1 + US$ interest)^t = {{A.2}}. Bank lock: F·T / (1 + RM interest)^t = {{B.2}}. Same cost ([[covered|covered]] interest parity).",
   "coach.m.c": "Wait: expected rate · T / (1 + RM interest)^t. Prices theory {{C.ppp.2}} · interest theory {{C.ife.2}} · no change {{C.rw.2}}.",
   "coach.m.range": "Historical range: the no-change cost × (1 + 10th / 90th percentile of past {{n}}-day moves, 2016–2026) = {{lo.2}} – {{hi.2}}.",
   "coach.m.split": "Split: h × lock + (1 − h) × wait, with h = {{h}}.",
 
   // Screen 5
   "check.h1": "What if Malaysian inflation changes?",
-  "check.why": "Higher Malaysian inflation raises the prices theory's expected cost of each dollar, while Malaysian interest stays put. Once Malaysia's after-inflation interest falls below the {{country}}'s (above {{be}} inflation), waiting becomes dearer than locking.",
+  "check.why": "Higher Malaysian inflation raises the prices theory's expected cost of each dollar, while Malaysian interest stays put. Once Malaysia's [[real|after-inflation interest]] falls below the {{country}}'s (above [[breakEven|{{be}} inflation]]), waiting becomes dearer than locking.",
   "check.linked": "With interest linked to inflation (real rates held), the wait-minus-lock gap stays at {{diffLinked}}: the decision depends on real rates, not on inflation alone.",
   "check.postTitle": "Your after-check",
   "check.postIntro": "Same kind of questions as before, different numbers.",
@@ -179,6 +179,77 @@ export const T: Record<string, string> = {
   "limits.assumeTitle": "Assumptions",
   "limits.limitsTitle": "Limits",
   "sources.title": "Sources",
+
+  // Bug-fix copy (panel 15 Nov)
+  "learn.noChange": "No change yet",
+  "map.fwd.bank": "Bank-style quote for {{n}} days (simple interest, Act/365 vs Act/360): RM {{bankF.4}}.",
+  "coach.al.why": "{{country}} prices rise {{piF}} a year, so {{ccy}}{{T0}} of 6 Nov rent becomes {{al.usd}} by payment day. Under the prices theory that costs {{al.rmPPP}}.",
+  "err.allowance": "Allowance must be above 0 and at most 100,000,000.",
+  "coach.bill.title": "Use my own bill",
+  "coach.bill.note": "Change the amount and days to match your own bill. It stays on this device. Rates are from {{presetLabel}}.",
+
+  // Kira: the hint guide (no AI; every number from the engine)
+  "kira.name": "Kira",
+  "kira.start": "Drag any slider. I'll tell you what changed and why.",
+  "kira.change": "You {{verb}} {{what}} to {{to}}. Bank lock: RM {{F.4}} ({{fDir}}). Prices theory: RM {{EPPP.4}} ({{pDir}}). Waiting vs locking: {{lessMore diff.ppp}}.",
+  "kira.raised": "raised", "kira.lowered": "lowered",
+  "kira.up": "up", "kira.down": "down", "kira.same": "no change",
+  "kira.why.piH.up": "Faster Malaysian price rises make each ringgit buy less, so the prices theory expects more ringgit per dollar.",
+  "kira.why.piH.down": "Slower Malaysian price rises keep the ringgit's buying power, so the prices theory expects fewer ringgit per dollar.",
+  "kira.why.piF.up": "Faster {{country}} price rises make each dollar buy less, so the prices theory expects fewer ringgit per dollar.",
+  "kira.why.piF.down": "Slower {{country}} price rises keep the dollar strong, so the prices theory expects more ringgit per dollar.",
+  "kira.why.iH.up": "Higher Malaysian interest raises the bank lock rate: interest rate parity builds the interest gap into the lock.",
+  "kira.why.iH.down": "Lower Malaysian interest lowers the bank lock rate: interest rate parity builds the interest gap into the lock.",
+  "kira.why.iF.up": "Higher {{country}} interest lowers the bank lock rate, and dollars parked in a dollar account grow faster.",
+  "kira.why.iF.down": "Lower {{country}} interest raises the bank lock rate, and dollars parked in a dollar account grow slower.",
+  "kira.why.rH.up": "A higher Malaysian real rate means Malaysian interest rises by more than inflation, so waiting looks cheaper.",
+  "kira.why.rH.down": "A lower Malaysian real rate means Malaysian interest falls behind inflation, so waiting looks dearer.",
+  "kira.why.rF.up": "A higher {{country}} real rate makes the dollar side more rewarding, so waiting looks dearer.",
+  "kira.why.rF.down": "A lower {{country}} real rate makes the dollar side less rewarding, so waiting looks cheaper.",
+  "kira.why.n.up": "A longer wait lets every rate gap compound for more days.",
+  "kira.why.n.down": "A shorter wait gives every rate gap fewer days to compound.",
+  "kira.why.T.up": "A bigger bill with the same rates: every ringgit amount scales up.",
+  "kira.why.T.down": "A smaller bill with the same rates: every ringgit amount scales down.",
+  "kira.what.piH": "Malaysian inflation", "kira.what.piF": "{{country}} inflation", "kira.what.iH": "Malaysian interest",
+  "kira.what.iF": "{{country}} interest", "kira.what.rH": "the Malaysian real rate", "kira.what.rF": "the {{country}} real rate",
+  "kira.what.n": "the days until payment", "kira.what.T": "the amount",
+
+  // Play: missions + Fee Day + share card
+  "nav.play": "Play",
+  "play.h1": "Play: missions and Fee Day",
+  "play.sub": "Move the sliders to complete each mission. Stuck? Ask for a hint. Then replay real past periods in Fee Day.",
+  "play.missions": "Missions",
+  "play.done": "{{doneCount}} of {{missionTotal}} missions done",
+  "play.hint": "Hint", "play.moreHint": "Another hint", "play.showMaths": "Show the maths",
+  "play.complete": "Mission complete", "play.notYet": "Not yet",
+  "play.reset": "Reset the numbers",
+  "play.readout.F": "Bank lock", "play.readout.P": "Prices theory", "play.readout.D": "Waiting vs locking",
+  "toast.mission": "Mission complete: {{missionTitle}}",
+
+  "fee.h2": "Fee Day: replay the past",
+  "fee.intro": "You owe {{ccy}}{{T}} in 270 days. Lock the rate on day one, wait, or lock half? Choose, then see what a real past 270-day period would have cost.",
+  "fee.theory": "Before you choose: {{ruleSentence}} Under the prices theory, waiting costs about {{lessMore diff.ppp}} than locking.",
+  "fee.lock": "Lock", "fee.wait": "Wait", "fee.split": "Lock half",
+  "fee.go": "Replay a past period",
+  "fee.period": "Past period {{start}} → {{end}}: the rate went from RM {{s0}} to RM {{s1}} per {{ccy}}1 ({{move}}).",
+  "fee.weaker": "ringgit weaker", "fee.stronger": "ringgit stronger", "fee.flat": "no change",
+  "fee.outLock": "Lock", "fee.outWait": "Wait", "fee.outYou": "Your choice",
+  "fee.verdict.more": "Waiting would have cost {{absDiff}} more than locking in this period.",
+  "fee.verdict.less": "Waiting would have cost {{absDiff}} less than locking in this period.",
+  "fee.risk.lock": "You took no exchange-rate risk: your cost was known on day one.",
+  "fee.risk.wait": "You took the full exchange-rate risk: your cost depended on the rate on payment day.",
+  "fee.risk.split": "You took half the exchange-rate risk: half was known on day one.",
+  "fee.label": "Past period, not a forecast. The lock uses the 6 Nov 2026 interest gap applied to that period's starting rate (illustrative). ECB reference rates are mid rates; periods overlap, so they are not independent.",
+  "fee.again": "Another period",
+  "fee.history": "Your rounds",
+  "fee.summary": "Across your {{rounds}} past periods, waiting minus locking ranged from {{minDiff}} to {{maxDiff}} (minus means waiting was cheaper). That spread is the risk of waiting.",
+  "fee.th": "Period · choice · wait minus lock",
+
+  "share.title": "Your KiraKurs card",
+  "share.style.lock": "Cautious locker", "share.style.wait": "Risk taker", "share.style.split": "Balanced splitter", "share.style.none": "Just starting",
+  "share.text": "KiraKurs: missions done {{doneCount}}/{{missionTotal}}, Fee Day rounds {{rounds}}. My style: {{style}}. Lock or wait? Work it out:",
+  "share.btn": "Share", "share.copied": "Card text copied.",
+  "share.note": "No personal data: only your mission count and play style.",
 };
 
 // List copy (bullets, table headers, segmented options).
@@ -194,7 +265,7 @@ export const L: Record<string, string[]> = {
   "check.changedOpts": ["Yes", "No", "Not sure"],
   "check.objShort": ["Prices & FX", "Bank lock", "Real rates", "Lock vs wait", "Allowance"],
   "limits.assume": [
-    "Bank lock: no fees or capital controls.",
+    "Bank lock: no fees, taxes, default risk or capital controls.",
     "Prices theory: the same basket of goods in both countries.",
     "Interest theory: equal after-inflation interest.",
     "Recent inflation stands in for expected inflation.",
@@ -216,9 +287,9 @@ export const SOURCES: [string, string][] = [
   ["Bernama, 6 Nov 2026, ringgit close 4.0565/0610", "https://bernama.com/en/market/news.php?id=2631031"],
   ["BNM Monetary Policy Statement, 5 Nov 2026 (OPR 2.75%)", "https://www.bnm.gov.my/-/monetary-policy-statement-05112026"],
   ["Federal Reserve FOMC statement, 28 Oct 2026 (3.75–4.00%)", "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm"],
-  ["DOSM CPI Sep 2026 (1.8%)", ""],
+  ["DOSM CPI Sep 2026 (1.8%), as reported by The Star, 19 Oct 2026", "https://www.thestar.com.my/business/business-news/2026/10/19/september-inflation-eases-slightly-to-18-on-as-utilities-cost-moderates"],
   ["BLS CPI Sep 2026 (3.7%)", "https://www.bls.gov/news.release/archives/cpi_10142026.htm"],
-  ["ECB euro reference rates USD/MYR 2016–2026 via Frankfurter (historical range)", "https://api.frankfurter.app"],
+  ["ECB euro reference rates USD/MYR 2016–2026 via Frankfurter (historical range and Fee Day)", "https://api.frankfurter.dev/v1"],
   ["Rogoff (1996) The purchasing power parity puzzle", "https://ideas.repec.org/a/aea/jeclit/v34y1996i2p647-668.html"],
   ["Fama (1984) Forward and spot exchange rates", "https://doi.org/10.1016/0304-3932(84)90046-1"],
   ["Mishkin (1991) Is the Fisher effect for real?", "https://doi.org/10.3386/w3632"],
@@ -253,7 +324,7 @@ export const TIPS: Record<string, string> = {
 };
 
 // Quiz. Correct option ids marked with `correct`. obj = objective 1–5. A7/B7 is pick-two, scored 0–2.
-const PICK2: { stem: string; options: [string, string, boolean][]; fb: string } = {
+const PICK2: { stem: string; options: [string, string, boolean][]; fb: string; fbWrong: Record<string, string> } = {
   stem: "Pick two reasons the theory's expected rate could be wrong.",
   options: [
     ["slow", "PPP takes years to hold, not months", true],
@@ -264,8 +335,12 @@ const PICK2: { stem: string; options: [string, string, boolean][]; fb: string } 
     ["never", "Exchange rates never change", false],
   ],
   fb: "These are the limits listed under \"How far can I trust this?\"",
+  fbWrong: {
+    approx: "Not this one: the app uses the exact formulas; only the \"about\" versions are approximations.",
+    never: "Not this one: exchange rates change every day, which is exactly why waiting is risky.",
+  },
 };
-export interface QuizItem { id: number; obj: number; stem: string; options: [string, string][]; pick2?: boolean; correct?: string; correctSet?: string[]; fb: string | Record<string, string> }
+export interface QuizItem { id: number; obj: number; stem: string; options: [string, string][]; pick2?: boolean; correct?: string; correctSet?: string[]; fb: string | Record<string, string>; fbWrong?: Record<string, string> }
 interface FormWords { adj: string; cur: string; unit: string; q5stem: string; q5correct: string; q5fb: Record<string, string> }
 const UDS = (u: string, d: string, s: string): [string, string][] => [["up", u], ["down", d], ["same", s]];
 function form(L: FormWords): QuizItem[] { // L: words for the foreign side
@@ -289,7 +364,7 @@ function form(L: FormWords): QuizItem[] { // L: words for the foreign side
       fb: { ppp: "Equal after-inflation interest makes the inflation gap match the interest gap, so both theories give one number.",
             ife: "Equal after-inflation interest makes the inflation gap match the interest gap, so both theories give one number." } },
     { id: 7, obj: 4, pick2: true, stem: PICK2.stem, options: PICK2.options.map(([id, t]): [string, string] => [id, t]),
-      correctSet: PICK2.options.filter((o) => o[2]).map((o) => o[0]), fb: PICK2.fb },
+      correctSet: PICK2.options.filter((o) => o[2]).map((o) => o[0]), fb: PICK2.fb, fbWrong: PICK2.fbWrong },
     { id: 8, obj: 5, stem: `Your ${L.adj} rent rises with ${L.adj} inflation. Under the prices theory, the ringgit cost of that rent grows with…`,
       options: [["foreign", `${L.adj} inflation`], ["my", "Malaysian inflation"], ["neither", "neither"]], correct: "my",
       fb: { foreign: `The ${L.unit} amount grows with ${L.adj} prices, but PPP says each ${L.unit} costs fewer ringgit by the same proportion.`,
@@ -298,7 +373,7 @@ function form(L: FormWords): QuizItem[] { // L: words for the foreign side
 }
 export const QUIZ: Record<"A" | "B", QuizItem[]> = {
   A: form({ adj: "US", cur: "US$", unit: "dollar",
-    q5stem: "Under the prices theory, Malaysia's after-inflation interest is {{q.rH}} and America's is {{q.rF}}. Compared with locking, the ringgit you must set aside to wait is expected to be…",
+    q5stem: "Under the prices theory, Malaysia's after-inflation interest is {{q.rH}} and America's is {{q.rF}} (6 Nov 2026 Snapshot). Compared with locking, the ringgit you must set aside to wait is expected to be…",
     q5correct: "lower",
     q5fb: { higher: "Malaysia's after-inflation interest is higher. Under PPP, the ringgit's expected gain more than makes up for the lower ringgit interest, so waiting is expected to cost less.",
             same: "Different after-inflation interest makes the choices differ." } }),
@@ -313,9 +388,9 @@ export const QUIZ_MAX = 9; // 7 single items + pick-two scored 0–2
 
 // "Ask KiraKurs" explanations (stretch). The AI only returns one of these ids; numbers come from makeVars().
 export const ASK: Record<AskId, { q: string; a: string }> = {
-  why_forward_below_spot: { q: "Why is the bank lock below the 6 Nov rate?", a: "The bank lock is RM {{F.4}} vs RM {{S.4}} because {{higherRateCountry}} savings pay more interest ({{iF}} vs {{iH}}). The bank builds that gap into the lock: interest rate parity." },
+  why_forward_below_spot: { q: "Why is the bank lock below the 6 Nov rate?", a: "The bank lock is RM {{F.4}} vs RM {{S.4}} {{rateReason}} ({{iF}} vs {{iH}}). The bank builds that gap into the lock: interest rate parity." },
   forward_not_forecast: { q: "Is the bank lock a forecast?", a: "No. The bank lock (RM {{F.4}}) comes only from the two interest rates. It is a price you can lock, not a guess about the future (Fama 1984)." },
-  why_ppp_down: { q: "Why does the prices theory expect fewer ringgit per dollar?", a: "{{fasterCountry}} prices rise faster ({{fasterPi}} vs {{slowerPi}}). The prices theory says the faster-inflating currency loses value by about that gap, so it expects RM {{EPPP.4}}." },
+  why_ppp_down: { q: "Why does the prices theory expect fewer ringgit per dollar?", a: "{{inflationReason}}. The prices theory says the faster-inflating currency loses value by about that gap, so it expects RM {{EPPP.4}}." },
   why_ife_equals_forward: { q: "Why are the interest theory and the bank lock the same number?", a: "Both use only the two interest rates over the same {{n}} days, so the interest theory's expected rate equals the bank lock: RM {{F.4}}." },
   what_real_rate: { q: "What is a real interest rate?", a: "Interest after inflation. Malaysia: {{rH}} a year; {{country}}: {{rF}}. Roughly interest minus inflation; the exact Fisher formula is (1 + interest)/(1 + inflation) − 1." },
   why_wait_cheaper_ppp: { q: "Why is waiting expected to cost less or more?", a: "{{ruleSentence}} Under the prices theory, waiting costs about {{lessMore diff.ppp}} than locking ({{C.ppp}} vs {{A}})." },
@@ -337,7 +412,7 @@ export const ASK: Record<AskId, { q: string; a: string }> = {
 export const ASK_UI = {
   title: "Ask KiraKurs", btn: "Ask a question",
   label: "Your question (max 300 characters)",
-  notice: "Don't type names or personal details. Questions are sent to Groq's API. We store nothing. Groq may keep logs for up to 30 days.",
+  notice: "Don't type names or personal details. Questions are sent to Groq's API. KiraKurs stores nothing. Groq may keep logs for up to 30 days. Cloudflare and Groq keep their standard logs.",
   send: "Ask", menu: "Pick a topic:", pii: "That looks like personal information. Please remove it and ask again.",
   chip: "Explanation checked by the engine",
 };
@@ -370,6 +445,8 @@ export function makeVars(inp: E.Inputs, extra: Extra = {}) {
     rH: f.pct(m.rH), rF: f.pct(m.rF), gapPP: f.pp(Math.abs(m.parityGapPP)),
     belowAbove: m.F < inp.S ? "below" : m.F > inp.S ? "above" : "equal to",
     higherRateCountry: inp.iF >= inp.iH ? country : "Malaysian",
+    rateReason: inp.iF > inp.iH ? `because ${country} savings pay more interest` : inp.iF < inp.iH ? "because Malaysian savings pay more interest" : "because both countries pay the same interest",
+    inflationReason: inp.piF === inp.piH ? `Prices rise at the same pace in both countries (${f.pct(inp.piH)})` : `${fFaster ? country : "Malaysian"} prices rise faster (${f.pct(fFaster ? inp.piF : inp.piH)} vs ${f.pct(fFaster ? inp.piH : inp.piF)})`,
     fasterCountry: fFaster ? country : "Malaysian", fasterPi: f.pct(fFaster ? inp.piF : inp.piH), slowerPi: f.pct(fFaster ? inp.piH : inp.piF),
     fewerMore: m.EPPP < inp.S ? "slightly fewer" : m.EPPP > inp.S ? "slightly more" : "the same",
     spotRef: f.rm(c.spotRef), A: f.rm(c.A), "A.2": f.rm(c.A, 2), "B.2": f.rm(c.B, 2),
@@ -391,7 +468,8 @@ export function makeVars(inp: E.Inputs, extra: Extra = {}) {
     "gapPP.4": f.pp(m.parityGapPP, 4), "realGap.4": f.pp(m.realGapPP, 4),
     "F1.4": f.fx(m1.F, 4), premium1: f.signedPct(m1.premium), "EPPP1.4": f.fx(m1.EPPP, 4), ePPP1: f.signedPct(m1.ePPP),
     // screen-supplied values (defaults keep every template resolvable)
-    step: "", qn: "", qtotal: "8", yourAnswer: "", rightWrong: "", pre: "", post: "", max: "9",
+    step: "", total: "7", verb: "", what: "", to: "", fDir: "", pDir: "", doneCount: "0", missionTotal: String(5), missionTitle: "",
+    start: "", end: "", s0: "", s1: "", move: "", absDiff: "", rounds: "0", minDiff: "", maxDiff: "", style: "", T0: f.amount(extra.T0 ?? 1500), qn: "", qtotal: "8", yourAnswer: "", rightWrong: "", pre: "", post: "", max: "9",
     ...extra.s,
   };
   return { s, num: { "diff.ppp": c.diff.ppp, "diff.rw": c.diff.rw }, results: { m, c, al, sens, half, linked }, finite: ok(m) && ok(c) && ok(al) };
@@ -426,3 +504,52 @@ export function tipParts(str: string): TipPart[] {
 }
 
 export const t = (key: string, vars?: Vars) => (vars ? fill(T[key]!, vars) : T[key]);
+
+// ---------- Kira: "what just changed" (engine-generated, no AI) ----------
+const KIRA_KEYS = ["piH", "piF", "iH", "iF", "rH", "rF", "n", "T"] as const;
+const dir = (a: number, b: number) => T[Math.abs(b - a) < 1e-9 ? "kira.same" : b > a ? "kira.up" : "kira.down"]!;
+
+/** Sentence + reason for the first input that differs between two engine inputs, or null if none changed. */
+export function explainChange(prev: E.Inputs & { rH?: number; rF?: number }, next: E.Inputs & { rH?: number; rF?: number }) {
+  const key = KIRA_KEYS.find((k) => prev[k] != null && next[k] != null && Math.abs((next[k] as number) - (prev[k] as number)) > 1e-12);
+  if (!key) return null;
+  const up = (next[key] as number) > (prev[key] as number);
+  const v = makeVars(next), m0 = E.parityMap(prev), m1 = v.results.m;
+  const x = next[key] as number;
+  const to = key === "n" ? `${x} days` : key === "T" ? f.amount(x) : f.pct(x);
+  const s = { ...v.s, verb: T[up ? "kira.raised" : "kira.lowered"]!, what: fill(T["kira.what." + key]!, v), to,
+    fDir: dir(m0.F, m1.F), pDir: dir(m0.EPPP, m1.EPPP) };
+  const vv = { ...v, s };
+  return { key, text: fill(T["kira.change"]!, vv), why: fill(T[`kira.why.${key}.${up ? "up" : "down"}`]!, vv) };
+}
+
+// ---------- Missions (Play screen). Each check reads engine output only. ----------
+export interface MissionCtx { inp: E.Inputs; base: E.Inputs; linked: boolean; rounds: number }
+export interface Mission { id: string; title: string; goal: string; hints: [string, string]; maths: string; done: (c: MissionCtx) => boolean }
+export const MISSIONS: Mission[] = [
+  { id: "irp", title: "Flip the bank lock",
+    goal: "Make the bank lock rate go above the {{rateDate}} rate (more ringgit per dollar).",
+    hints: ["The bank lock uses only the two interest rates.",
+      "Raise Malaysian interest above {{country}} interest ({{iF}}). The lower-interest currency, here the dollar, then trades at a premium."],
+    maths: "map.m.fwd", done: (c) => E.parityMap(c.inp).F > c.inp.S },
+  { id: "ppp", title: "Weaken the ringgit",
+    goal: "Make the prices theory expect a weaker ringgit (more ringgit per dollar).",
+    hints: ["The prices theory uses only the two inflation rates.",
+      "Push Malaysian inflation above {{country}} inflation ({{piF}}). The faster-inflating currency loses value."],
+    maths: "map.m.ppp", done: (c) => E.parityMap(c.inp).EPPP > c.inp.S },
+  { id: "breakeven", title: "Find the break-even",
+    goal: "Find the Malaysian inflation where locking and waiting are expected to cost the same (within RM 10).",
+    hints: ["Waiting is cheaper while Malaysia's after-inflation interest is higher than the {{country}}'s.",
+      "Make the two after-inflation rates equal: Malaysian inflation of about {{be}}."],
+    maths: "map.m.fisher", done: (c) => Math.abs(E.coach(c.inp).diff.ppp) < 10 },
+  { id: "fisher", title: "Link interest to inflation",
+    goal: "Switch on \"Link interest to inflation\", then move Malaysian inflation. Watch waiting vs locking stay put.",
+    hints: ["The switch is at the top of the inputs.",
+      "With the Fisher link, interest rises with inflation, so after-inflation interest, and waiting vs locking, stay the same."],
+    maths: "map.m.fisher", done: (c) => c.linked && Math.abs(c.inp.piH - c.base.piH) >= 0.005 },
+  { id: "risk", title: "Feel the risk",
+    goal: "Play 3 Fee Day rounds below and compare what locking and waiting would have cost.",
+    hints: ["Fee Day is further down this page.",
+      "Each round replays a real past 270-day period, so you see how far waiting can swing."],
+    maths: "coach.m.range", done: (c) => c.rounds >= 3 },
+];

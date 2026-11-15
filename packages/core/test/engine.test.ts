@@ -177,6 +177,12 @@ test("validate(): rules, messages, hints", () => {
   assert.equal(h.ok, true);
   assert.equal(h.hints.iH, "Did you mean 3%? (Ignore if you meant it.)");
   assert.equal(E.validate({ iH: "0" }).hints.iH, undefined);
+  assert.equal(bad({ h: "150" }), "Split must be between 0% and 100%.");
+  assert.equal(bad({ h: "-10" }), "Split must be between 0% and 100%.");
+  assert.equal(E.validate({ h: "100" }).values?.h, 1);
+  assert.equal(E.validate({ iF: "-99.99" }).hints.iF, "This is far outside normal rates, so results may be extreme.");
+  assert.equal(E.validate({ piH: "60" }).hints.piH, "This is far outside normal rates, so results may be extreme.");
+  assert.equal(E.validate({ piH: "4" }).hints.piH, undefined);
   assert.equal(E.validate({ iH: "-150", S: "4" }).values, undefined);
 });
 

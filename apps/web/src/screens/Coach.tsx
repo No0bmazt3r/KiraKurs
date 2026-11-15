@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { T, fill, makeVars } from "@kirakurs/core/content";
 import { parseNumber } from "@kirakurs/core/engine";
 import { useApp, set, setRaw, useData } from "../store";
-import { Badge, Field, Icon, Live, Maths } from "../ui";
+import { Badge, Field, Icon, Live, Maths, Rich, plain } from "../ui";
 import { useMaths } from "../Shell";
 import { Chart } from "../chart";
 import { AskButton } from "./Ask";
@@ -22,11 +22,12 @@ export function Coach() {
 
   // screen readers hear the verdict once the sliders settle
   const [live, setLive] = useState("");
-  useEffect(() => { const id = setTimeout(() => setLive(verdict), 500); return () => clearTimeout(id); }, [verdict]);
+  useEffect(() => { const id = setTimeout(() => setLive(plain(verdict)), 500); return () => clearTimeout(id); }, [verdict]);
 
   let bar = null;
   if (range) {
-    const lo = Math.min(range.lo, c.A), hi = Math.max(range.hi, c.A), P = (x: number) => ((x - lo) / (hi - lo)) * 100 + "%";
+    const lo = Math.min(range.lo, c.A, c.split.expected), hi = Math.max(range.hi, c.A, c.split.expected);
+    const P = (x: number) => Math.min(100, Math.max(0, ((x - lo) / (hi - lo)) * 100)) + "%";   // clamp: extreme inputs never push the page sideways
     bar = <div className="rangebar" aria-hidden="true">
       <div className="track" />
       <div className="band" style={{ left: P(c.split.lo!), width: `calc(${P(c.split.hi!)} - ${P(c.split.lo!)})` }} />
@@ -38,6 +39,11 @@ export function Coach() {
 
   return <div className="screen">
     <header><h1>{T["coach.h1"]}</h1><p className="muted">{T["coach.sub"]}</p></header>
+    <Maths summary={T["coach.bill.title"]!} icon="sliders">
+      <p className="small">{fl("coach.bill.note")}</p>
+      <Field label={fl("lbl.T")} raw={raw.T} error={d.errors.T} hint={d.hints.T} onInput={(x) => setRaw({ T: x })} />
+      <Field label={fl("lbl.n")} raw={raw.n} error={d.errors.n} hint={d.hints.n} suffix="days" onInput={(x) => setRaw({ n: x })} />
+    </Maths>
     {yv && !dismissedReveal && <div className="callout">
       <p>{fill(T["coach.reveal"]!, yv)}</p>
       <button className="btn ghost" type="button" onClick={() => set({ dismissedReveal: true })}>{T["btn.close"]}</button>
@@ -52,7 +58,7 @@ export function Coach() {
       </div>
       {bar}
       {range && <Live className="caption">{fl("coach.rangeLegend")}</Live>}
-      <Live>{verdict}</Live>
+      <Rich text={verdict} />
       <p className="sr-only" aria-live="polite">{live}</p>
       <Live className="small">{v.s.ruleSentence!}</Live>
       <Badge />
@@ -63,24 +69,27 @@ export function Coach() {
       <p className="caption">{T["coach.staging"]}</p>
     </section>
     <section className="card"><h2 className="card-title">{T["coach.chart.title"]}</h2><Chart inp={d.inp} vars={v} /><Badge /></section>
-    <section className="card theory">
-      <h2 className="card-title">{T["coach.al.title"]}</h2>
-      <Field label={fl("coach.al.input")} raw={T0raw} error={T0ok ? undefined : T["err.number"]} onInput={setT0raw} />
-      <Live className="small">{fl("coach.al.s")}</Live>
-      <div className="grid2">
-        <div><p className="small">{T["coach.al.usd"]}</p><Live as="div" className="value">{v.s["al.usd"]!}</Live></div>
-        <div><p className="small">{T["coach.al.rm"]}</p><Live as="div" className="value">{v.s["al.rmPPP"]!}</Live></div>
+    <details className="maths card theory">
+      <summary><Icon name="calc" />{T["coach.al.title"]}</summary>
+      <div>
+        <Field label={fl("coach.al.input")} raw={T0raw} error={T0ok ? undefined : T["err.allowance"]} onInput={setT0raw} />
+        <Live className="small">{fl("coach.al.s")}</Live>
+        <div className="grid2">
+          <div><p className="small">{T["coach.al.usd"]}</p><Live as="div" className="value">{v.s["al.usd"]!}</Live></div>
+          <div><p className="small">{T["coach.al.rm"]}</p><Live as="div" className="value">{v.s["al.rmPPP"]!}</Live></div>
+        </div>
+        <Live className="small">{fl("coach.al.why")}</Live>
+        <Live className="small">{fl("coach.al.naive")}</Live><Live>{fl("coach.al.lw")}</Live>
+        <Badge />
       </div>
-      <Live className="small">{fl("coach.al.naive")}</Live><Live>{fl("coach.al.lw")}</Live>
-      <Badge />
-    </section>
+    </details>
     <Maths summary={T["coach.fees"]!} icon="info">
       <Field label={T["lbl.margin"]!} raw={raw.margin} error={d.errors.margin} suffix="%" onInput={(x) => setRaw({ margin: x })} />
       <p>{T["coach.fees.help"]}</p><p>{T["coach.fees.wise"]}</p>
     </Maths>
     <Live className="small">{fl("coach.spot")}</Live>
     <Maths summary={T["btn.showMaths"]!} open={openMaths}>
-      <p className="formula">{fl("coach.m.ab")}</p><p className="formula">{fl("coach.m.c")}</p>
+      <Rich className="formula" text={fl("coach.m.ab")} /><p className="formula">{fl("coach.m.c")}</p>
       {range && <p className="formula">{fl("coach.m.range")}</p>}<p className="formula">{fl("coach.m.split")}</p>
     </Maths>
     <p className="caption">{T["coach.access"]}</p>

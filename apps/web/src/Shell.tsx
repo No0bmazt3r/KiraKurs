@@ -7,12 +7,12 @@ import { useApp, set, setPreset, clearData, toast, openSheet } from "./store";
 import { Icon, Sheet, Toast, closeSheet, openLimits, openSources } from "./ui";
 import type { IconName } from "./icons";
 
-export const SCREENS = ["precheck", "learn", "predict", "map", "coach", "check"] as const;
+export const SCREENS = ["precheck", "learn", "predict", "map", "coach", "play", "check"] as const;
 export type Screen = (typeof SCREENS)[number];
 const TITLES: Record<Screen, string> = {
-  precheck: "Pre-check", learn: "Learn", predict: "Predict", map: "Parity Map", coach: "Decision Coach", check: "Check",
+  precheck: "Pre-check", learn: "Learn", predict: "Predict", map: "Parity Map", coach: "Decision Coach", play: "Play", check: "Check",
 };
-const TABS: [Screen, IconName][] = [["learn", "book"], ["map", "map"], ["coach", "scale"], ["check", "check"]];
+const TABS: [Screen, IconName][] = [["learn", "book"], ["map", "map"], ["coach", "scale"], ["play", "flag"], ["check", "check"]];
 
 export function useGo() {
   const nav = useNavigate();
@@ -88,8 +88,8 @@ export function Shell() {
         </div>
       </div>
       {!unlocked && step > 0 && <div className="progress" id="progress">
-        <div className="progress-bar"><span style={{ width: (step / 6) * 100 + "%" }} /></div>
-        <span className="small">{T.progress!.replace("{{step}}", String(step))}</span>
+        <div className="progress-bar"><span style={{ width: (step / SCREENS.length) * 100 + "%" }} /></div>
+        <span className="small">{fill(T.progress!, { s: { step: String(step), total: String(SCREENS.length) }, num: {} })}</span>
       </div>}
     </header>
 

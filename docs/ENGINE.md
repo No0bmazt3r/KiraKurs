@@ -40,7 +40,7 @@ The web app, the API and Vitest import it. Everything here is checked against `v
 
 ## 3. Public API (named exports)
 ```js
-export const ENGINE_VERSION = "1.1.0";           // bump on ANY change to this file (test enforces it)
+export const ENGINE_VERSION = "1.2.0";           // bump on ANY change to this file (test enforces it)
 
 export function yearFrac(n)                       // n/365
 export function forward({ S, iH, iF, t })         // number
@@ -90,10 +90,11 @@ allowance(inp, T0) => { usd, EPPP, rmPPP, naive, A, C, diff }
 | n | integer 1–3650 | "Days must be a whole number from 1 to 3,650." |
 | iH, iF, piH, piF, r | number, > −100 and ≤ 100 (percent) | "Inflation must be above −100%." / "Above 100% a year is outside this teaching model." (use "Interest rate" for i) |
 | margin | 0–10 (percent) | "Bank margin must be between 0% and 10%." |
-| h | 0–100 (percent) | slider only, so no error |
+| h | 0–100 (percent) | "Split must be between 0% and 100%." (v1.2.0) |
 | any | empty, NaN, non-numeric | "Enter a number." |
 
 - **Hint (non-blocking):** a rate with 0 < |x| < 0.5 → "Did you mean {{x×100}}%? (Ignore if you meant it.)"
+- **Hint (non-blocking, v1.2.0):** a rate below −10% or above 50% → "This is far outside normal rates, so results may be extreme."
 - Accept "2,75" → treat a single comma as a decimal point **only** if there is no dot; strip spaces and "%".
 - After compute: if any output is not `Number.isFinite`, the card shows "Result out of range: check the inputs."
 
@@ -182,5 +183,5 @@ export const PRESETS = {
 Changing a preset value requires a new dated preset id. **Never edit `snapshot` in place.**
 
 ## 10. Version guard
-`packages/core/test/engine.version.json` = `{ "version": "1.1.0", "sha256": "<hash of engine.ts>" }`. The test recomputes the hash and fails
+`packages/core/test/engine.version.json` = `{ "version": "1.2.0", "sha256": "<hash of engine.ts>" }`. The test recomputes the hash and fails
 if the hash changed but the version did not. Update both together. The footer shows `ENGINE_VERSION`.

@@ -8,6 +8,7 @@ import { PRESETS, type Preset, type PresetId } from "@kirakurs/core/presets";
 import { toPctInput } from "@kirakurs/core/format";
 import { makeVars } from "@kirakurs/core/content";
 import type { Answers, Form } from "@kirakurs/core/quiz";
+import type { Round } from "@kirakurs/core/feeday";
 
 export type RawKey = "S" | "T" | "n" | "iH" | "iF" | "piH" | "piF" | "margin" | "h" | "rH" | "rF";
 export type Raw = Record<RawKey, string>;
@@ -27,6 +28,7 @@ export interface State {
   progress: { precheck: boolean; learn: boolean; predict: Dir | null; check: boolean };
   quiz: { form: Form; pre: Answers | null; post: Answers | null; changedDecision: string | null };
   theme: "system" | "light" | "dark"; unlocked: boolean; dismissedReveal: boolean;
+  missions: string[]; rounds: Round[];
   sheet: { title: string; Body: () => ReactNode; trigger: Element | null } | null;
   toast: { msg: string; n: number } | null;
 }
@@ -35,6 +37,8 @@ const fresh = () => ({
   progress: { precheck: false, learn: false, predict: null, check: false },
   quiz: { form: randomForm(), pre: null, post: null, changedDecision: null },
   unlocked: false,
+  missions: [] as string[],
+  rounds: [] as Round[],
 });
 
 // Storage blocked (private mode, sandbox): the app works, it just doesn't remember.
@@ -50,7 +54,7 @@ export const useApp = create<State>()(persist(() => ({
 } as State), {
   name: "kirakurs:v2",
   storage: createJSONStorage(() => safe),
-  partialize: (s) => ({ progress: s.progress, quiz: s.quiz, theme: s.theme, unlocked: s.unlocked }),
+  partialize: (s) => ({ progress: s.progress, quiz: s.quiz, theme: s.theme, unlocked: s.unlocked, missions: s.missions, rounds: s.rounds }),
 }));
 
 export const set = useApp.setState;

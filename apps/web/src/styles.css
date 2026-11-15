@@ -276,3 +276,33 @@ textarea { width: 100%; min-height: 96px; padding: var(--s3); border: 1px solid 
   body { background: #fff; color: #000; }
   .card { box-shadow: none; border-color: #000; break-inside: avoid; }
 }
+
+/* ---- v6: Kira guide, missions, Fee Day, share card ---- */
+.kira { display: flex; gap: var(--s3); align-items: flex-start; padding: var(--s3) var(--s4); border-radius: var(--r-md);
+  background: var(--surface); border: 1px solid var(--theory); }
+.kira .avatar { width: 36px; height: 36px; background: var(--theory); }
+.kira p { margin: 0; }
+.stack-sm { display: grid; gap: var(--s1); }
+.hint { margin: 0; padding: var(--s2) var(--s3); border-left: 3px solid var(--theory); background: var(--surface-2); border-radius: var(--r-sm); }
+.readout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
+.readout .value { font-size: clamp(1rem, 4.5vw, 1.4rem); white-space: nowrap; }
+.readout .caption { grid-column: 1 / -1; margin: 0; }
+.readout p { margin: 0; }
+.mission { display: grid; gap: var(--s2); }
+.mission.done { border-color: var(--primary); }
+.mission-head { display: flex; align-items: center; gap: var(--s2); }
+.mission-head h3 { margin: 0; flex: 1; font-size: var(--fs-body); }
+.mission p { margin: 0; }
+.pill { font-size: var(--fs-small); padding: 2px var(--s2); border-radius: 999px; border: 1px solid var(--border); color: var(--text-2); white-space: nowrap; }
+.pill.ok { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.decision.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.decision.three .value { font-size: clamp(0.95rem, 4vw, 1.4rem); }
+.tile.you { background: var(--surface-2); border-color: var(--theory); }
+.value-sm { font-weight: 600; margin: 0; }
+.rounds { margin: 0; padding-left: 1.25rem; display: grid; gap: 2px; font-variant-numeric: tabular-nums; }
+.share-card { display: grid; gap: var(--s2); border: 2px solid var(--primary); }
+.share-card p { margin: 0; }
+.share-style { font-family: var(--font-head); font-size: var(--fs-h1); font-weight: 700; color: var(--primary); }
+@media (max-width: 480px) { .decision.three .tile { padding: var(--s3); } }
+/* Play on phones: sliders first, then the readout, Kira and missions they drive */
+@media (max-width: 1023px) { .play-layout .inputs { order: -1; } }

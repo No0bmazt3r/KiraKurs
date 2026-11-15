@@ -11,6 +11,7 @@ import { Predict } from "./screens/Predict";
 import { MapScreen } from "./screens/Map";
 import { Coach } from "./screens/Coach";
 import { Check } from "./screens/Check";
+import { Play } from "./screens/Play";
 import "./styles.css";
 
 // Old links put ?preset=&maths= before the hash; move them into the hash so the router owns them.
@@ -42,7 +43,7 @@ const router = createRouter({
   history: createHashHistory(),
   routeTree: root.addChildren([
     page("/precheck", Precheck), page("/learn", Learn), page("/predict", Predict),
-    page("/map", MapScreen), page("/coach", Coach), page("/check", Check),
+    page("/map", MapScreen), page("/coach", Coach), page("/play", Play), page("/check", Check),
   ]),
 });
 

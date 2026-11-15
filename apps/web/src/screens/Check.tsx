@@ -5,7 +5,7 @@ import { sensitivity } from "@kirakurs/core/engine";
 import { pct, rm, signedRM } from "@kirakurs/core/format";
 import { score, otherForm, resultCode } from "@kirakurs/core/quiz";
 import { useApp, set, setRaw, toast, useData } from "../store";
-import { Badge, Choices, Field, Icon, Live, openLimits, openSources } from "../ui";
+import { Badge, Choices, Field, Icon, Live, Rich, openLimits, openSources } from "../ui";
 import { Quiz } from "./Quiz";
 
 const ROWS = [0.01, 0.018, 0.03, 0.04, 0.05];
@@ -30,7 +30,7 @@ export function Check() {
           <td>{pct(r.rH)}</td><td>{rm(r.Cppp)}</td><td>{signedRM(r.diff)}</td>
         </tr>)}</tbody>
       </table></div>
-      <Live className="small">{fill(T["check.why"]!, v)}</Live>
+      <Rich className="small" text={fill(T["check.why"]!, v)} />
       <Live className="small">{fill(T["check.linked"]!, v)}</Live>
       <Badge />
     </section>

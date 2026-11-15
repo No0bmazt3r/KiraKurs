@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { T, fill } from "@kirakurs/core/content";
 import { useApp, set, useData, type Dir } from "../store";
-import { Choices, Feedback } from "../ui";
+import { Badge, Choices, Feedback } from "../ui";
 import { useGo } from "../Shell";
 
 export function Predict() {
@@ -21,5 +21,6 @@ export function Predict() {
     {checked && picked && <Feedback ok={picked === "up"} text={fill(T["predict.fb." + picked]!, v)}
       onContinue={() => { set({ unlocked: true }); go("map"); }} />}
     <p className="caption">{T["predict.note"]}</p>
+    <Badge preset="snapshot" />
   </div>;
 }

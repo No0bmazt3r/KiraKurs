@@ -42,7 +42,9 @@ try {
   expect("learn h1", await txt(p, "h1"), /./);
   for (let i = 0; i < 3; i++) await p.getByRole("button", { name: "Next step" }).click();
   await p.locator(".card.theory .option").first().click();
-  expect("learn reveal", await txt(p, ".card.theory [role=status]"), /./);
+  expect("learn waits for the slider", await txt(p, ".card.theory [role=status]"), /^Move the slider to 4\.0%/);
+  await enter(p.locator(".card.theory .field input[type=text]"), "4");
+  expect("learn reveal at target", await txt(p, ".card.theory [role=status]"), /^Right:/);
   await p.locator("#nextBtn").click();
   await p.locator(".option").first().click();
   await p.getByRole("button", { name: "Check" }).click();
@@ -78,11 +80,33 @@ try {
   expect("M4 split", await txt(p, ".card.wait p.small"), /RM 47,195.*RM 45,810.*RM 49,158/s);
   await enter(split, "0");
   await p.getByText("Fees", { exact: true }).click();
-  const marg = p.locator("details .field input[type=text]");
+  const marg = p.locator('details:has-text("Fees") .field input[type=text]');
   await enter(marg, "0.11");
   expect("M5 margin lock", await txt(p, ".tile.lock .value"), "RM 47,380");
   await enter(marg, "0");
   expect("coach no sideways scroll (375)", await hscroll(p), false);
+  await enter(split, "150");
+  expect("split validated", await txt(p, ".card.wait .field-error"), "Split must be between 0% and 100%.");
+  await enter(split, "0");
+
+  // ---- Play: Kira, missions, Fee Day ----
+  await p.locator('#tabs a[data-route="play"]').click();
+  expect("play h1", await txt(p, "h1"), /^Play/);
+  const iH = p.getByLabel("Malaysian interest rate %", { exact: true }).first();
+  await enter(iH, "5");
+  expect("Kira explains", await txt(p, ".kira"), /You raised Malaysian interest to 5\.00%\. Bank lock: RM [0-9.]+ \(up\)/);
+  expect("mission irp done", await p.locator(".mission.done").count() >= 1, true);
+  for (let i = 0; i < 3; i++) {
+    await p.locator(".feeday .option").first().click();
+    await p.getByRole("button", { name: "Replay a past period" }).click();
+    expect(`fee round ${i + 1}`, await txt(p, ".feeday [role=status]"), /Past period .* → .*: the rate went from RM [0-9.]+ to RM [0-9.]+/);
+    await p.getByRole("button", { name: "Another period" }).click();
+  }
+  expect("fee summary", await txt(p, ".feeday"), /Across your 3 past periods, waiting minus locking ranged from/);
+  expect("risk mission done", await p.locator(".mission.done", { hasText: "Feel the risk" }).count(), 1);
+  expect("share card style", await txt(p, ".share-style"), "Cautious locker");
+  expect("play no sideways scroll (375)", await hscroll(p), false);
+  await p.getByRole("button", { name: /Reset to Scenario/ }).click();
 
   // ---- Check (M6) + post-quiz ----
   await p.locator('#tabs a[data-route="check"]').click();

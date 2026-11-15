@@ -4,7 +4,7 @@ import { T, fill, makeVars } from "@kirakurs/core/content";
 import { PRESETS } from "@kirakurs/core/presets";
 import type { Answers } from "@kirakurs/core/quiz";
 import { useApp, set } from "../store";
-import { Icon } from "../ui";
+import { Badge, Icon } from "../ui";
 import { useGo } from "../Shell";
 import { Quiz } from "./Quiz";
 
@@ -20,6 +20,7 @@ export function Precheck() {
     {phase === "intro" && <>
       <p className="banner"><Icon name="shield" />{T["pre.consent"]}</p>
       <p>{fill(T["pre.lead"]!, v)}</p>
+      <Badge preset="snapshot" />
       <div className="row">
         <button className="btn primary" type="button" onClick={() => setPhase("quiz")}>{T["btn.start"]}</button>
         <button className="btn secondary" type="button" onClick={() => { finish(null); go("learn"); }}>{T["btn.skip"]}</button>
