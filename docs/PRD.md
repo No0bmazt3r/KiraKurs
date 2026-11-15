@@ -43,9 +43,10 @@ After using KiraKurs, a learner can:
 | M-D | Deploy to GitHub Pages; `ENGINE_VERSION` in the footer | |
 
 ### 4.2 Stretch (in cut order: cut the first one first)
-1. **AI router "Ask KiraKurs"**: enum-only explanation picker (idea §10). Needs Cloudflare Pages Functions. **Default: cut.**
+1. **GBP and AUD Classroom presets.**
 2. **PWA**: manifest + service worker + "Update available" prompt.
-3. **GBP and AUD Classroom presets.**
+3. **AI router "Ask KiraKurs"**: enum-only explanation picker (idea §10) on Groq (`openai/gpt-oss-20b`) via a Cloudflare Worker.
+   First stretch task to *build* (after D1, 3 h box); dropped if not working by 20:00 on 16 Nov. Hidden unless `ASK_URL` is set.
 4. (Never cut below this line without telling the team.) Allowance card, split slider.
 
 ### 4.3 Out of scope

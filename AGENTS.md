@@ -30,12 +30,12 @@ disagree, **these documents win** (they are newer and were reconciled against th
    value. Say "the 6 Nov rate". "Now" appears only in "set aside now" / "convert now" (Aina's decision moment). Every card and
    chart carries the data badge (DESIGN.md §5.6). A test enforces this (CONTENT.md §0).
 7. **No dependencies, no build step, no framework.** Plain HTML + CSS + ES modules. Inline SVG for the chart and icons. The only
-   external request allowed is Google Fonts, and the app must look fine if fonts fail to load.
+   external requests allowed are Google Fonts and (stretch) the Ask Worker in `worker/`, and the app must look fine if fonts fail to load.
 8. **Accessibility is part of done:** visible labels, keyboard operable, focus visible, contrast ≥ 4.5:1, `prefers-reduced-motion`
    honoured, works at 375 px wide with no horizontal scroll.
 9. **Do not fabricate evidence.** Never write test results, survey numbers, user quotes or "verified" chips that did not come from a
    real run. If something was not done, the UI and docs say "not yet conducted". Fabrication sets the integrity mark to 0.
-10. **Cut order when short of time:** AI router → PWA/offline → GBP/AUD presets → allowance card → split slider. Never cut: engine,
+10. **Cut order when short of time:** GBP/AUD presets → PWA/offline → AI router (built first among stretch, after D1, cut at 20:00 16 Nov) → allowance card → split slider. Never cut: engine,
     tests, labels/badges, the six core screens, the limitations panel.
 11. **Commits:** small, one task per commit, message starts with the task ID from TASKS.md (e.g. `E2: add coach()`).
 

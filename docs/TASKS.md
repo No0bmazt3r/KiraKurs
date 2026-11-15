@@ -43,9 +43,9 @@ whose message starts with its ID.
 ## Stretch (only after every must task is done)
 | ID | Task | Box |
 |---|---|---|
+| X-AI | Ask KiraKurs: Worker (`worker/ask.js`) → Groq `openai/gpt-oss-20b`; M5 makes the Groq account + Worker secret; set `ASK_URL` (idea §10). Build first, after D1; cut at 20:00 16 Nov | 3 h |
 | X-PWA | manifest + sw.js + update toast | 1 h |
 | X-CCY | GBP and AUD classroom presets | 45 m |
-| X-AI | AI router on Cloudflare Pages Functions (idea §10) | 4 h, probably cut |
 
 ## Critical path
 S0 → S1 → E1–E3 → (C1 ∥ U1 ∥ U2) → P3 → P4 → P4b → D1 → V1 → PO / VI. The poster and video need working screens, so P3/P4 must be

@@ -99,9 +99,10 @@ One chart: **C − A (y, RM) against Malaysian inflation % (x, 0–6%)**, for th
 - Before each deploy: `node --test` passes, `ENGINE_VERSION` bumped if the engine changed.
 - (Stretch) PWA: `sw.js` caches the app shell named `kirakurs-${ENGINE_VERSION}`; a new version shows the toast
   "Update available, reload".
-- (Stretch) AI router: only if moved to Cloudflare Pages. See idea §10. The client gets `{explanation_id}` only, and renders the
-  template from content.js.
+- (Stretch) AI router: a separate Cloudflare Worker in `worker/` (`wrangler deploy`), calling Groq. See idea §10. Set `ASK_URL` in
+  `js/ask.js` to the Worker URL; while it is empty the Ask button is hidden. The client gets `{explanation_id}` only, and renders the
+  template from content.js with `textContent`.
 
 ## 8. Security and privacy
-No accounts, no analytics, no cookies, no network calls (except Google Fonts). Quiz answers stay in localStorage. A "Clear my data"
+No accounts, no analytics, no cookies, no network calls (except Google Fonts, and the optional Ask Worker, which receives only the typed question). Quiz answers stay in localStorage. A "Clear my data"
 link sits in the footer. The result code is shown and copied, never sent.
