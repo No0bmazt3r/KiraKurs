@@ -3,7 +3,7 @@
 import * as E from "./engine";
 import * as f from "./format";
 import { PRESETS, type PresetId } from "./presets";
-import type { AskId } from "./ask";
+import type { AskId, ReasonId } from "./ask";
 
 export const T: Record<string, string> = {
   "app.name": "KiraKurs",
@@ -89,7 +89,7 @@ export const T: Record<string, string> = {
   "map.card.ppp": "Prices theory (PPP)",
   "map.card.ppp.s": "{{inflationReason}}, so this [[ppp|theory]] expects each dollar to cost {{fewerMore}} ringgit by Aina's payment date.",
   "map.card.ife": "Interest theory (IFE)",
-  "map.card.ife.s": "Same number as the bank lock: [[ife|this theory]] says higher-interest savings just make up for a currency expected to weaken. Real data often disagree.",
+  "map.card.ife.s": "Same number as the bank lock, by design: [[ife|this theory]] uses only the two interest rates, just like the lock. It reads that gap as the higher-interest currency weakening. Real data often disagree.",
   "map.card.real": "After-inflation interest (real rates)",
   "map.card.real.v": "MY {{rH}} · {{country}} {{rF}}",
   "map.card.real.s": "Malaysian savings earn {{rH}} a year [[real|after inflation]]; {{country}} savings earn {{rF}}. The higher one decides whether waiting is expected to pay.",
@@ -119,7 +119,7 @@ export const T: Record<string, string> = {
   "map.m.t": "t = {{n}} / 365 = {{t4}} years. Rates are annual, compounded over t.",
   "map.m.fwd": "Bank lock ([[irp|interest rate parity]]): F = S × ((1 + MY interest) / (1 + {{country}} interest))^t = {{S.4}} × ({{gH}} / {{gF}})^{{t4}} = {{F.4}}. [[premium|Premium]] F/S − 1 = {{premium.4}}.",
   "map.m.ppp": "Prices theory: e = ((1 + MY inflation) / (1 + {{country}} inflation))^t − 1 = {{ePPP.4}}, so E = S(1 + e) = {{EPPP.4}}.",
-  "map.m.ife": "Interest theory: e = ((1 + MY interest) / (1 + {{country}} interest))^t − 1 = {{eIFE.4}}, so E = {{EIFE.4}}, the same as F.",
+  "map.m.ife": "Interest theory: e = ((1 + MY interest) / (1 + {{country}} interest))^t − 1 = {{eIFE.4}}, so E = {{EIFE.4}}. This equals F because both use only the two interest rates: the bank lock is a price you can lock, and IFE treats that same number as the expected rate.",
   "map.m.fisher": "Fisher: real = (1 + interest) / (1 + inflation) − 1. MY {{rH.4}} (≈ interest − inflation = {{rHapprox}}); {{country}} {{rF.4}} (≈ {{rFapprox}}).",
   "map.m.gap": "Parity gap {{gapPP.4}} vs real-rate gap {{realGap.4}}: close, not equal.",
   "map.m.oneYearV": "Over 1 year: bank lock {{F1.4}} ({{premium1}}), prices theory {{EPPP1.4}} ({{ePPP1}}), interest theory {{F1.4}}.",
@@ -185,6 +185,9 @@ export const T: Record<string, string> = {
   "check.startPost": "Start the after-check",
   "check.links": "How far can I trust this? · Sources",
   "check.youAreHere": "You are here",
+  "check.be": "Break-even",
+  "check.beNote": "At break-even ({{be}}) both countries' after-inflation interest is equal, so waiting minus locking is RM 0. Rows are rounded to whole ringgit.",
+  "limits.inline": "Assumes no fees unless you enter them, the same basket of goods in both countries, and recent inflation standing in for expected inflation. Parity theory, not a forecast.",
 
   // Sheets
   "limits.title": "How far can I trust this?",
@@ -462,6 +465,36 @@ export const ASK_UI = {
   notice: "Don't type names or personal details. Questions are sent to Groq's API. KiraKurs stores nothing. Groq may keep logs for up to 30 days. Cloudflare and Groq keep their standard logs.",
   send: "Ask", menu: "Pick a topic:", pii: "That looks like personal information. Please remove it and ask again.",
   chip: "Explanation checked by the engine",
+};
+
+// AI feature 2: "Explain your thinking" on Predict. The AI only picks the id; every reply below was written by the team.
+export const REASON: Record<ReasonId, { opt: string; a: string }> = {
+  ppp_right: { opt: "Malaysian prices rise, so each ringgit buys less", a: "That's the prices-theory reasoning. Faster Malaysian price rises mean each ringgit buys less, so PPP expects more ringgit per dollar: waiting goes from {{C_at_base}} to {{C_at_target}}." },
+  expects_rate_hike: { opt: "Bank Negara will raise rates, so the ringgit gets stronger", a: "In real life Bank Negara might raise rates when inflation rises, and that can strengthen the ringgit for a while. This question holds interest rates fixed, so only prices move: PPP expects a weaker ringgit and waiting goes from {{C_at_base}} to {{C_at_target}}." },
+  inflation_strengthens: { opt: "Inflation makes a currency stronger", a: "A common mix-up. Inflation means each ringgit buys less, which makes it weaker, not stronger. PPP expects more ringgit per dollar, so waiting goes from {{C_at_base}} to {{C_at_target}}." },
+  quote_flip: { opt: "More ringgit per dollar means a stronger ringgit", a: "Watch the quote: KiraKurs shows ringgit per US$1, so a bigger number means a weaker ringgit. Higher Malaysian inflation pushes that number up, so waiting costs more: {{C_at_base}} to {{C_at_target}}." },
+  forward_forecast: { opt: "The bank lock predicts where the rate will go", a: "The bank lock comes only from the two interest rates, which this question holds fixed, so it does not move, and it is not a forecast. The prices theory is the one that reacts to inflation: waiting goes from {{C_at_base}} to {{C_at_target}}." },
+  us_side: { opt: "I looked at US prices and the dollar", a: "US prices did not change here; only Malaysian inflation rose, from {{piH}} to {{target}}. PPP compares the two inflation rates, so a rise on the Malaysian side alone means more ringgit per dollar: {{C_at_base}} to {{C_at_target}}." },
+  unclear: { opt: "Just a guess", a: "The key step: higher Malaysian prices mean each ringgit buys less, so PPP expects more ringgit per dollar, and waiting goes from {{C_at_base}} to {{C_at_target}}." },
+};
+export const REASON_UI = {
+  title: "Explain your thinking",
+  intro: "Optional. In one sentence, why did you pick that? The AI only matches your words to one of seven explanations our team wrote.",
+  introNoAi: "Which line is closest to your thinking?",
+  label: "Why did you pick that? (max 300 characters)",
+  send: "Check my thinking", menu: "Or pick the line closest to your thinking:",
+  chip: "Feedback written by the team; the AI only chose which one.",
+};
+
+// AI feature 3: "Describe your bill" on the Coach. The AI only copies numbers out of the learner's text.
+export const BILL_UI = {
+  title: "Describe your bill (AI)",
+  label: "Your bill in words, e.g. \"US$8,500 tuition due in 6 months\" (max 300 characters)",
+  send: "Read my bill", read: "KiraKurs read:", amount: "Amount", days: "Days until payment",
+  apply: "Use these numbers", applied: "Your bill is in the Coach.",
+  none: "Couldn't find an amount or a payment date in that. Try \"US$8,500 in 6 months\", or type them in the fields below.",
+  ccy: "KiraKurs's scenarios use US dollar rates. Enter the bill in US$ to use them.",
+  note: "The AI only copies numbers you typed. KiraKurs checks that each one appears in your text, works out the days itself, and runs every number through the engine.",
 };
 
 // ---------- placeholder filling ----------

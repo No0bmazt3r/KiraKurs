@@ -45,7 +45,7 @@
 5. [Getting started](#getting-started)
 6. [Architecture](#architecture)
 7. [How the engine works](#how-the-engine-works)
-8. [Ask KiraKurs (the AI feature)](#ask-kirakurs-the-ai-feature)
+8. [AI features](#ai-features)
 9. [Design, motion and accessibility](#design-motion-and-accessibility)
 10. [Testing](#testing)
 11. [Status (honest)](#status-honest)
@@ -314,17 +314,21 @@ user input → Field (parse via format.ts) → store.setRaw(patch)
 
 ---
 
-## Ask KiraKurs (the AI feature)
+## AI features
 
-**Not a chatbot.** The AI never writes text the learner reads and never produces a number.
+**Not a chatbot.** The AI never writes text the learner reads and never produces a result. It only *routes* (picks one id from a fixed list) or *reads* (copies numbers the learner typed). Every sentence was written by the team; every result comes from `engine.ts`. One Cloudflare Worker (`apps/api`) serves all three tasks with Groq (`openai/gpt-oss-20b`, temperature 0, strict JSON schema), 10 requests per minute per IP, key kept on the Worker.
 
-1. On the Map or Coach, the learner taps **Ask KiraKurs** and types a question (≤ 300 characters).
-2. The browser blocks anything that looks like personal data (email, phone, IC number) before sending.
-3. The Cloudflare Worker sends the question to Groq (`openai/gpt-oss-20b`, temperature 0) with an instruction to return **one of 20 fixed topic ids** (e.g. `why_forward_below_spot`, `break_even`, `how_reliable`). The Worker rejects any reply that is not a valid id. Limited to 10 requests per minute per IP; the key stays on the Worker.
-4. The app shows its **own pre-written answer** for that topic, filled with the engine's numbers, marked as written and checked by the team.
-5. If anything fails (no key, offline, timeout, invalid reply) the learner gets the menu of 20 questions instead.
+<div align="center">
 
-Status: works locally with `pnpm dev` and a key in `.dev.vars`. Hidden in production until the Worker is deployed (`wrangler deploy`, `wrangler secret put GROQ_API_KEY`) and the site is built with `VITE_ASK_URL`.
+| Feature | Where | The AI returns | Deterministic guard | If AI is off or fails |
+|---|---|---|---|---|
+| **Ask KiraKurs** | Learn, Map, Coach, Check | one of 20 explanation ids | Worker rejects any id not in the list; app fills the team's template with engine numbers | menu of the 20 questions |
+| **Explain your thinking** | Predict, after answering | one of 7 reasoning ids (e.g. `expects_rate_hike`, `quote_flip`) | enum only; feedback is team-written and misconception-specific | pick-list of the 7 lines of thinking (always shown) |
+| **Describe your bill** | Coach → Use my own bill | amount, period and unit copied from the text | `billFromParse`: each number must appear in the learner's text; days are computed in code (months × 365/12); then `engine.validate` | "couldn't find" message; the manual fields stay |
+
+</div>
+
+Before anything is sent, the browser blocks text that looks like personal data (email, phone, IC, passport, account number). Status: works locally with `pnpm dev` and `GROQ_API_KEY` in `apps/api/.dev.vars`; hidden in production builds until the Worker is deployed (`wrangler deploy`, `wrangler secret put GROQ_API_KEY`) and the site is built with `VITE_ASK_URL`. Without it, Predict still shows the reasoning pick-list.
 
 ---
 
@@ -354,7 +358,7 @@ Status: works locally with `pnpm dev` and a key in `.dev.vars`. Hidden in produc
 
 </div>
 
-All 30 unit tests and the browser walkthrough pass on the current `main`.
+All 34 unit tests and the browser walkthrough pass on the current `main`.
 
 ---
 
@@ -370,7 +374,7 @@ All 30 unit tests and the browser walkthrough pass on the current `main`.
 | Source check by a team member | In progress: see `docs/SOURCES.md` (panel-opened ≠ member-checked) |
 | Pre/post learning results, think-aloud usability | **Not yet conducted** — report only what is observed |
 | Public deployment | **Not deployed** (Pages workflow removed); see Architecture → Deployment |
-| Ask KiraKurs | Built; hidden in production until the Worker is deployed |
+| AI features (Ask, Explain your thinking, Describe your bill) | Built and unit-tested with a mocked model; not yet run against Groq with a real key; hidden in production until the Worker is deployed |
 | Poster, video, report | Separate deliverables, not in this repository |
 
 </div>

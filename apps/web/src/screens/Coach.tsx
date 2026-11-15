@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { T, fill, makeVars } from "@kirakurs/core/content";
 import { parseNumber } from "@kirakurs/core/engine";
 import { useApp, set, setRaw, useData } from "../store";
-import { Badge, Field, Icon, Live, Maths, Rich, plain } from "../ui";
+import { Badge, Field, Icon, LimitsNote, Live, Maths, Rich, plain } from "../ui";
 import { tw, cn } from "../tw";
 import { useMaths } from "../Shell";
 import { Chart } from "../chart";
-import { AskButton } from "./Ask";
+import { AskButton, BillReader } from "./Ask";
 
 export function Coach() {
   const openMaths = useMaths();
@@ -45,6 +45,7 @@ export function Coach() {
     <div className="grid items-start gap-5 xl:grid-cols-2">
     <div className={cn(tw.stack, "gap-4")}>
     <Maths summary={T["coach.bill.title"]!} icon="sliders">
+      <BillReader />
       <p className={cn(tw.small)}>{fl("coach.bill.note")}</p>
       <Field label={fl("lbl.T")} raw={raw.T} error={d.errors.T} hint={d.hints.T} onInput={(x) => setRaw({ T: x })} />
       <Field label={fl("lbl.n")} raw={raw.n} error={d.errors.n} hint={d.hints.n} suffix="days" onInput={(x) => setRaw({ n: x })} />
@@ -66,6 +67,7 @@ export function Coach() {
       <Rich text={verdict} />
       <p className="sr-only" aria-live="polite">{live}</p>
       <Live className={cn(tw.small)}>{v.s.ruleSentence!}</Live>
+      <LimitsNote />
       <Badge />
     </section>
     <section className={cn(tw.card, "wait")}>

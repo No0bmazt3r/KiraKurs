@@ -58,6 +58,8 @@ try {
   await p.locator("#nextBtn").click();
   await p.locator(".option").first().click();
   await p.getByRole("button", { name: "Check" }).click();
+  await p.getByRole("radio", { name: "Inflation makes a currency stronger" }).click();
+  expect("predict reasoning feedback", await txt(p, "[aria-labelledby=reasonTitle] [aria-live]"), /^A common mix-up\..*RM 47,063 to RM/s);
   await p.locator(".feedback .btn").click();
   await p.waitForURL(/\/map$/);
   expect("tabs visible after predict", await p.locator("#tabs").isVisible(), true);
@@ -124,6 +126,8 @@ try {
   await p.locator("tr.here").waitFor();
   await enter(p.locator(".field input[type=text]").first(), "2.58");
   expect("M6 break-even row", await txt(p, "tr.here"), /2\.58%.*RM 1/s);
+  expect("exact break-even row", await txt(p, "tr.be"), /2\.58%.*Break-even.*RM 0/s);
+  expect("assumptions shown inline", await p.getByText(/Assumes no fees/).count() > 0, true);
   await p.getByRole("button", { name: "Start the after-check" }).click();
   for (let i = 0; i < 8; i++) {
     const opt = p.locator(".options .option");

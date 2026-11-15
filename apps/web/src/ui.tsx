@@ -253,6 +253,12 @@ export function openLimits(trigger?: Element) {
   </>, trigger);
 }
 
+// The key assumptions beside a result, so they are not hidden behind a button.
+export function LimitsNote() {
+  return <p className={cn(tw.caption)}><Icon name="shield" />{" " + T["limits.inline"] + " "}
+    <button className="underline underline-offset-2" type="button" onClick={(e) => openLimits(e.currentTarget)}>{T["limits.title"]}</button></p>;
+}
+
 // Kira: the hint guide. States what the last input change did, from engine output (no AI).
 export function Kira({ inp }: { inp: Inputs }) {
   const prev = useRef(inp);

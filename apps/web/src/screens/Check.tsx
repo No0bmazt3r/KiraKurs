@@ -1,13 +1,14 @@
 // Screen 5: Check: sensitivity table, post-quiz, results + code (docs/UX-FLOWS.md §2.5, CONTENT.md §8).
 import { useState } from "react";
 import { T, L, fill, makeVars } from "@kirakurs/core/content";
-import { sensitivity } from "@kirakurs/core/engine";
+import { breakEvenPiH, sensitivity } from "@kirakurs/core/engine";
 import { pct, rm, signedRM } from "@kirakurs/core/format";
 import { score, otherForm, resultCode } from "@kirakurs/core/quiz";
 import { useApp, set, setRaw, toast, useData } from "../store";
-import { Badge, Choices, Field, Icon, Live, Rich, openLimits, openSources } from "../ui";
+import { Badge, Choices, Field, Icon, LimitsNote, Live, Rich, openLimits, openSources } from "../ui";
 import { tw, cn } from "../tw";
 import { Quiz } from "./Quiz";
+import { AskButton } from "./Ask";
 
 const ROWS = [0.01, 0.018, 0.03, 0.04, 0.05];
 
@@ -15,11 +16,13 @@ export function Check() {
   const raw = useApp((s) => s.raw);
   const d = useData();
   const v = makeVars(d.inp);
-  const rows = sensitivity(d.inp, [...ROWS, d.inp.piH]);
+  // Fixed rows + the exact break-even row (wait minus lock = 0) + the learner's own row.
+  const be = breakEvenPiH(d.inp);
+  const rows = sensitivity(d.inp, [...ROWS, be, d.inp.piH]);
   const live = rows.pop()!;
-  const all = rows.map((r) => [r, Math.abs(r.piH - live.piH) < 1e-9] as const);
-  if (!all.some(([, here]) => here)) all.push([live, true]);
-  all.sort((a, b) => a[0].piH - b[0].piH);
+  const all = rows.map((r) => ({ r, here: Math.abs(r.piH - live.piH) < 1e-9, be: r.piH === be }));
+  if (!all.some((x) => x.here)) all.push({ r: live, here: true, be: false });
+  all.sort((a, b) => a.r.piH - b.r.piH);
 
   return <div className={cn(tw.screen)}><h1>{T["check.h1"]}</h1>
     <div className="grid items-start gap-5 xl:grid-cols-[3fr_2fr]">
@@ -27,14 +30,17 @@ export function Check() {
       <Field label={T["lbl.piH"]!} raw={raw.piH} error={d.errors.piH} hint={d.hints.piH} suffix="%" slider={{ min: 0, max: 6, step: 0.01 }} onInput={(x) => setRaw({ piH: x })} />
       <div className={cn("overflow-x-auto")}><table>
         <thead><tr>{L["check.th"]!.map((t) => <th key={t} scope="col">{t}</th>)}</tr></thead>
-        <tbody>{all.map(([r, here]) => <tr key={r.piH} className={here ? "here bg-primary-soft! font-semibold" : undefined}>
-          <td>{pct(r.piH, here ? 2 : 1)}{here && <span className="sr-only">{" " + T["check.youAreHere"]}</span>}</td>
+        <tbody>{all.map(({ r, here, be }) => <tr key={r.piH + (be ? "be" : "")} className={cn(here && "here bg-primary-soft! font-semibold", be && "be italic")}>
+          <td>{pct(r.piH, here || be ? 2 : 1)}{be && <span className={cn(tw.caption)}>{" " + T["check.be"]}</span>}{here && <span className="sr-only">{" " + T["check.youAreHere"]}</span>}</td>
           <td>{pct(r.rH)}</td><td>{rm(r.Cppp)}</td><td>{signedRM(r.diff)}</td>
         </tr>)}</tbody>
       </table></div>
+      <p className={cn(tw.caption)}>{fill(T["check.beNote"]!, v)}</p>
       <Rich className={cn(tw.small)} text={fill(T["check.why"]!, v)} />
       <Live className={cn(tw.small)}>{fill(T["check.linked"]!, v)}</Live>
+      <LimitsNote />
       <Badge />
+      <AskButton />
     </section>
     <section className={cn(tw.card, tw.stack)}><PostQuiz /></section>
     </div>

@@ -3,7 +3,7 @@ import { T, fill } from "@kirakurs/core/content";
 import { nominalFromReal, realRate } from "@kirakurs/core/engine";
 import { fx, signedPct, toPctInput } from "@kirakurs/core/format";
 import { useApp, setRaw, setLinked, setPreset, toast, useData, type RawKey } from "../store";
-import { Arrow, Badge, Field, Icon, Kira, Live, Maths, Rich } from "../ui";
+import { Arrow, Badge, Field, Icon, Kira, LimitsNote, Live, Maths, Rich } from "../ui";
 import { tw, cn } from "../tw";
 import { useMaths } from "../Shell";
 import { AskButton } from "./Ask";
@@ -68,6 +68,7 @@ export function MapScreen() {
           <Badge />
         </section>
         <Rich className={cn(tw.small)} text={Math.abs(m.parityGapPP) < 1e-9 ? T["map.gapZero"]! : fl("map.gap")} />
+        <LimitsNote />
       </div>
       <InputsCard />
     </div>

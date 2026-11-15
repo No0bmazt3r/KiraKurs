@@ -1,6 +1,6 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
-import { T, L, TIPS, QUIZ, ASK, ASK_UI, SOURCES, MISSIONS, makeVars, fill, tipParts } from "../src/content";
+import { T, L, TIPS, QUIZ, ASK, ASK_UI, REASON, REASON_UI, BILL_UI, SOURCES, MISSIONS, makeVars, fill, tipParts } from "../src/content";
 import { PRESETS } from "../src/presets";
 
 // Every copy string, with its key, flattened.
@@ -10,7 +10,7 @@ const walk = (key: string, v: unknown): void => {
   else if (Array.isArray(v)) v.forEach((x, i) => walk(`${key}[${i}]`, x));
   else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(`${key}.${k}`, x);
 };
-walk("T", T); walk("L", L); walk("MISSIONS", MISSIONS.map(({ done, ...m }) => m)); walk("TIPS", TIPS); walk("QUIZ", QUIZ); walk("ASK", ASK); walk("ASK_UI", ASK_UI); walk("SOURCES", SOURCES);
+walk("T", T); walk("L", L); walk("MISSIONS", MISSIONS.map(({ done, ...m }) => m)); walk("TIPS", TIPS); walk("QUIZ", QUIZ); walk("ASK", ASK); walk("ASK_UI", ASK_UI); walk("REASON", REASON); walk("REASON_UI", REASON_UI); walk("BILL_UI", BILL_UI); walk("SOURCES", SOURCES);
 
 test("wording guard: no today/current/latest/live (except 'not live')", () => {
   for (const [k, s] of all) {

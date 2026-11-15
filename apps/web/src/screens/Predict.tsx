@@ -4,6 +4,7 @@ import { T, fill } from "@kirakurs/core/content";
 import { useApp, set, useData, type Dir } from "../store";
 import { Badge, Choices, Feedback } from "../ui";
 import { tw, cn } from "../tw";
+import { ReasonBox } from "./Ask";
 import { useGo } from "../Shell";
 
 export function Predict() {
@@ -23,6 +24,7 @@ export function Predict() {
     {!checked && <button className={cn(tw.btn, tw.primary, "justify-self-end")} type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
     {checked && picked && <Feedback ok={picked === "up"} text={fill(T["predict.fb." + picked]!, v)}
       onContinue={() => { set({ unlocked: true }); go("map"); }} />}
+    {checked && picked && <ReasonBox pick={picked} />}
     <p className={cn(tw.caption)}>{T["predict.note"]}</p>
     <Badge preset="snapshot" />
     </div>

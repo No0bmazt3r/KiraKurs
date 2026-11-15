@@ -8,6 +8,7 @@ import { Arrow, Badge, Choices, Field, Icon, Live, Rich } from "../ui";
 import { tw, cn } from "../tw";
 import { useGo } from "../Shell";
 import { AinaFigure } from "../figures";
+import { AskButton } from "./Ask";
 
 const TARGET = 0.04;
 const base = PRESETS.snapshot;
@@ -62,6 +63,7 @@ export function Learn() {
         </> : <div className={cn(tw.value)}>?</div>}
       </div>
       <p role="status">{committed && atTarget ? T[committed === "up" ? "learn.revealRight" : "learn.revealWrong"] : fill(T["learn.taskMove"]!, v)}</p>
+      <AskButton />
     </section>
     </div>
   </div>;
