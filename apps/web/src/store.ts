@@ -1,5 +1,5 @@
 // App state (Zustand) + localStorage (docs/ARCHITECTURE.md §3). Also turns raw input strings into engine inputs.
-import { useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode, useDeferredValue } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
 import { useShallow } from "zustand/react/shallow";
@@ -102,11 +102,17 @@ export function inputs(s: Pick<State, "preset" | "raw" | "linked">) {
 }
 
 // Derived data shared by every screen.
+// Results are computed from a *deferred* copy of the inputs: sliders and their text boxes (which read the store
+// directly) move instantly, while the engine, charts and sentences re-render in the background and are skipped
+// if the learner keeps dragging (React 19 useDeferredValue). `pending` is true while results catch up.
 export function useData() {
-  const s = useApp(useShallow((s) => ({ preset: s.preset, raw: s.raw, linked: s.linked })));
-  return useMemo(() => {
+  const now = useApp(useShallow((s) => ({ preset: s.preset, raw: s.raw, linked: s.linked })));
+  const s = useDeferredValue(now);
+  const pending = s !== now;
+  const data = useMemo(() => {
     const r = inputs(s);
     return { ...r, v: makeVars(r.inp), preset: PRESETS[s.preset] };
   }, [s.preset, s.raw, s.linked]);
+  return { ...data, pending };
 }
 export type Data = ReturnType<typeof useData>;

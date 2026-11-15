@@ -28,9 +28,11 @@ function tween(from: string, to: string, t: number) {
     return (x + (y - x) * t).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: tok.includes(",") });
   });
 }
+const nudge = (el: Element | null) => el?.animate([{ opacity: 0.4, transform: "translateY(3px)" }, { opacity: 1, transform: "none" }],
+  { duration: 320, easing: "cubic-bezier(.16,1,.3,1)" });
 export function Live({ as: Tag = "p", className, children, ...rest }: { as?: ElementType; className?: string; children: string; [k: string]: unknown }) {
   const prev = useRef(children);
-  const [n, setN] = useState(0);
+  const el = useRef<HTMLElement>(null);
   const [mid, setMid] = useState<string | null>(null);   // in-between text while counting; null = show children
   const count = /\b(hero-)?value\b/.test(className ?? "");
   useEffect(() => {
@@ -38,7 +40,7 @@ export function Live({ as: Tag = "p", className, children, ...rest }: { as?: Ele
     if (from === children) return;
     prev.current = children;
     if (reduced()) return;
-    setN((x) => x + 1);
+    nudge(el.current);
     if (!count) return;
     const t0 = performance.now(); let raf = 0;
     const step = (now: number) => {
@@ -49,7 +51,7 @@ export function Live({ as: Tag = "p", className, children, ...rest }: { as?: Ele
     raf = requestAnimationFrame(step);
     return () => { cancelAnimationFrame(raf); setMid(null); };
   }, [children, count]);
-  return <Tag key={n} className={cx(className, n > 0 && "flash")} {...rest}>{mid ?? children}</Tag>;
+  return <Tag ref={el} className={className} {...rest}>{mid ?? children}</Tag>;
 }
 
 // "[[tip|text]]" markup → plain text (for aria-live text).
@@ -60,13 +62,13 @@ export function Rich({ text, className, as: Tag = "p" }: { text: string; classNa
   const id = useId();
   const [open, setOpen] = useState<number | null>(null);
   const prev = useRef(text);
-  const [n, setN] = useState(0);   // flash on change, like <Live>
-  useEffect(() => {
-    if (prev.current !== text) { prev.current = text; if (!reduced()) setN((x) => x + 1); }
+  const el = useRef<HTMLElement>(null);
+  useEffect(() => {   // animate in place on change, like <Live>
+    if (prev.current !== text) { prev.current = text; if (!reduced()) nudge(el.current); }
   }, [text]);
   const parts = tipParts(text);
   return <>
-    <Tag key={n} className={cx(className, n > 0 && "flash")}>{parts.map((part, k) => typeof part === "string" ? part :
+    <Tag ref={el} className={className}>{parts.map((part, k) => typeof part === "string" ? part :
       <button key={k} className="term" type="button" aria-expanded={open === k} aria-controls={`${id}-${k}`}
         onClick={() => setOpen(open === k ? null : k)} onKeyDown={(e) => e.key === "Escape" && setOpen(null)}>{part.text}</button>)}
     </Tag>

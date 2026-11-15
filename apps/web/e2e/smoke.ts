@@ -24,7 +24,9 @@ async function page(w: number, h: number, scheme: "light" | "dark" = "light") {
 }
 const txt = (p: Page, sel: string) => p.locator(sel).first().innerText();
 const hscroll = (p: Page) => p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-const enter = async (loc: Locator, value: string) => { await loc.fill(value); await loc.press("Enter"); };
+// Results re-render in the background (useDeferredValue), so wait for the deferred render to land after typing.
+const settle = (p: Page) => p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 120)))));
+const enter = async (loc: Locator, value: string) => { await loc.fill(value); await loc.press("Enter"); await settle(loc.page()); };
 
 try {
   // ---- guided flow on a phone ----
