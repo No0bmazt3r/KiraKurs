@@ -271,6 +271,25 @@
   .objbar .post { @apply bg-primary; }
   textarea { @apply min-h-24 w-full resize-y rounded-md border border-line-strong bg-surface-2 p-3; }
 
+  /* figures (figures.tsx): ink follows the section's text colour; accents follow the theme */
+  .fig { @apply block h-auto w-full overflow-visible; --fig-accent: var(--primary); }
+  .wel-sec.ink .fig, .wel-sec.teal .fig { --fig-accent: var(--field-accent); }
+  .fig-limb path { fill: none; stroke: currentColor; stroke-width: 10; stroke-linecap: round; }
+  .fig-head, .fig-ink { fill: currentColor; }
+  .fig-line { fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; }
+  .fig-lock { fill: var(--fig-accent); }
+  .fig-wait { fill: var(--risk-fill); }
+  .fig-thin { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; opacity: .45; }
+  .fig-thin-box { fill: none; stroke: currentColor; stroke-width: 3; opacity: .45; }
+  .fig-ground { stroke: currentColor; stroke-width: 3; opacity: .2; }
+  .fig-path { fill: none; stroke: currentColor; stroke-width: 6; stroke-dasharray: 2 12; stroke-linecap: round; opacity: .35; }
+  .fig-board { fill: currentColor; opacity: .08; }
+  .fig-curve { fill: none; stroke: var(--fig-accent); stroke-width: 5; stroke-linecap: round; }
+  .fig-pct { fill: currentColor; font: 600 36px var(--font-sans); opacity: .6; }
+  .fig-q { fill: var(--fig-accent); font: 600 64px var(--font-sans); }
+  .fig > g:last-of-type, .fig-float { animation: bob 5s ease-in-out infinite; transform-box: fill-box; }
+  @keyframes bob { 50% { translate: 0 -4px; } }
+
   /* Map: reference-rates table (rows, figures right-aligned) */
   .rates { @apply gap-0; }
   .rates > h2 { @apply pb-3; }

@@ -9,6 +9,7 @@ import { useApp, set } from "../store";
 import { useGo } from "../Shell";
 import { Icon, cx } from "../ui";
 import { randomWindow, day } from "./Play";
+import { HeroFigure, ThinkFigure, TwoPathsFigure, IdeasFigure, StopsFigure, ReadyFigure } from "../figures";
 
 const P = PRESETS.snapshot;
 const base = makeVars(P);
@@ -50,6 +51,7 @@ export function Welcome() {
         <button className="btn primary big" type="button" onClick={start}>{T["wel.start"]}<Icon name="right" /></button>
         <button className="btn on-field" type="button" onClick={skip}>{T["wel.skip"]}</button>
       </div>
+      <div className="fig-slot max-w-sm"><HeroFigure /></div>
       </div>
       <div {...r(2, "stack gap-4")}>
       <figure className="wel-hero-chart m-0"><HeroChart /></figure>
@@ -66,6 +68,7 @@ export function Welcome() {
       <div className="stack">
         <h2 {...r(0, "wel-h2")}>{T["wel.s2.h"]}</h2>
         <p {...r(1, "wel-p")}>{fill(T["wel.s2.p"]!, hv)}</p>
+        <div className="fig-slot mt-4 max-w-sm"><ThinkFigure /></div>
       </div>
       <figure {...r(2, "wel-chart")}><HistoryChart /><figcaption className="caption">{fill(T["wel.s2.chart"]!, hv)}</figcaption></figure>
     </div>)}
@@ -75,29 +78,33 @@ export function Welcome() {
         <h2 {...r(0, "wel-h2")}>{T["wel.s3.h"]}</h2>
         <p {...r(1, "wel-p")}>{titled(T["wel.s3.lock"]!)}</p>
         <p {...r(2, "wel-p")}>{titled(T["wel.s3.wait"]!)}</p>
+        <div className="fig-slot mt-4 max-w-md"><TwoPathsFigure /></div>
       </div>
       <TryIt />
     </div>)}
 
     {scene(3, "ground", labels[3]!, <div className="wel-inner">
-      <h2 {...r(0, "wel-h2")}>{T["wel.s4.h"]}</h2>
+      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,24rem)]"><h2 {...r(0, "wel-h2")}>{T["wel.s4.h"]}</h2><div className="fig-slot"><IdeasFigure /></div></div>
       <ul className="wel-list">{["irp", "ppp", "fisher", "ife"].map((k, i) =>
         <li key={k} {...r(i + 1)}>{titled(T["wel.s4." + k]!)}</li>)}</ul>
     </div>)}
 
     {scene(4, "amber", labels[4]!, <div className="wel-inner">
-      <h2 {...r(0, "wel-h2")}>{T["wel.s5.h"]}</h2>
+      <div className="grid items-end gap-6 md:grid-cols-[1fr_minmax(0,28rem)]"><h2 {...r(0, "wel-h2")}>{T["wel.s5.h"]}</h2><div className="fig-slot"><StopsFigure /></div></div>
       <ol className="wel-list stops">{(["learn", "map", "coach", "play"] as const).map((k, i) =>
         <li key={k} {...r(i + 1)}>{titled(T["wel.s5." + k]!)}</li>)}</ol>
     </div>)}
 
-    {scene(5, "ink", labels[5]!, <div className="wel-inner">
+    {scene(5, "ink", labels[5]!, <div className="wel-inner items-center gap-10 lg:grid-cols-[1fr_minmax(0,22rem)]">
+      <div className="stack gap-6">
       <h2 {...r(0, "wel-h2 big")}>{T["wel.s6.h"]}</h2>
       <p {...r(1, "wel-p")}>{T["wel.s6.p"]}</p>
       <div {...r(2, "row")}>
         <button className="btn primary big" type="button" onClick={start}>{T["wel.s6.start"]}<Icon name="right" /></button>
         <button className="btn on-field" type="button" onClick={skip}>{T["wel.s6.lecturer"]}</button>
       </div>
+      </div>
+      <div className="fig-slot"><ReadyFigure /></div>
     </div>)}
 
     <nav className="wel-dots" aria-label={T["wel.dots"]}>

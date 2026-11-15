@@ -7,6 +7,7 @@ import { useApp, set } from "../store";
 import { Badge, Icon } from "../ui";
 import { useGo } from "../Shell";
 import { Quiz } from "./Quiz";
+import { ThinkFigure } from "../figures";
 
 const v = makeVars(PRESETS.snapshot);
 
@@ -17,7 +18,7 @@ export function Precheck() {
   const finish = (pre: Answers | null) => set((s) => ({ quiz: { ...s.quiz, pre }, progress: { ...s.progress, precheck: true } }));
 
   return <div className="screen"><h1>{T["pre.h1"]}</h1><div className="stack">
-    {phase === "intro" && <>
+    {phase === "intro" && <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"><div className="stack">
       <p className="banner"><Icon name="shield" />{T["pre.consent"]}</p>
       <p>{fill(T["pre.lead"]!, v)}</p>
       <Badge preset="snapshot" />
@@ -25,7 +26,7 @@ export function Precheck() {
         <button className="btn primary" type="button" onClick={() => setPhase("quiz")}>{T["btn.start"]}</button>
         <button className="btn secondary" type="button" onClick={() => { finish(null); go("learn"); }}>{T["btn.skip"]}</button>
       </div>
-    </>}
+    </div><div className="fig-slot max-lg:max-w-xs"><ThinkFigure /></div></div>}
     {phase === "quiz" && <Quiz form={form} withFeedback={false} onDone={(a) => { finish(a); setPhase("done"); }} />}
     {phase === "done" && <>
       <p className="value">{T["pre.done"]}</p>

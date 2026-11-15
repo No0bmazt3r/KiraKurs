@@ -6,6 +6,7 @@ import { parsePct, signedPct } from "@kirakurs/core/format";
 import { useApp, set } from "../store";
 import { Arrow, Badge, Choices, Field, Icon, Live, Rich } from "../ui";
 import { useGo } from "../Shell";
+import { AinaFigure } from "../figures";
 
 const TARGET = 0.04;
 const base = PRESETS.snapshot;
@@ -43,6 +44,7 @@ export function Learn() {
     <Badge preset="snapshot" />
     {shown < 4 && <button className="btn secondary justify-self-start" type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}</button>}
     </div>
+    {shown < 4 && <div className="fig-slot self-center max-xl:hidden"><AinaFigure /></div>}
     <section className="card theory" hidden={shown < 4}>
       <p className="label">{fl("learn.taskPrompt")}</p>
       <Choices label={fl("learn.taskPrompt")} options={[["up", T["learn.taskUp"]!], ["down", T["learn.taskDown"]!], ["same", T["learn.taskSame"]!]]}
