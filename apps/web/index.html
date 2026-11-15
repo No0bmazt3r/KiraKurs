@@ -12,9 +12,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    /* first-paint skeleton (before the app's JS and CSS load); React replaces #root's content */
+    .boot { min-height: 100vh; background: #EEF1EF; font-family: system-ui, sans-serif; }
+    .boot-bar { height: 56px; box-shadow: 0 1px 0 #CDD6D2; }
+    .boot-main { max-width: 1760px; margin: 0 auto; padding: 24px clamp(16px, 3vw, 48px); display: grid; gap: 20px; }
+    .boot-sk { border-radius: 6px; background: linear-gradient(90deg, #E3E8E5 0%, #CDD6D2 50%, #E3E8E5 100%) 0 0 / 200% 100%; animation: boot 1.3s linear infinite; }
+    @keyframes boot { to { background-position: -200% 0; } }
+    @media (prefers-color-scheme: dark) { .boot { background: #080F0D; } .boot-bar { box-shadow: 0 1px 0 #2A3D38; }
+      .boot-sk { background-image: linear-gradient(90deg, #1A2925 0%, #2A3D38 50%, #1A2925 100%); } }
+    @media (prefers-reduced-motion: reduce) { .boot-sk { animation: none; } }
+  </style>
   <script type="module" src="./src/main.tsx"></script>
 </head>
 <body>
-  <div id="root" style="display:contents"><noscript><p class="card">KiraKurs needs JavaScript to calculate.</p></noscript></div>
+  <div id="root" style="display:contents"><div class="boot" aria-hidden="true"><div class="boot-bar"></div><div class="boot-main">
+    <div class="boot-sk" style="height:36px;width:min(560px,70%)"></div><div class="boot-sk" style="height:18px;width:min(420px,55%)"></div>
+    <div class="boot-sk" style="height:240px"></div><div class="boot-sk" style="height:120px"></div></div></div><noscript><p class="card">KiraKurs needs JavaScript to calculate.</p></noscript></div>
 </body>
 </html>

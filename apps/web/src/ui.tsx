@@ -224,8 +224,24 @@ export function Kira({ inp }: { inp: Inputs }) {
     <div className="avatar kira-mark" aria-hidden="true" />
     <div className="stack-sm">
       <p className="label">{T["kira.name"]}</p>
-      <p>{msg ? msg.text : T["kira.start"]}</p>
+      <p key={msg?.text ?? ""} className="fade-in">{msg ? msg.text : T["kira.start"]}</p>
       {msg && <p className="small">{msg.why}</p>}
     </div>
+  </div>;
+}
+
+// Loading placeholders: a screen-shaped skeleton (route chunks) and a few text lines (Ask). Shimmer stops under reduced motion.
+export function ScreenSkeleton() {
+  return <div className="screen" role="status" aria-label={T["loading"]}>
+    <div className="sk h-9 w-2/3 max-w-xl" />
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(19rem,23rem)_1fr]">
+      <div className="sk h-[28rem]" />
+      <div className="grid gap-4"><div className="sk h-28" /><div className="sk h-16" /><div className="sk h-72" /></div>
+    </div>
+  </div>;
+}
+export function LinesSkeleton({ n = 3 }: { n?: number }) {
+  return <div className="grid gap-2" role="status" aria-label={T["loading"]}>
+    {Array.from({ length: n }, (_, k) => <div key={k} className="sk h-4" style={{ width: `${92 - k * 17}%` }} />)}
   </div>;
 }

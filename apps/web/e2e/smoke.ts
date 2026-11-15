@@ -38,7 +38,8 @@ try {
   expect("welcome no sideways scroll (375)", await hscroll(p), false);
   await p.getByRole("button", { name: "Start", exact: true }).click();
   expect("start → precheck", await p.evaluate(() => location.pathname), "/precheck");
-  await p.getByRole("button", { name: "Start" }).click();
+  await p.getByRole("heading", { name: /Quick check/ }).waitFor();   // screens load lazily
+  await p.getByRole("button", { name: "Start", exact: true }).click();
   for (let i = 0; i < 8; i++) {
     const opt = p.locator(".options .option");
     await opt.first().click();
@@ -79,6 +80,7 @@ try {
 
   // ---- Coach (M3–M5) ----
   await p.locator('#tabs a[data-route="coach"]').click();
+  await p.locator("main h1", { hasText: "Lock or wait" }).waitFor();
   expect("M3 lock", await txt(p, ".tile.lock .value"), "RM 47,328");
   expect("M3 wait", await txt(p, ".tile.wait .value"), "RM 47,063");
   expect("M3 range", await txt(p, ".tile.wait p.small >> nth=1"), /RM 44,292.*RM 50,987/);
@@ -98,6 +100,7 @@ try {
 
   // ---- Play: Kira, missions, Fee Day ----
   await p.locator('#tabs a[data-route="play"]').click();
+  await p.locator("main h1", { hasText: "Play" }).waitFor();
   expect("play h1", await txt(p, "h1"), /^Play/);
   const iH = p.getByLabel("Malaysian interest rate %", { exact: true }).first();
   await enter(iH, "5");
@@ -117,6 +120,7 @@ try {
 
   // ---- Check (M6) + post-quiz ----
   await p.locator('#tabs a[data-route="check"]').click();
+  await p.locator("tr.here").waitFor();
   await enter(p.locator(".field input[type=text]").first(), "2.58");
   expect("M6 break-even row", await txt(p, "tr.here"), /2\.58%.*RM 1/s);
   await p.getByRole("button", { name: "Start the after-check" }).click();
@@ -145,6 +149,7 @@ try {
   await p.goto(B + "nope");
   expect("unknown path → learn", await p.evaluate(() => location.pathname), "/learn");
   await p.goto(B + "coach?preset=snapshot&maths=1");
+  await p.locator("main h1", { hasText: "Lock or wait" }).waitFor();
   expect("maths=1 opens the maths", await p.locator("details.maths[open]").count(), 1);
   expect("dark theme background", await p.evaluate(() => getComputedStyle(document.body).backgroundColor), /^rgb\((\d|[1-5]\d),/);
 } finally {

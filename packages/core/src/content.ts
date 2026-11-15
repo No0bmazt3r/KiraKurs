@@ -31,6 +31,7 @@ export const T: Record<string, string> = {
   "theme.toggle": "Switch light or dark theme",
   "noscript": "KiraKurs needs JavaScript to calculate.",
   "notFound": "That page doesn't exist.",
+  "loading": "Loading",
   "notFound.btn": "Go to Learn",
   "copyFailed": "Couldn't copy. Select the code and copy it manually.",
 

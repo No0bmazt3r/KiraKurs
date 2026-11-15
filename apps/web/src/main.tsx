@@ -1,18 +1,11 @@
 // Boot: read the URL, apply preset / free mode, mount the router (docs/ARCHITECTURE.md §4, docs/UX-FLOWS.md §1).
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createRootRoute, createRoute, createRouter, RouterProvider } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, lazyRouteComponent, RouterProvider, type RouteComponent } from "@tanstack/react-router";
 import { isPreset, type PresetId } from "@kirakurs/core/presets";
 import { set, setPreset, useApp } from "./store";
 import { Shell, NotFound, SCREENS } from "./Shell";
-import { Precheck } from "./screens/Precheck";
-import { Learn } from "./screens/Learn";
-import { Predict } from "./screens/Predict";
-import { MapScreen } from "./screens/Map";
-import { Coach } from "./screens/Coach";
-import { Check } from "./screens/Check";
-import { Play } from "./screens/Play";
-import { Welcome } from "./screens/Welcome";
+import { ScreenSkeleton } from "./ui";
 import "./styles.css";
 
 // Clean paths (/learn), served under BASE ("/" or e.g. "/KiraKurs/" on GitHub Pages; dist/404.html handles deep links).
@@ -41,12 +34,21 @@ const root = createRootRoute({
     ...(String(s.maths) === "1" ? { maths: 1 as const } : {}),
   }),
 });
-const page = (path: string, component: () => React.ReactNode) => createRoute({ getParentRoute: () => root, path, component });
+const page = (path: string, component: RouteComponent) => createRoute({ getParentRoute: () => root, path, component });
+// Each screen is its own chunk; the skeleton shows while one loads (only if it takes over 120 ms).
 const router = createRouter({
   basepath: BASE || "/",
+  defaultViewTransition: true,                          // cross-fade between screens (CSS: ::view-transition-*(main))
+  defaultPendingComponent: ScreenSkeleton, defaultPendingMs: 120, defaultPendingMinMs: 300,
   routeTree: root.addChildren([
-    page("/welcome", Welcome), page("/precheck", Precheck), page("/learn", Learn), page("/predict", Predict),
-    page("/map", MapScreen), page("/coach", Coach), page("/play", Play), page("/check", Check),
+    page("/welcome", lazyRouteComponent(() => import("./screens/Welcome"), "Welcome")),
+    page("/precheck", lazyRouteComponent(() => import("./screens/Precheck"), "Precheck")),
+    page("/learn", lazyRouteComponent(() => import("./screens/Learn"), "Learn")),
+    page("/predict", lazyRouteComponent(() => import("./screens/Predict"), "Predict")),
+    page("/map", lazyRouteComponent(() => import("./screens/Map"), "MapScreen")),
+    page("/coach", lazyRouteComponent(() => import("./screens/Coach"), "Coach")),
+    page("/play", lazyRouteComponent(() => import("./screens/Play"), "Play")),
+    page("/check", lazyRouteComponent(() => import("./screens/Check"), "Check")),
   ]),
 });
 

@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import { ASK, ASK_UI, fill } from "@kirakurs/core/content";
 import { MAX_LEN, piiBlocked, type AskId } from "@kirakurs/core/ask";
 import { openSheet, useData } from "../store";
-import { Icon } from "../ui";
+import { Icon, LinesSkeleton } from "../ui";
 
 // Dev: Vite proxies /api to `wrangler dev`. Build: set VITE_ASK_URL to the deployed Worker URL; empty = feature hidden.
 const ASK_URL: string = import.meta.env.VITE_ASK_URL ?? (import.meta.env.DEV ? "/api/ask" : "");
@@ -44,6 +44,7 @@ function AskBody() {
       <button className="btn primary" type="submit" disabled={busy}>{ASK_UI.send}</button>
     </form>
     <div className="stack" aria-live="polite">
+      {busy && <LinesSkeleton />}
       {shown === "pii" && <p className="field-error">{ASK_UI.pii}</p>}
       {shown === "menu" && <><p className="label">{ASK_UI.menu}</p><div className="options">
         {(Object.keys(ASK) as AskId[]).map((k) => <button key={k} className="option" type="button" onClick={() => setShown(k)}>{ASK[k].q}</button>)}

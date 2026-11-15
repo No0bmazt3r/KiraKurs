@@ -85,7 +85,11 @@ export function Shell() {
             <Icon name="calendar" /><span>{chip}</span><Icon name="chevron" />
           </button>
           <button className="icon-btn" id="themeBtn" type="button" aria-label={T["theme.toggle"]}
-            onClick={() => set({ theme: dark ? "light" : "dark" })}><Icon name={dark ? "sun" : "moon"} /></button>
+            onClick={() => {
+              const next = dark ? "light" : "dark";
+              const apply = () => { document.documentElement.dataset.theme = next; set({ theme: next }); };
+              if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(apply); else apply();
+            }}><Icon name={dark ? "sun" : "moon"} /></button>
         </div>
       </div>
       {!unlocked && step > 0 && <div className="progress" id="progress">
