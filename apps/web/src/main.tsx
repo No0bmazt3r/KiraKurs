@@ -1,7 +1,7 @@
 // Boot: read the URL, apply preset / free mode, mount the router (docs/ARCHITECTURE.md §4, docs/UX-FLOWS.md §1).
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createHashHistory, createRootRoute, createRoute, createRouter, RouterProvider } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { isPreset, type PresetId } from "@kirakurs/core/presets";
 import { set, setPreset, useApp } from "./store";
 import { Shell, NotFound, SCREENS } from "./Shell";
@@ -14,20 +14,21 @@ import { Check } from "./screens/Check";
 import { Play } from "./screens/Play";
 import "./styles.css";
 
-// Old links put ?preset=&maths= before the hash; move them into the hash so the router owns them.
-const outer = new URLSearchParams(location.search);
-if (outer.size) {
-  const [path = "/", hq = ""] = location.hash.replace(/^#/, "").split("?");
-  const merged = new URLSearchParams(hq);
-  outer.forEach((v, k) => merged.set(k, v));
-  history.replaceState(null, "", `${location.pathname}#${path}?${merged}`);
+// Clean paths (/learn), served under BASE ("/" or e.g. "/KiraKurs/" on GitHub Pages; dist/404.html handles deep links).
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+// Old shared links used hash routing (#/map?preset=x): rewrite them to /map?preset=x.
+if (location.hash.startsWith("#/")) {
+  const [hp = "", hq = ""] = location.hash.slice(2).split("?");
+  const q = new URLSearchParams(location.search);
+  new URLSearchParams(hq).forEach((v, k) => q.set(k, v));
+  history.replaceState(null, "", `${BASE}/${hp}${q.size ? "?" + q : ""}`);
 }
-const [path = "", hq = ""] = location.hash.replace(/^#\/?/, "").split("?");
-const presetParam = new URLSearchParams(hq).get("preset");
+const path = location.pathname.slice(BASE.length).replace(/^\/|\/$/g, "");
+const presetParam = new URLSearchParams(location.search).get("preset");
 if (isPreset(presetParam)) setPreset(presetParam);
 if (presetParam || (path && path !== "precheck")) set({ unlocked: true });   // lecturer / deep link → free mode
 if (!(SCREENS as readonly string[]).includes(path))
-  location.replace(`#/${useApp.getState().unlocked ? "learn" : "precheck"}${hq ? "?" + hq : ""}`);
+  history.replaceState(null, "", `${BASE}/${useApp.getState().unlocked ? "learn" : "precheck"}${location.search}`);
 
 export type Search = { preset?: PresetId; maths?: 1 };
 const root = createRootRoute({
@@ -40,7 +41,7 @@ const root = createRootRoute({
 });
 const page = (path: string, component: () => React.ReactNode) => createRoute({ getParentRoute: () => root, path, component });
 const router = createRouter({
-  history: createHashHistory(),
+  basepath: BASE || "/",
   routeTree: root.addChildren([
     page("/precheck", Precheck), page("/learn", Learn), page("/predict", Predict),
     page("/map", MapScreen), page("/coach", Coach), page("/play", Play), page("/check", Check),

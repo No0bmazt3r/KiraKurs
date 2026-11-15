@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "e2e": "vite build && node e2e/smoke.ts"
+    "e2e": "pnpm build && node e2e/smoke.ts"
   },
   "dependencies": {
     "@kirakurs/core": "workspace:*",

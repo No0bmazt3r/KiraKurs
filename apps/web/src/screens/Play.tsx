@@ -124,7 +124,7 @@ function ShareCard({ done }: { done: number }) {
   const style = T["share.style." + playStyle(rounds)]!;
   const text = plain(fill(T["share.text"]!, { s: { doneCount: String(done), missionTotal: String(MISSIONS.length),
     rounds: String(rounds.length), style }, num: {} }));
-  const url = location.origin + location.pathname;
+  const url = location.origin + import.meta.env.BASE_URL;
   const share = async () => {
     try {
       if (navigator.share) return await navigator.share({ title: "KiraKurs", text, url });

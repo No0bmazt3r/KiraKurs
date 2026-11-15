@@ -8,7 +8,7 @@ Pre-check → Learn → Predict → Parity Map → Coach → Check     Tab bar: 
 ```
 - Guided mode switches to free mode (`state.unlocked = true`) when Learn is finished **or** the learner presses "Skip to Parity Map".
   From then on the tab bar shows and Continue buttons stay (they don't hurt).
-- A URL with `?preset=` or a route other than `#/precheck` on first load opens **free mode** directly (lecturer demo).
+- A URL with `?preset=` or a route other than `/precheck` on first load opens **free mode** directly (lecturer demo).
 - Pre-check is optional: "Skip" goes to Learn and records `pre = null` (the results then say "no pre-check").
 
 ## 2. Screen by screen

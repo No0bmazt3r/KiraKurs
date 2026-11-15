@@ -1,9 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// base "./": hash routing means the build works under any Pages path (e.g. /KiraKurs/).
+// BASE=/KiraKurs/ when hosting under a sub-path (GitHub Pages project site). Router basepath follows it.
 export default defineConfig({
-  base: "./",
+  base: process.env.BASE ?? "/",
   plugins: [react()],
   server: {
     port: 5173, strictPort: true,

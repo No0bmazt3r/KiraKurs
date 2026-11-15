@@ -69,15 +69,17 @@ state = {
 ## 4. Routing and URLs
 | Route | Screen | Guard |
 |---|---|---|
-| `#/precheck` | 0 Pre-check | first visit default |
-| `#/learn` | 1 Learn | |
-| `#/predict` | 2 Predict | |
-| `#/map` | 3 Parity Map | always reachable ("Skip to Parity Map") |
-| `#/coach` | 4 Decision Coach | always reachable |
-| `#/check` | 5 Sensitivity + post-check | |
+| `/precheck` | 0 Pre-check | first visit default |
+| `/learn` | 1 Learn | |
+| `/predict` | 2 Predict | |
+| `/map` | 3 Parity Map | always reachable ("Skip to Parity Map") |
+| `/coach` | 4 Decision Coach | always reachable |
+| `/play` | 5 Play (missions, Fee Day) | |
+| `/check` | 6 Sensitivity + post-check | |
 - Query parameters: `?preset=classroom|snapshot` and `&maths=1` (open "Show the maths"). Example lecturer link:
-  `…/KiraKurs/?preset=classroom#/map`.
-- Back and forward buttons work (hash routing). Focus moves to the screen `<h1>` on every route change, and the document title
+  `…/KiraKurs/map?preset=classroom`. Unknown paths go to `/learn` (or `/precheck` on a first visit); old `#/map` hash
+  links are rewritten to `/map` on load.
+- Back and forward buttons work (browser history, clean paths). Focus moves to the screen `<h1>` on every route change, and the document title
   updates to "Parity Map · KiraKurs".
 
 ## 5. Components (`ui.js`), all framework-free functions returning elements
@@ -95,7 +97,9 @@ One chart: **C − A (y, RM) against Malaysian inflation % (x, 0–6%)**, for th
 
 ## 7. Deployment
 - GitHub Pages via GitHub Actions (`.github/workflows/pages.yml`): on push to `main` it runs typecheck, tests and `pnpm build`,
-  then publishes `apps/web/dist`. Vite `base: "./"` + hash routing, so it works under `/KiraKurs/`. Settings → Pages → Source:
+  then publishes `apps/web/dist`. Build with `BASE=/KiraKurs/ pnpm build` for a project site (Vite `base` and the router
+  `basepath` both follow it). `pnpm build` copies `index.html` to `404.html` so deep links like `/KiraKurs/coach` load the app
+  on GitHub Pages (served with HTTP 404 status, page works). Cloudflare Pages or Netlify: use `BASE=/`. Settings → Pages → Source:
   "GitHub Actions".
 - Before each push: `pnpm test` and `pnpm e2e` pass, `ENGINE_VERSION` bumped if the engine changed.
 - (Stretch) PWA: `sw.js` caches the app shell named `kirakurs-${ENGINE_VERSION}`; a new version shows the toast

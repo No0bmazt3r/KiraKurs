@@ -18,7 +18,7 @@ whose message starts with its ID.
 | E4 | `presets.js`, `format.js` (+ tests for formatting/parsing "2,75", "%", minus sign) | M1 | 45 m | Format tests pass |
 | C1 | `content.js` from CONTENT.md; `content.test.mjs` wording guard + every `{{placeholder}}` resolvable | M4 | 1.5 h | Test passes; no copy outside content.js |
 | U1 | `ui.tsx` components: Card, Badge, Tooltip, Slider, NumberField, Segmented, Sheet, Toast, Arrow | M2 | 2 h | Components page `#/dev` (removed before deploy) renders all states |
-| U2 | `store.ts` (Zustand) + TanStack Router + app shell behaviour (guided vs free, progress, tab bar, focus on route change) | M3 | 1.5 h | Back/forward work; deep link `?preset=classroom#/map` works |
+| U2 | `store.ts` (Zustand) + TanStack Router + app shell behaviour (guided vs free, progress, tab bar, focus on route change) | M3 | 1.5 h | Back/forward work; deep link `/map?preset=classroom` works |
 | P3 | Screen 3 Parity Map: beginner cards, inputs, linked mode, equal-real-rates, show the maths | M2 | 3 h | Snapshot shows F 4.0240 / PPP 4.0014 / IFE 4.0240 / real 0.93 vs 0.17 at n = 270; linked mode moves i fields |
 | P4 | Screen 4 Coach: hero tiles, range bar, verdict, split slider, fees, spot line, access note | M3 | 3 h | A 47,328 · C 47,063 · range 44,292–50,987 · split 50% numbers match |
 | P4b | Coach chart (`chart.js`) + allowance card | M2/M3 | 2 h | Break-even marked at 2.58%; allowance RM 6,165.58 / 6,250.50 |

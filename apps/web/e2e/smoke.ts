@@ -30,7 +30,7 @@ try {
   // ---- guided flow on a phone ----
   let p = await page(375, 740);
   await p.goto(B);
-  expect("start route", await p.evaluate(() => location.hash), "#/precheck");
+  expect("start route", await p.evaluate(() => location.pathname), "/precheck");
   await p.getByRole("button", { name: "Start" }).click();
   for (let i = 0; i < 8; i++) {
     const opt = p.locator(".options .option");
@@ -49,7 +49,7 @@ try {
   await p.locator(".option").first().click();
   await p.getByRole("button", { name: "Check" }).click();
   await p.locator(".feedback .btn").click();
-  await p.waitForURL(/#\/map/);
+  await p.waitForURL(/\/map$/);
   expect("tabs visible after predict", await p.locator("#tabs").isVisible(), true);
   expect("map no sideways scroll (375)", await hscroll(p), false);
 
@@ -128,12 +128,16 @@ try {
 
   // ---- desktop, dark, deep links ----
   p = await page(1280, 900, "dark");
-  await p.goto(B + "?preset=classroom#/map");
+  await p.goto(B + "map?preset=classroom");
   expect("classroom deep link hero", await txt(p, ".hero-value"), /./);
   expect("classroom badge", await txt(p, ".badge-text"), "Classroom: illustrative numbers");
-  await p.goto(B + "#/coach?preset=classroom");
+  await p.goto(B + "coach?preset=classroom");
   expect("classroom lock", await txt(p, ".tile.lock .value"), "RM 51,675");
-  await p.goto(B + "?preset=snapshot&maths=1#/coach");
+  await p.goto(B + "?preset=snapshot&maths=1#/coach");   // old hash link still works
+  expect("old hash link rewritten", await p.evaluate(() => location.pathname + location.search), "/coach?preset=snapshot&maths=1");
+  await p.goto(B + "welcome");
+  expect("unknown path → learn", await p.evaluate(() => location.pathname), "/learn");
+  await p.goto(B + "coach?preset=snapshot&maths=1");
   expect("maths=1 opens the maths", await p.locator("details.maths[open]").count(), 1);
   expect("dark theme background", await p.evaluate(() => getComputedStyle(document.body).backgroundColor), /^rgb\((\d|[1-5]\d),/);
 } finally {
