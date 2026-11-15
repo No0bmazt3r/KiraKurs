@@ -63,8 +63,7 @@
   [tabindex="-1"]:focus { outline: none; }
   [hidden] { display: none !important; }
   table, output { font-variant-numeric: tabular-nums; }
-  html.snap { scroll-snap-type: y proximity; }
-  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; } html.snap { scroll-snap-type: none; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; } }
 }
 
 /* §3 component primitives */
@@ -323,7 +322,7 @@
   .share-style { @apply text-2xl font-semibold tracking-tight text-field-accent; }
 
   /* Welcome */
-  .wel-sec { @apply grid items-center px-[clamp(1rem,3vw,3rem)] py-[clamp(3.5rem,7vw,7rem)]; scroll-snap-align: start; scroll-margin-top: 3.5rem; }
+  .wel-sec { @apply grid items-center px-[clamp(1rem,3vw,3rem)] py-[clamp(3.5rem,7vw,7rem)]; scroll-margin-top: 3.5rem; }
   .wel-sec.hero-scene { min-height: calc(100svh - 3.5rem); }
   @media (min-width: 40rem) { .wel-sec { padding-right: max(clamp(1rem,3vw,3rem), 4.5rem); } }
   .wel-inner { @apply mx-auto grid w-full max-w-[110rem] content-center gap-6; }
@@ -389,6 +388,30 @@
     body { background: #fff; color: #000; }
   }
 }
+
+/* Welcome: motion is tied to the scroll position (scroll-driven animations), so it flows forwards and backwards with the
+   scrollbar instead of playing once on a timer. Browsers without support, and reduced motion, show everything in place. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-scene .rise { animation: up 700ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 110ms); }
+  @supports (animation-timeline: view()) {
+    .wel-sec:not(.hero-scene) .wel-inner > * { animation: wel-flow linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    .wel-sec:not(.hero-scene) .wel-inner > :nth-child(2) { animation-name: wel-flow-late; }
+    .wel-sec:not(.hero-scene) .wel-list > li { animation: wel-flow linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    .wel-list > li:nth-child(2) { animation-name: wel-flow-late; }
+    .wel-list > li:nth-child(3) { animation-name: wel-flow-later; }
+    .wel-list > li:nth-child(4) { animation-name: wel-flow-latest; }
+    .hero-scene .wel-inner { animation: wel-hero-out linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+    .wel-sec .fig-slot { animation: wel-par linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    .wel-line, .wel-sec.in .wel-line { transition: none; animation: wel-draw linear both; animation-timeline: view(); animation-range: entry 40% cover 50%; }
+  }
+}
+@keyframes wel-flow { 0% { opacity: 0; transform: translateY(3.5rem); } 28%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
+@keyframes wel-flow-late { 0% { opacity: 0; transform: translateY(5rem); } 34%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
+@keyframes wel-flow-later { 0% { opacity: 0; transform: translateY(6.5rem); } 40%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
+@keyframes wel-flow-latest { 0% { opacity: 0; transform: translateY(8rem); } 46%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
+@keyframes wel-hero-out { to { opacity: .15; transform: translateY(-4rem) scale(.98); } }
+@keyframes wel-par { from { transform: translateY(1.75rem); } to { transform: translateY(-1.75rem); } }
+@keyframes wel-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* motion: page cross-fade (View Transitions), smooth accordions, skeleton shimmer. All off under reduced motion. */
 main { view-transition-name: main; }

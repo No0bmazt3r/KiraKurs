@@ -60,7 +60,7 @@ function Person({ x = 0, y = 0, s = 1, flip, shirt, pose, breathe = true }: { x?
 
 // props (drawn at the hand)
 const Lock = () => <g transform="translate(-15 -34)"><path d="M8 13 V8 a7 7 0 0 1 14 0 V13" className="fig-line" /><rect x="0" y="12" width="30" height="24" rx="6" className="fig-lock" /><circle cx="15" cy="23" r="3" className="fig-bg" /></g>;
-const Glass = () => <Spin a={0} b={180} cx={0} cy={-18} dur={4}><g transform="translate(-13 -38)">
+const Glass = () => <Spin a={-6} b={6} cx={0} cy={-18} dur={3.2}><g transform="translate(-13 -38)">
   <path d="M0 2 H26 M0 38 H26" className="fig-line" /><path d="M4 4 Q4 16 13 20 Q22 16 22 4 Z M4 36 Q4 24 13 20 Q22 24 22 36 Z" className="fig-wait" /></g></Spin>;
 const Phone = () => <g transform="translate(-9 -30)"><rect width="18" height="30" rx="4" className="fig-ink" /><rect x="3" y="4" width="12" height="20" rx="2" className="fig-lock" /></g>;
 const Bill = () => <g transform="translate(-4 -36)"><rect width="34" height="44" rx="4" className="fig-paper" /><path d="M7 12 H27 M7 20 H23 M7 28 H25" className="fig-thin" /></g>;
@@ -115,15 +115,16 @@ export function IdeasFigure() {
 
 // Walking past four flags: the four stops. Legs and arms swing in opposition; the walker crosses and loops.
 export function StopsFigure() {
-  const step = 0.9;
+  // Stride matches speed (no sliding feet): legs swing ±14° on 82 px legs ≈ 78 px per 1.4 s cycle ≈ 56 px/s.
+  const step = 1.4;
   return <svg className="fig" viewBox="0 0 440 220" aria-hidden="true">
     <Ground w={440} y={214} />
     {[170, 250, 330, 410].map((x, i) => <Flag key={x} x={x} y={136} delay={i * 0.3} />)}
-    <g>{!still && <animateTransform attributeName="transform" type="translate" values="-10 0;170 0" dur="7s" repeatCount="indefinite" />}
-      {!still && <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="7s" repeatCount="indefinite" />}
+    <g>{!still && <animateTransform attributeName="transform" type="translate" values="-30 0;230 0" dur="4.6s" repeatCount="indefinite" />}
+      {!still && <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.12;.82;1" dur="4.6s" repeatCount="indefinite" />}
       <Person x={0} y={6} s={0.98} breathe={false} shirt="var(--field-accent)" pose={{ hair: "scarf",
-        l: { a: 24, a2: -24, b: -20, dur: step }, r: { a: -24, a2: 24, b: -20, dur: step },
-        ll: { a: -20, a2: 20, b: 0, b2: 18, dur: step }, rl: { a: 20, a2: -20, b: 18, b2: 0, dur: step } }} />
+        l: { a: 16, a2: -16, b: -14, dur: step }, r: { a: -16, a2: 16, b: -14, dur: step },
+        ll: { a: -14, a2: 14, b: 0, b2: 14, dur: step }, rl: { a: 14, a2: -14, b: 14, b2: 0, dur: step } }} />
     </g>
   </svg>;
 }
@@ -133,11 +134,11 @@ export function ReadyFigure() {
   return <svg className="fig" viewBox="0 0 300 240" aria-hidden="true">
     <Ground w={300} y={234} />
     {[[40, 0, "fig-lock"], [96, 1.1, "fig-wait"], [150, .5, "fig-lock"], [206, 1.6, "fig-wait"], [262, .8, "fig-lock"], [124, 2.1, "fig-paper"]].map(([x, d, c], i) =>
-      <g key={i} transform={`translate(${x} 0)`}>{!still && <animateTransform attributeName="transform" type="translate" values={`${x} -10;${x} 120`} dur="2.6s" begin={`${d}s`} repeatCount="indefinite" />}
-        {!still && <animate attributeName="opacity" values="0;1;0" dur="2.6s" begin={`${d}s`} repeatCount="indefinite" />}
+      <g key={i} transform={`translate(${x} 0)`}>{!still && <animateTransform attributeName="transform" type="translate" values={`${x} -10;${x} 120`} dur="4s" begin={`${d}s`} repeatCount="indefinite" />}
+        {!still && <animate attributeName="opacity" values="0;1;0" dur="4s" begin={`${d}s`} repeatCount="indefinite" />}
         <rect width="8" height="8" rx="2" transform="rotate(30)" className={c as string} /></g>)}
-    <Drift dy={-10} dur={1.2}><Person x={24} y={16} breathe={false} shirt="var(--field-accent)" pose={{ hair: "scarf", l: { a: 150, a2: 136, b: 10, dur: 1.2 }, r: { a: -150, a2: -136, b: -10, dur: 1.2 } }} /></Drift>
-    <Drift dy={-10} dur={1.2} delay={0.3}><Person x={156} y={16} breathe={false} shirt="var(--risk-fill)" pose={{ hair: "short", l: { a: 150, a2: 136, b: 10, dur: 1.2, delay: 0.3 }, r: { a: -150, a2: -136, b: -10, dur: 1.2, delay: 0.3 } }} /></Drift>
+    <Drift dy={-4} dur={2}><Person x={24} y={16} breathe={false} shirt="var(--field-accent)" pose={{ hair: "scarf", tilt: [-3, 3], l: { a: 150, a2: 142, b: 10, dur: 2 }, r: { a: -150, a2: -142, b: -10, dur: 2 } }} /></Drift>
+    <Drift dy={-4} dur={2} delay={0.5}><Person x={156} y={16} breathe={false} shirt="var(--risk-fill)" pose={{ hair: "short", tilt: [3, -3], l: { a: 150, a2: 142, b: 10, dur: 2, delay: 0.5 }, r: { a: -150, a2: -142, b: -10, dur: 2, delay: 0.5 } }} /></Drift>
   </svg>;
 }
 

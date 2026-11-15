@@ -1,4 +1,4 @@
-// Screen: Welcome: a short scroll intro, one full-screen scene per idea (snap scrolling, side dots).
+// Screen: Welcome: a short scroll intro, one section per idea; motion follows the scroll position (CSS scroll-driven animations), side dots.
 // Every number comes from @kirakurs/core (engine via makeVars, ECB series via feeday HISTORY / replay).
 import { useEffect, useRef, useState } from "react";
 import { T, fill, makeVars } from "@kirakurs/core/content";
@@ -27,14 +27,13 @@ export function Welcome() {
   const skip = () => { set({ unlocked: true }); go("map"); };
 
   useEffect(() => {
-    document.documentElement.classList.add("snap");
     const io = new IntersectionObserver((es) => es.forEach((e) => {
       if (!e.isIntersecting) return;
       e.target.classList.add("in");
       setActive(refs.current.indexOf(e.target as HTMLElement));
     }), { threshold: 0.45 });
     refs.current.forEach((el) => el && io.observe(el));
-    return () => { io.disconnect(); document.documentElement.classList.remove("snap"); };
+    return () => io.disconnect();
   }, []);
 
   const scene = (k: number, cls: string, label: string, body: React.ReactNode) =>
