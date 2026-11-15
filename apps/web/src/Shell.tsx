@@ -2,7 +2,8 @@
 import { useEffect } from "react";
 import { Link, Outlet, useNavigate, useRouterState, useSearch } from "@tanstack/react-router";
 import { T, makeVars, fill } from "@kirakurs/core/content";
-import { PRESETS } from "@kirakurs/core/presets";
+import { PRESETS, PRESET_IDS, type Preset } from "@kirakurs/core/presets";
+import { fx, pct } from "@kirakurs/core/format";
 import { useApp, set, setPreset, clearData, toast, openSheet } from "./store";
 import { Icon, Sheet, Toast, closeSheet, openLimits, openSources } from "./ui";
 import type { IconName } from "./icons";
@@ -48,20 +49,37 @@ export function Shell() {
   }, [name]);
 
   const dark = theme === "system" ? prefersDark() : theme === "dark";
-  const chip = (p.kind === "dated" ? "Snapshot 6 Nov" : "Classroom") + (edited ? " " + T.edited : "");
+  const chip = p.chip + (edited ? " " + T.edited : "");
 
   const presetSheet = (trigger: Element) => openSheet(T["preset.title"]!, function PresetPicker() {
     const cur = useApp((s) => s.preset);
-    return <div className="options" role="radiogroup" aria-label={T["preset.title"]}>
-      {Object.values(PRESETS).map((x) => <button key={x.id} className="option" type="button" role="radio" aria-checked={cur === x.id}
-        onClick={() => {
-          setPreset(x.id);
-          nav({ to: ".", search: (s: object) => ({ ...s, preset: x.id }) });
-          closeSheet();
-          toast(fill(T["toast.preset"]!, makeVars(x)));
-        }}>
-        <span><strong>{x.label}</strong><br /><span className="small">{x.badge}</span></span>
-      </button>)}
+    const pick = (x: Preset) => {
+      setPreset(x.id);
+      nav({ to: ".", search: (s: object) => ({ ...s, preset: x.id }) });
+      closeSheet();
+      toast(fill(T["toast.preset"]!, makeVars(x)));
+    };
+    const groups: [string, Preset[]][] = [
+      [T["preset.groupDated"]!, PRESET_IDS.map((id) => PRESETS[id]).filter((x) => x.kind === "dated")],
+      [T["preset.groupPractice"]!, PRESET_IDS.map((id) => PRESETS[id]).filter((x) => x.kind !== "dated")],
+    ];
+    return <div className="stack gap-5" role="radiogroup" aria-label={T["preset.title"]}>
+      <p className="small">{T["preset.hint"]}</p>
+      {groups.map(([title, list]) => <div key={title} className="stack gap-2">
+        <h3 className="preset-group">{title}</h3>
+        {list.map((x) => <button key={x.id} className="preset-opt" type="button" role="radio" aria-checked={cur === x.id} onClick={() => pick(x)}>
+          <span className="preset-top"><span className="preset-name">{x.label}</span>
+            <span className="preset-tag">{T[x.kind === "dated" ? "preset.tagDated" : "preset.tagPractice"]}</span>
+            <span className="preset-check" aria-hidden="true">{cur === x.id && <Icon name="ok" />}</span></span>
+          <span className="preset-blurb">{x.blurb}</span>
+          <span className="preset-facts">
+            <span><span className="preset-k">{T["preset.fx"]}</span><span className="preset-v">{"RM " + fx(x.S, 4)}</span></span>
+            <span><span className="preset-k">{T["preset.int"]}</span><span className="preset-v">{pct(x.iH) + " / " + pct(x.iF)}</span></span>
+            <span><span className="preset-k">{T["preset.inf"]}</span><span className="preset-v">{pct(x.piH, 1) + " / " + pct(x.piF, 1)}</span></span>
+          </span>
+          <span className="preset-src">{x.badge}</span>
+        </button>)}
+      </div>)}
     </div>;
   }, trigger);
 

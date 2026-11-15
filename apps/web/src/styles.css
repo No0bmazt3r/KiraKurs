@@ -306,6 +306,25 @@
   .rate.lock .rate-fig .value { @apply text-primary-ink; }
   .rates > .badge { @apply mt-2; }
 
+  /* scenario picker */
+  .preset-group { @apply text-xs font-semibold text-muted; }
+  .preset-opt { @apply grid w-full cursor-pointer gap-2 rounded-md border-2 border-line bg-surface p-4 text-left transition hover:border-line-strong; }
+  .preset-opt[aria-checked="true"] { @apply border-primary bg-primary-soft; }
+  .preset-top { @apply flex items-center gap-2; }
+  .preset-name { @apply flex-1 font-semibold; }
+  .preset-tag { @apply rounded-sm bg-surface-2 px-2 py-0.5 text-xs font-medium text-muted; }
+  .preset-opt[aria-checked="true"] .preset-tag { @apply bg-surface; }
+  .preset-check { @apply grid size-6 place-items-center rounded-sm text-primary-ink; }
+  .preset-opt[aria-checked="true"] .preset-check { @apply bg-primary text-on-primary; }
+  .preset-check svg.i { @apply size-4; }
+  .preset-blurb { @apply text-sm; }
+  .preset-facts { @apply grid grid-cols-3 gap-2 rounded-sm bg-surface-2 p-2; }
+  .preset-opt[aria-checked="true"] .preset-facts { @apply bg-surface; }
+  .preset-facts > span { @apply grid gap-0.5; }
+  .preset-k { @apply text-[0.7rem] leading-tight text-muted; }
+  .preset-v { @apply text-sm font-semibold; font-variant-numeric: tabular-nums; }
+  .preset-src { @apply text-xs text-muted; }
+
   /* Play */
   .readout { @apply grid grid-cols-3 gap-3; }
   .readout .value { @apply text-base whitespace-nowrap sm:text-xl; }

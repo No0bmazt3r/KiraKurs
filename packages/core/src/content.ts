@@ -2,7 +2,7 @@
 // Numbers never live here: every {{name}} is filled from engine output via makeVars().
 import * as E from "./engine";
 import * as f from "./format";
-import { PRESETS } from "./presets";
+import { PRESETS, type PresetId } from "./presets";
 import type { AskId } from "./ask";
 
 export const T: Record<string, string> = {
@@ -28,6 +28,10 @@ export const T: Record<string, string> = {
   "edited": "(edited)",
   "progress": "Step {{step}} of {{total}}",
   "preset.title": "Choose the numbers",
+  "preset.hint": "Each scenario loads a full set of numbers into every screen. Your slider edits are reset. Every dated scenario is frozen and not live.",
+  "preset.groupDated": "Real data, frozen on a date", "preset.groupPractice": "Practice",
+  "preset.tagDated": "Real data", "preset.tagPractice": "Illustrative",
+  "preset.fx": "Ringgit per US$1", "preset.int": "Interest MY / US", "preset.inf": "Inflation MY / US",
   "theme.toggle": "Switch light or dark theme",
   "noscript": "KiraKurs needs JavaScript to calculate.",
   "notFound": "That page doesn't exist.",
@@ -135,7 +139,7 @@ export const T: Record<string, string> = {
   "coach.split.cNoRange": "Expected {{split.expected}}. Splitting cuts the swing in proportion.",
   "coach.staging": "Many students convert in stages: that is the split slider above.",
   "coach.al.title": "Monthly allowance: prices rise too",
-  "coach.al.input": "Allowance in 6 Nov {{country}} prices ({{ccy}})",
+  "coach.al.input": "Allowance in {{rateDate}} {{country}} prices ({{ccy}})",
   "coach.al.s": "Rent and food in the {{country}} rise with {{country}} prices. Under the prices theory, your allowance in ringgit grows with Malaysian inflation ({{piH}}), not {{country}} inflation ({{piF}}).",
   "coach.al.usd": "Dollars needed", "coach.al.rm": "Ringgit under PPP",
   "coach.al.naive": "A naive guess using the {{rateDate}} rate: {{al.naive}}",
@@ -184,7 +188,7 @@ export const T: Record<string, string> = {
   // Bug-fix copy (panel 15 Nov)
   "learn.noChange": "No change yet",
   "map.fwd.bank": "Bank-style quote for {{n}} days (simple interest, Act/365 vs Act/360): RM {{bankF.4}}.",
-  "coach.al.why": "{{country}} prices rise {{piF}} a year, so {{ccy}}{{T0}} of 6 Nov rent becomes {{al.usd}} by payment day. Under the prices theory that costs {{al.rmPPP}}.",
+  "coach.al.why": "{{country}} prices rise {{piF}} a year, so {{ccy}}{{T0}} of {{rateDate}} rent becomes {{al.usd}} by payment day. Under the prices theory that costs {{al.rmPPP}}.",
   "err.allowance": "Allowance must be above 0 and at most 100,000,000.",
   "coach.bill.title": "Use my own bill",
   "coach.bill.note": "Change the amount and days to match your own bill. It stays on this device. Rates are from {{presetLabel}}.",
@@ -429,7 +433,7 @@ export const QUIZ_MAX = 9; // 7 single items + pick-two scored 0–2
 
 // "Ask KiraKurs" explanations (stretch). The AI only returns one of these ids; numbers come from makeVars().
 export const ASK: Record<AskId, { q: string; a: string }> = {
-  why_forward_below_spot: { q: "Why is the bank lock below the 6 Nov rate?", a: "The bank lock is RM {{F.4}} vs RM {{S.4}} {{rateReason}} ({{iF}} vs {{iH}}). The bank builds that gap into the lock: interest rate parity." },
+  why_forward_below_spot: { q: "Why is the bank lock below the spot rate?", a: "The bank lock is RM {{F.4}} vs RM {{S.4}} {{rateReason}} ({{iF}} vs {{iH}}). The bank builds that gap into the lock: interest rate parity." },
   forward_not_forecast: { q: "Is the bank lock a forecast?", a: "No. The bank lock (RM {{F.4}}) comes only from the two interest rates. It is a price you can lock, not a guess about the future (Fama 1984)." },
   why_ppp_down: { q: "Why does the prices theory expect fewer ringgit per dollar?", a: "{{inflationReason}}. The prices theory says the faster-inflating currency loses value by about that gap, so it expects RM {{EPPP.4}}." },
   why_ife_equals_forward: { q: "Why are the interest theory and the bank lock the same number?", a: "Both use only the two interest rates over the same {{n}} days, so the interest theory's expected rate equals the bank lock: RM {{F.4}}." },
@@ -447,7 +451,7 @@ export const ASK: Record<AskId, { q: string; a: string }> = {
   news_rates_strengthen: { q: "Why does the news say higher rates strengthen a currency?", a: "In the short run, a rise in real interest rates can attract investors' money and strengthen a currency. Parity is about inflation-driven rates over longer horizons." },
   fees_matter: { q: "Do fees matter?", a: "Yes. A bank margin raises every option. Wise (2023) estimates Malaysian students lose about RM 1,183 a year to fees and markups, often more than the lock-or-wait difference." },
   how_reliable: { q: "How reliable is this?", a: "It is parity theory, not a prediction. PPP takes years to hold (Rogoff 1996), the forward is a poor forecast (Fama 1984), and oil, risk mood and Bank Negara also move the ringgit." },
-  data_dates: { q: "Where do the numbers come from?", a: "Snapshot: exchange rate 6 Nov 2026, OPR 5 Nov, Fed 28 Oct, CPI September 2026. Frozen and not live. The Classroom scenario is illustrative." },
+  data_dates: { q: "Where do the numbers come from?", a: "{{badge}}. Every dated scenario is frozen on the day shown and is not live; Scenario 1 (Classroom) is illustrative. The full list with links is under Sources." },
   random_walk: { q: "What if the rate does not change?", a: "If the rate stays at its {{rateDate}} level, waiting costs {{C.rw}}, which is {{lessMore diff.rw}} than locking. In practice no-change is a hard guess to beat." },
 };
 export const ASK_UI = {
@@ -476,8 +480,9 @@ export function makeVars(inp: E.Inputs, extra: Extra = {}) {
   const fFaster = inp.piF > inp.piH;
   const s: Record<string, string> = {
     ENGINE_VERSION: E.ENGINE_VERSION, ccy, country,
-    rateDate: kind === "dated" ? "6 Nov" : "starting",
-    T: f.amount(inp.T), n: String(inp.n), k: inp.id === "classroom" ? "1" : "2", presetLabel: inp.label ?? "",
+    rateDate: (inp.id && PRESETS[inp.id as PresetId]?.date) || (kind === "dated" ? "6 Nov" : "starting"),
+    badge: (inp.id && PRESETS[inp.id as PresetId]?.badge) || PRESETS.snapshot.badge,
+    T: f.amount(inp.T), n: String(inp.n), k: String((inp.id && PRESETS[inp.id as PresetId]?.k) || 2), presetLabel: inp.label ?? "",
     "S.2": f.fx(inp.S), "S.4": f.fx(inp.S, 4),
     iH: f.pct(inp.iH), iF: f.pct(inp.iF), piH: f.pct(inp.piH), piF: f.pct(inp.piF), target: f.pct(target, 1),
     F: f.fx(m.F), "F.2": f.fx(m.F), "F.4": f.fx(m.F, 4), "bankF.4": f.fx(m.bankF, 4),

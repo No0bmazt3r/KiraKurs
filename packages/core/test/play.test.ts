@@ -67,3 +67,12 @@ test("welcome history: month-end series spans the data and brackets every month"
   for (const m of months) assert.ok(m.r >= lo.r && m.r <= hi.r);
   assert.ok(lo.r < hi.r);
 });
+
+test("extra dated snapshots: S is the ECB reference rate on the snapshot date, bands are full precision", () => {
+  const rates = (data as { rates: Record<string, number> }).rates;
+  for (const [id, iso] of [["snap2025", "2025-11-06"], ["snap2024", "2024-02-20"]] as const) {
+    const p = PRESETS[id];
+    assert.equal(p.S, rates[iso], id);
+    assert.ok(p.q10! < 0 && p.q90! > 0 && String(p.q10).length > 12, id);
+  }
+});
