@@ -10,7 +10,7 @@ The log lives in `../evidence/test-log.md` (date, who, what, command/device, res
 | `packages/core/test/content.test.ts` | Wording guard (CONTENT §0) on every Snapshot-capable string · every `{{placeholder}}` has a resolver · tooltips ≤ 15 words · card sentences ≤ 30 words |
 | `packages/core/test/format.test.ts` | "2,75" → 0.0275 · "3.875%" → 0.03875 · minus sign U+2212 · RM grouping `en-MY` · 0 dp vs 2 dp |
 
-Also `apps/api/test.ts` (PII guard, Ask ids, Worker origin/limits/fallbacks, quiz scoring) and `apps/web/e2e/smoke.mjs` (M3–M8
+Also `apps/api/test.ts` (PII guard, Ask ids, Worker origin/limits/fallbacks, quiz scoring) and `apps/web/e2e/smoke.ts` (M3–M8
 numbers on screen at 375 px, no sideways scroll, dark theme, deep links, sheets). The smoke test is automated, not the manual
 checklist below. Test style: Vitest `test` + `node:assert/strict`. Values: `assert.equal(round(x, dp), expected)` using the display precision in
 ENGINE §7. Identities: `assert.ok(Math.abs(a/b − 1) < 1e-9)`. Record the pass line (e.g. `# pass 63`) in the test log and show it in

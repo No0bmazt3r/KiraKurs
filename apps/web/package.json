@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "e2e": "vite build && node e2e/smoke.mjs"
+    "e2e": "vite build && node e2e/smoke.ts"
   },
   "dependencies": {
     "@kirakurs/core": "workspace:*",

@@ -2,28 +2,29 @@
 // both themes, deep links. Runs against the production build. `pnpm e2e` from the repo root.
 // Browser: CHROME_PATH=/path/to/chrome, else Playwright's own Chromium (`pnpm --filter web exec playwright-core install chromium`).
 import { preview } from "vite";
-import { chromium } from "playwright-core";
+import { chromium, type Locator, type Page } from "playwright-core";
 
 const server = await preview({ root: new URL("..", import.meta.url).pathname, preview: { port: 4173, strictPort: true } });
 const B = "http://localhost:4173/";
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
-const fails = [], errors = [];
-const expect = (label, got, want) => {
-  const ok = want instanceof RegExp ? want.test(got) : got === want;
+const fails: string[] = [], errors: string[] = [];
+const expect = (label: string, got: unknown, want: unknown) => {
+  if (want instanceof RegExp) got = String(got);
+  const ok = want instanceof RegExp ? want.test(got as string) : got === want;
   console.log(`${ok ? "ok  " : "FAIL"} ${label}: ${JSON.stringify(got)}`);
   if (!ok) fails.push(label);
 };
 
-async function page(w, h, scheme = "light") {
+async function page(w: number, h: number, scheme: "light" | "dark" = "light") {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme });
   const p = await ctx.newPage();
   p.on("pageerror", (e) => errors.push(`${w} pageerror: ${e.message}`));
   p.on("console", (m) => m.type() === "error" && !/fonts\.g|ERR_INTERNET|ERR_NAME/.test(m.text()) && errors.push(`${w} console: ${m.text()}`));
   return p;
 }
-const txt = (p, sel) => p.locator(sel).first().innerText();
-const hscroll = (p) => p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-const enter = async (loc, value) => { await loc.fill(value); await loc.press("Enter"); };
+const txt = (p: Page, sel: string) => p.locator(sel).first().innerText();
+const hscroll = (p: Page) => p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+const enter = async (loc: Locator, value: string) => { await loc.fill(value); await loc.press("Enter"); };
 
 try {
   // ---- guided flow on a phone ----
@@ -97,9 +98,9 @@ try {
   }
   expect("result code", await txt(p, ".code"), /^KK-[AB]\d-\d$/);
   await p.locator("#tabs button").click();
-  expect("limits sheet open", await p.locator("#sheet").evaluate((d) => d.open), true);
+  expect("limits sheet open", await p.locator("#sheet").evaluate((d) => (d as HTMLDialogElement).open), true);
   await p.keyboard.press("Escape");
-  expect("sheet closes on Esc", await p.locator("#sheet").evaluate((d) => d.open), false);
+  expect("sheet closes on Esc", await p.locator("#sheet").evaluate((d) => (d as HTMLDialogElement).open), false);
 
   // ---- desktop, dark, deep links ----
   p = await page(1280, 900, "dark");
