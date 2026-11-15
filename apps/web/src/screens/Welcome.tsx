@@ -42,22 +42,24 @@ export function Welcome() {
   const r = (i: number, cls?: string) => ({ className: cx("rise", cls), style: { "--i": i } as React.CSSProperties });
 
   return <div className="welcome">
-    {scene(0, "ink hero-scene", labels[0]!, <div className="wel-inner gap-10 lg:grid-cols-[3fr_2fr] lg:items-end lg:gap-16">
-      <h1 {...r(0, "wel-h1 lg:col-span-2")}>{T["wel.h1a"]} <span className="wel-mark" aria-hidden="true" /> {T["wel.h1b"]}</h1>
+    {scene(0, "ink hero-scene", labels[0]!, <div className="wel-inner gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-14">
       <div className="stack gap-6">
+      <h1 {...r(0, "wel-h1")}>{T["wel.h1a"]} <span className="wel-mark" aria-hidden="true" /> {T["wel.h1b"]}</h1>
       <p {...r(1, "wel-lead")}>{fill(T["wel.lead"]!, base)}</p>
       <div {...r(2, "row")}>
         <button className="btn primary big" type="button" onClick={start}>{T["wel.start"]}<Icon name="right" /></button>
         <button className="btn on-field" type="button" onClick={skip}>{T["wel.skip"]}</button>
       </div>
-      <p {...r(3, "wel-scroll")}><Icon name="chevron" />{T["wel.scroll"]}</p>
       </div>
-      <dl {...r(2, "wel-bill")}>
+      <div {...r(2, "stack gap-4")}>
+      <figure className="wel-hero-chart m-0"><HeroChart /></figure>
+      <dl className="wel-bill">
         <div className="col-span-2"><dt className="label">{T["wel.bill.h"]}</dt><dd className="caption">{fill(T["wel.bill.due"]!, base)}</dd></div>
         <div className="tile lock"><dt className="tile-head"><Icon name="lock" />{T["wel.bill.lock"]}</dt><dd className="value">{base.s.A}</dd></div>
         <div className="tile wait"><dt className="tile-head"><Icon name="hourglass" />{T["wel.bill.wait"]}</dt><dd className="value">{base.s.C_ppp}</dd></div>
         <dd className="caption col-span-2">{fill(T["wel.bill.range"]!, base)}</dd>
       </dl>
+      </div>
     </div>)}
 
     {scene(1, "ground", labels[1]!, <div className="wel-inner gap-10 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-16">
@@ -103,6 +105,43 @@ export function Welcome() {
         onClick={() => refs.current[k]?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} />)}
     </nav>
   </div>;
+}
+
+// Hero: the last two years of real USD/MYR, forking on 6 Nov into the lock path (forward) and the wait range (8 of 10 past
+// 270-day moves) up to Aina's payment day. Every value: feeday HISTORY, the engine (F, E_PPP) and the Snapshot range.
+const hero = (() => {
+  const past = H.months.slice(-24), m = base.results.m, rg = base.results.c.range!;
+  const S = P.S, lo = rg.lo / P.T, hi = rg.hi / P.T;
+  const vals = [...past.map((x) => x.r), lo, hi, m.F, m.EPPP];
+  return { past, S, F: m.F, E: m.EPPP, lo, hi, min: Math.min(...vals), max: Math.max(...vals),
+    v: vars({ rLo: fx(lo, 4), rHi: fx(hi, 4) }) };
+})();
+function HeroChart() {
+  const W = 800, Ht = 400, top = 36, bot = 44, x0 = 8, xT = 430, xP = 590;
+  const pad = (hero.max - hero.min) * 0.08, a = hero.min - pad, b = hero.max + pad;
+  const y = (r: number) => top + ((b - r) / (b - a)) * (Ht - top - bot);
+  const n = hero.past.length;
+  const hist = hero.past.map((p, i) => `${(x0 + (i / (n - 1)) * (xT - x0)).toFixed(1)},${y(i === n - 1 ? hero.S : p.r).toFixed(1)}`).join(" ");
+  const yS = y(hero.S), v = hero.v;
+  return <svg viewBox={`0 0 ${W} ${Ht}`} role="img" aria-label={fill(T["wel.hero.aria"]!, v)}>
+    <polygon className="hc-band" points={`${xT},${yS} ${xP},${y(hero.hi)} ${xP},${y(hero.lo)}`} />
+    <polyline className="hc-hist" points={hist} pathLength={1} />
+    <line className="hc-today" x1={xT} x2={xT} y1={top - 8} y2={Ht - bot + 8} />
+    <line className="hc-pay" x1={xP} x2={xP} y1={top - 8} y2={Ht - bot + 8} />
+    <line className="hc-lock" x1={xT} y1={yS} x2={xP} y2={y(hero.F)} pathLength={1} />
+    <line className="hc-ppp" x1={xT} y1={yS} x2={xP} y2={y(hero.E)} pathLength={1} />
+    <circle className="hc-dot" cx={xT} cy={yS} r="6" />
+    <circle className="hc-end lock" cx={xP} cy={y(hero.F)} r="6" />
+    <text x={x0} y={top - 14} className="hc-t dim">{fill(T["wel.hero.unit"]!, v)}</text>
+    <text x={x0} y={Ht - 14} className="hc-t dim">{T["wel.hero.past"]}</text>
+    <text x={xT} y={Ht - 14} className="hc-t" textAnchor="middle">{T["wel.hero.today"]}</text>
+    <text x={xP} y={Ht - 14} className="hc-t" textAnchor="middle">{T["wel.hero.pay"]}</text>
+    <text x={xP + 14} y={y(hero.F) + (hero.F >= hero.E ? -6 : 18)} className="hc-t strong">{fill(T["wel.hero.lock"]!, v)}</text>
+    <text x={xP + 14} y={y(hero.E) + (hero.F >= hero.E ? 18 : -6)} className="hc-t risk">{fill(T["wel.hero.ppp"]!, v)}</text>
+    <text x={xP + 14} y={y(hero.hi) + 4} className="hc-t dim">{"RM " + v.s.rHi}</text>
+    <text x={xP + 14} y={y(hero.lo) + 4} className="hc-t dim">{"RM " + v.s.rLo}</text>
+    <text x={(xT + xP) / 2} y={y(hero.lo) + 22} className="hc-t risk" textAnchor="middle">{T["wel.hero.band"]}</text>
+  </svg>;
 }
 
 // Month-end USD/MYR line with the lowest and highest daily rates marked.

@@ -74,7 +74,7 @@ export function Coach() {
     <div className="stack gap-4">
     <section className="card"><h2 className="card-title">{T["coach.chart.title"]}</h2><Chart inp={d.inp} vars={v} /><Badge /></section>
     <details className="maths card theory">
-      <summary><Icon name="calc" />{T["coach.al.title"]}</summary>
+      <summary>{T["coach.al.title"]}</summary>
       <div>
         <Field label={fl("coach.al.input")} raw={T0raw} error={T0ok ? undefined : T["err.allowance"]} onInput={setT0raw} />
         <Live className="small">{fl("coach.al.s")}</Live>

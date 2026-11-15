@@ -85,7 +85,7 @@
   .formula { @apply text-sm text-muted break-words; font-variant-numeric: tabular-nums; }
   .code { @apply text-2xl font-semibold tracking-wider select-all; font-variant-numeric: tabular-nums; }
   .dim { @apply opacity-50; }
-  .flash { animation: flash 500ms var(--ease-out); }
+  .flash { animation: flash 400ms var(--ease-out); }
   span.flash { display: inline-block; }
 
   /* layout helpers */
@@ -139,12 +139,9 @@
   .chip span { @apply truncate; }
   @media (max-width: 399px) { .logo > span:last-child { display: none; } .chip { max-width: 62vw; } }
 
-  .card { @apply grid min-w-0 content-start gap-2 rounded-md bg-surface p-5; }
+  .card { @apply grid min-w-0 content-start gap-2 rounded-md border border-line bg-surface p-5; }
   .card-title { @apply flex items-center gap-2 text-lg font-semibold; }
-  .card.lock { box-shadow: inset 3px 0 0 var(--primary); }
-  .card.wait { box-shadow: inset 3px 0 0 var(--risk-fill); }
-  .card.theory { box-shadow: inset 3px 0 0 var(--theory); }
-  .card.tint-lock { @apply bg-field text-on-field shadow-none; }
+  .card.tint-lock { @apply border-transparent bg-field text-on-field; }
   .card.tint-lock .badge { @apply border-field-accent text-on-field; }
 
   .badge { @apply inline-flex min-h-8 cursor-pointer items-center gap-1.5 justify-self-start rounded-sm border border-primary bg-transparent px-2.5 py-1 text-left text-xs text-ink; }
@@ -152,10 +149,10 @@
   .badge svg.i { @apply size-4; }
   .arrow { @apply inline-flex items-center gap-1 text-sm text-muted; }
   .term { @apply cursor-pointer border-0 bg-transparent p-0 underline decoration-theory decoration-dotted decoration-2 underline-offset-[3px]; font: inherit; color: inherit; }
-  .tip, .hint { @apply my-2 block rounded-sm bg-surface-2 px-3 py-2 text-sm; box-shadow: inset 3px 0 0 var(--theory); }
+  .tip, .hint { @apply my-2 block rounded-sm bg-surface-2 px-3 py-2 text-sm; }
   .hint { @apply my-0 text-base; }
   .banner { @apply flex gap-2 rounded-md bg-primary-soft p-3 text-sm; }
-  .callout { @apply grid gap-2 rounded-md bg-surface px-4 py-3; box-shadow: inset 3px 0 0 var(--theory); }
+  .callout { @apply grid gap-2 rounded-md border border-line bg-surface px-4 py-3; }
 
   .field { @apply grid gap-1; }
   .field-head { @apply flex items-baseline justify-between gap-2; }
@@ -185,6 +182,7 @@
   .options { @apply grid gap-2; }
   .option { @apply flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-md border-2 border-transparent bg-surface px-4 py-3 text-left transition
     enabled:hover:border-ink disabled:cursor-default; }
+  .card .option { @apply bg-surface-2; }
   .option[aria-checked="true"] { @apply border-ink bg-ink text-bg; }
   .option.correct { @apply border-success; }
   .option.wrong { @apply border-danger; }
@@ -192,17 +190,19 @@
   .segmented button { @apply min-h-10 flex-1 cursor-pointer rounded-sm border-0 bg-transparent px-2 text-sm font-medium transition-colors; }
   .segmented button[aria-checked="true"] { @apply bg-ink text-bg; }
 
-  .feedback { @apply grid gap-2 rounded-md bg-surface px-4 py-5; animation: up 350ms var(--ease-out); box-shadow: inset 3px 0 0 currentColor; }
+  .feedback { @apply grid gap-2 rounded-md border border-current bg-surface px-4 py-4; }
   .feedback.ok { @apply text-success; }
   .feedback.no { @apply text-danger; }
   .feedback p { @apply text-ink; }
   .feedback .fb-head { @apply flex items-center gap-2 font-semibold; }
 
-  details.maths { @apply rounded-md bg-surface-2; }
-  details.maths > summary { @apply flex min-h-12 cursor-pointer list-none items-center gap-2 px-4 py-3 font-semibold text-primary-ink; }
+  details.maths { @apply rounded-md border border-line bg-surface; }
+  details.maths > summary { @apply flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-semibold; }
+  details.maths > summary::after { @apply text-muted content-['+']; }
+  details.maths[open] > summary::after { content: '−'; }
   details.maths > summary::-webkit-details-marker { display: none; }
   details.maths > div { @apply grid gap-3 px-4 pb-4 text-sm; }
-  details.maths.card { @apply bg-surface p-0; }
+  details.maths.card { @apply p-0; }
 
   .table-wrap { @apply overflow-x-auto; }
   table { @apply w-full border-collapse text-sm; }
@@ -245,10 +245,12 @@
   .rangebar .tick.lockt { @apply bg-primary; }
   .rangebar .tick.exp { @apply bg-risk; }
   .steps { @apply m-0 grid list-none gap-3 p-0; counter-reset: step; }
-  .steps li { @apply grid grid-cols-[2rem_1fr] items-start gap-3; }
+  .steps li { @apply grid grid-cols-[2rem_1fr] items-start gap-x-3 gap-y-1; }
+  .steps li > * { grid-column: 2; }
+  .steps li::before { grid-row: span 2; }
   .steps li::before { @apply grid size-8 place-items-center rounded-sm bg-ink font-semibold text-bg; counter-increment: step; content: counter(step); }
   .avatar { @apply grid size-11 shrink-0 place-items-center rounded-md bg-theory font-semibold text-surface; }
-  .kira { @apply flex items-start gap-3 rounded-md bg-surface p-4; box-shadow: inset 3px 0 0 var(--theory); }
+  .kira { @apply flex items-start gap-3 rounded-md bg-surface-2 p-4; }
   .kira .avatar { @apply size-9 rounded-sm bg-transparent; background: var(--logo) center / contain no-repeat; }
   .dots { @apply flex gap-1; }
   .dots span { @apply size-2 rounded-xs bg-line-strong; }
@@ -269,12 +271,21 @@
   .objbar .post { @apply bg-primary; }
   textarea { @apply min-h-24 w-full resize-y rounded-md border border-line-strong bg-surface-2 p-3; }
 
+  /* Map: reference-rates table (rows, figures right-aligned) */
+  .rates { @apply gap-0; }
+  .rates > h2 { @apply pb-3; }
+  .rate { @apply grid gap-2 border-t border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-8; }
+  .rate-text { @apply grid content-start gap-1; }
+  .rate-fig { @apply grid content-start gap-0.5 sm:justify-items-end sm:text-right; }
+  .rate-fig .value { @apply whitespace-nowrap; }
+  .rate.lock .rate-fig .value { @apply text-primary-ink; }
+  .rates > .badge { @apply mt-2; }
+
   /* Play */
   .readout { @apply grid grid-cols-3 gap-3; }
   .readout .value { @apply text-base whitespace-nowrap sm:text-xl; }
   .readout .caption { @apply col-span-full; }
   .mission { @apply gap-2; }
-  .mission.done { box-shadow: inset 3px 0 0 var(--primary); }
   .mission-head { @apply flex items-center gap-2; }
   .mission-head h3 { @apply m-0 flex-1 text-base; }
   .pill { @apply rounded-sm border border-line px-2 py-0.5 text-xs whitespace-nowrap text-muted; }
@@ -288,26 +299,27 @@
   /* Welcome */
   .wel-sec { @apply grid items-center px-[clamp(1rem,3vw,3rem)] py-[clamp(3.5rem,7vw,7rem)]; scroll-snap-align: start; scroll-margin-top: 3.5rem; }
   .wel-sec.hero-scene { min-height: calc(100svh - 3.5rem); }
+  @media (min-width: 40rem) { .wel-sec { padding-right: max(clamp(1rem,3vw,3rem), 4.5rem); } }
   .wel-inner { @apply mx-auto grid w-full max-w-[110rem] content-center gap-6; }
   .wel-sec.ground { @apply bg-bg; }
   .wel-sec.ink { @apply bg-field text-on-field; }
   .wel-sec.teal { @apply bg-primary text-on-primary; }
-  .wel-sec.amber { @apply bg-risk-fill text-on-risk; }
+  .wel-sec.amber { @apply bg-surface; }
   .wel-sec .caption, .wel-sec .label { color: inherit; opacity: .85; }
   .wel-sec .btn.primary { @apply bg-field-accent text-[#04201C] hover:bg-on-field hover:text-field; }
-  .wel-h1 { @apply max-w-none text-5xl leading-none font-semibold tracking-tight sm:text-6xl xl:text-7xl; }
+  .wel-h1 { @apply max-w-none text-5xl leading-none font-semibold tracking-tight sm:text-6xl 2xl:text-7xl; }
   .wel-mark { @apply inline-block size-[0.85em] rounded-[0.18em] align-[-0.08em]; background: var(--logo) center / contain no-repeat; }
   .wel-lead { @apply max-w-[38ch] text-lg leading-relaxed lg:text-xl; }
   .wel-h2 { @apply max-w-[20ch] text-3xl leading-tight font-semibold tracking-tight lg:text-5xl; }
   .wel-p { @apply max-w-[46ch] text-base leading-relaxed lg:text-lg; }
   .wel-p strong { @apply block font-semibold; }
-  .wel-bill { @apply m-0 grid grid-cols-2 gap-3 rounded-md bg-white/6 p-5; }
+  .wel-bill { @apply m-0 grid grid-cols-2 gap-3; }
   .wel-bill dd { @apply m-0; }
   .wel-bill .tile.lock { @apply bg-on-field text-field; }
   .wel-bill .tile.lock .value { @apply text-field; }
   .wel-scroll { @apply flex items-center gap-2 text-sm opacity-80; }
   .wel-list { @apply m-0 grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2 xl:grid-cols-4; }
-  .wel-list li { @apply pl-4 text-base leading-relaxed lg:text-lg; box-shadow: inset 3px 0 0 currentColor; }
+  .wel-list li { @apply text-base leading-relaxed lg:text-lg; }
   .wel-list li strong { @apply mb-1 block font-semibold; }
   .wel-chart { @apply m-0 grid gap-2 rounded-md bg-surface p-4 text-ink; }
   .wel-chart svg { @apply block h-auto w-full overflow-visible; }
@@ -316,6 +328,23 @@
   .wel-pt.hi { fill: var(--risk-fill); }
   .wel-pt.lo { fill: var(--primary); }
   .wel-chart text { fill: var(--ink); font: 600 15px var(--font-sans); }
+  .wel-hero-chart svg { @apply block h-auto w-full overflow-visible; }
+  .hc-hist { fill: none; stroke: var(--on-field); stroke-opacity: .75; stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .hc-band { fill: var(--risk-fill); fill-opacity: .3; opacity: 0; }
+  .hc-lock { stroke: var(--field-accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .hc-ppp { stroke: var(--risk-fill); stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .hc-today, .hc-pay { stroke: var(--on-field); stroke-opacity: .3; stroke-width: 1; stroke-dasharray: 3 5; }
+  .hc-dot { fill: var(--on-field); }
+  .hc-end.lock { fill: var(--field-accent); opacity: 0; }
+  .hc-t { fill: var(--on-field); font: 500 15px var(--font-sans); }
+  .hc-t.strong { font-weight: 600; fill: var(--field-accent); }
+  .hc-t.risk { fill: var(--risk-fill); }
+  .hc-t.dim { fill-opacity: .7; }
+  .wel-sec.in .hc-hist { transition: stroke-dashoffset 1.4s var(--ease-out) .2s; stroke-dashoffset: 0; }
+  .wel-sec.in .hc-band { transition: opacity .8s ease 1.4s; opacity: 1; }
+  .wel-sec.in .hc-lock, .wel-sec.in .hc-ppp { transition: stroke-dashoffset .9s var(--ease-out) 1.3s; stroke-dashoffset: 0; }
+  .wel-sec.in .hc-end.lock { transition: opacity .3s ease 2.1s; opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .hc-hist, .hc-lock, .hc-ppp { stroke-dashoffset: 0; } .hc-band, .hc-end.lock { opacity: 1; } }
   .tryit { @apply grid gap-3 rounded-md bg-field p-6 text-on-field; }
   .tryit .row .btn { @apply flex-1; }
   .lockbtn { @apply bg-on-field text-field; }
@@ -325,10 +354,7 @@
   .wel-dots button { @apply grid size-7 cursor-pointer place-items-center border-0 bg-transparent p-0; }
   .wel-dots button::after { @apply size-2 rounded-xs bg-current opacity-35 transition content-['']; }
   .wel-dots button[aria-current]::after { @apply scale-150 opacity-100; }
-  .wel-sec .rise { @apply translate-y-6 opacity-0 transition duration-500 ease-out; transition-delay: calc(var(--i, 0) * 80ms); }
-  .wel-sec.in .rise { @apply translate-y-0 opacity-100; }
   @media (prefers-reduced-motion: reduce) {
-    .wel-sec .rise { @apply translate-y-0 opacity-100; }
     .wel-line { stroke-dashoffset: 0; }
   }
 

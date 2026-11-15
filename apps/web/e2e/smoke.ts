@@ -69,7 +69,7 @@ try {
   // M8 invalid inputs
   await enter(piH, "abc");
   expect("M8 abc", await txt(p, ".field.invalid .field-error"), "Enter a number.");
-  expect("M8 cards dimmed", await p.locator(".grid2.dim").count(), 1);
+  expect("M8 cards dimmed", await p.locator(".rates.dim").count(), 1);
   await enter(piH, "-150");
   expect("M8 -150", await txt(p, ".field.invalid .field-error"), "Inflation must be above −100%.");
   await enter(piH, "0.03");

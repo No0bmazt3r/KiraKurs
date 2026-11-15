@@ -33,7 +33,7 @@ export function Learn() {
       <div className="avatar" aria-hidden="true">A</div>
       <div className="stack"><p>{fl("learn.intro")}</p><p className="caption">{T["persona.tag"]}</p></div>
     </div>
-    <details className="maths"><summary><Icon name="book" />{T["learn.objTitle"]}</summary>
+    <details className="maths"><summary>{T["learn.objTitle"]}</summary>
       <div><ol>{L["learn.obj"]!.map((o) => <li key={o}>{o}</li>)}</ol></div></details>
     <ol className="steps card p-5">{[1, 2, 3, 4].map((k) => <li key={k} hidden={k > shown}>
       <Rich text={fl("learn.step" + k)} />
@@ -49,7 +49,7 @@ export function Learn() {
         value={committed} onChange={(id: string) => committed || setCommitted(id)} locked={!!committed} correct="up" />
       <Field label={T["lbl.piH"]!} raw={String(Number((piH * 100).toFixed(1)))} suffix="%" slider={{ min: 0, max: 6, step: 0.1 }}
         onInput={(x) => { const d = parsePct(x); if (Number.isFinite(d)) setPiH(d); }} />
-      <div className="card">
+      <div className="tile">
         <p className="small">{T["learn.pppMini"]}</p>
         {committed ? <>
           <Live as="div" className="value">{"RM " + vv.s["EPPP.4"]}</Live>

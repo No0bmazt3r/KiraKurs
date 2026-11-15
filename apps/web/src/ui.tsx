@@ -158,8 +158,8 @@ export function Feedback({ ok, text, onContinue, continueText = T["btn.continue"
   </div>;
 }
 
-export function Maths({ summary, open, icon = "calc", children }: { summary: string; open?: boolean; icon?: IconName; children: ReactNode }) {
-  return <details className="maths" open={open || undefined}><summary><Icon name={icon} />{summary}</summary><div>{children}</div></details>;
+export function Maths({ summary, open, children }: { summary: string; open?: boolean; icon?: IconName; children: ReactNode }) {
+  return <details className="maths" open={open || undefined}><summary>{summary}</summary><div>{children}</div></details>;
 }
 
 // ---- sheet (single <dialog>) and toast, driven by the store ----

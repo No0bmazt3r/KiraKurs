@@ -3,7 +3,7 @@ import { T, fill } from "@kirakurs/core/content";
 import { nominalFromReal, realRate } from "@kirakurs/core/engine";
 import { fx, signedPct, toPctInput } from "@kirakurs/core/format";
 import { useApp, setRaw, setLinked, setPreset, toast, useData, type RawKey } from "../store";
-import { Arrow, Badge, Card, Field, Icon, Kira, Live, Maths, Rich } from "../ui";
+import { Arrow, Badge, Field, Icon, Kira, Live, Maths, Rich } from "../ui";
 import { useMaths } from "../Shell";
 import { AskButton } from "./Ask";
 
@@ -27,7 +27,7 @@ export function InputsCard({ full = true }: { full?: boolean }) {
     toast(T["map.equalToast"]!);
   };
   return <section className="card inputs lg:sticky lg:top-20 lg:col-start-1 lg:row-start-1">
-    <h2 className="card-title"><Icon name="sliders" />{T["map.inputs"]}</h2>
+    <h2>{T["map.inputs"]}</h2>
     <label className="switch"><input type="checkbox" role="switch" checked={L} onChange={(e) => setLinked(e.target.checked)} />{T["map.linked"]}</label>
     {L && <p className="banner"><Icon name="info" />{T["map.linkedBanner"]}</p>}
     {field("piH")}{field("piF")}
@@ -54,27 +54,18 @@ export function MapScreen() {
         <section className="card lock tint-lock hero-card"><Live className={ok ? "hero-value" : "hero-value dim"}>{v.finite ? fl("map.hero") : T.outOfRange!}</Live><Badge /></section>
         <Kira inp={inp} />
         <p className="field-error" hidden={ok}>{T.fixInput}</p>
-        <div className={(ok ? "grid2" : "grid2 dim") + " sm:grid-cols-2 2xl:grid-cols-4"}>
-          <Card title={T["map.card.fwd"]!} variant="lock">
-            <div><Live as="span" className="value">{"RM " + v.s.F}</Live> <span className="unit">{fl("map.perUnit")}</span></div>
-            <div><Arrow dir={m.F >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} /></div>
-            <Rich className="small" text={fl("map.card.fwd.s")} />
-            <Live className="caption">{fl("map.fwd.bank")}</Live><Badge />
-          </Card>
-          <Card title={T["map.card.ppp"]!} variant="theory">
-            <Live as="div" className="value">{"RM " + v.s.EPPP}</Live>
-            <div><Arrow dir={m.EPPP >= inp.S ? "up" : "down"} words={fl("map.ppp.arrow")} /></div>
-            <Rich className="small" text={fl("map.card.ppp.s")} /><Badge />
-          </Card>
-          <Card title={T["map.card.ife"]!} variant="theory">
-            <div><Live as="span" className="value">{"RM " + v.s.EIFE}</Live> <span className="unit">{fl("map.perUnit")}</span></div>
-            <div><Arrow dir={m.EIFE >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} /></div>
-            <Rich className="small" text={fl("map.card.ife.s")} /><Badge />
-          </Card>
-          <Card title={T["map.card.real"]!}>
-            <Live as="div" className="value">{fl("map.card.real.v")}</Live><Rich className="small" text={fl("map.card.real.s")} /><Badge />
-          </Card>
-        </div>
+        <section className={"card rates" + (ok ? "" : " dim")} aria-label={T["map.ratesTitle"]}>
+          <h2>{T["map.ratesTitle"]}</h2>
+          <Rate title={T["map.card.fwd"]!} value={"RM " + v.s.F} unit={fl("map.perUnit")}
+            arrow={<Arrow dir={m.F >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} />}
+            text={fl("map.card.fwd.s")} note={fl("map.fwd.bank")} lock />
+          <Rate title={T["map.card.ppp"]!} value={"RM " + v.s.EPPP} unit={fl("map.perUnit")}
+            arrow={<Arrow dir={m.EPPP >= inp.S ? "up" : "down"} words={fl("map.ppp.arrow")} />} text={fl("map.card.ppp.s")} />
+          <Rate title={T["map.card.ife"]!} value={"RM " + v.s.EIFE} unit={fl("map.perUnit")}
+            arrow={<Arrow dir={m.EIFE >= inp.S ? "up" : "down"} words={fl("map.fwd.arrow")} />} text={fl("map.card.ife.s")} />
+          <Rate title={T["map.card.real"]!} value={fl("map.card.real.v")} text={fl("map.card.real.s")} />
+          <Badge />
+        </section>
         <Rich className="small" text={Math.abs(m.parityGapPP) < 1e-9 ? T["map.gapZero"]! : fl("map.gap")} />
       </div>
       <InputsCard />
@@ -94,5 +85,13 @@ export function MapScreen() {
     </Maths>
     <Maths summary={T["map.explainQ"]!} icon="info"><p>{T["map.explainA"]}</p></Maths>
     <AskButton />
+  </div>;
+}
+
+// One row of the reference-rates table: name and explanation on the left, the figure right-aligned.
+function Rate({ title, value, unit, arrow, text, note, lock }: { title: string; value: string; unit?: string; arrow?: React.ReactNode; text: string; note?: string; lock?: boolean }) {
+  return <div className={"rate" + (lock ? " lock" : "")}>
+    <div className="rate-text"><h3>{title}</h3><Rich className="small" text={text} />{note && <Live className="caption">{note}</Live>}</div>
+    <div className="rate-fig"><Live as="div" className="value">{value}</Live>{unit && <span className="unit">{unit}</span>}{arrow}</div>
   </div>;
 }
