@@ -58,7 +58,7 @@ export function Precheck() {
     {phase === "done" && <div key="done" className={"grid justify-items-start gap-6 " + enter}>
       <h1>{T["pre.h1"]}</h1>
       <p className={cn(tw.value)}>{T["pre.done"]}</p>
-      <button className={cn(tw.btn, tw.primary, tw.big)} type="button" autoFocus onClick={() => go("learn")}>{T["btn.continue"]}<Icon name="right" /></button>
+      <button className={cn(tw.btn, tw.primary, tw.big, "justify-self-end")} type="button" autoFocus onClick={() => go("learn")}>{T["btn.continue"]}<Icon name="right" /></button>
     </div>}
   </div>;
 }

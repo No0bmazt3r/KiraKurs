@@ -44,7 +44,7 @@ export function Learn() {
       {k === 3 && <Rich className={cn(tw.formula)} text={fl("map.m.fwd")} />}
     </li>)}</ol>
     <Badge preset="snapshot" />
-    {shown < 4 && <button className={cn(tw.btn, tw.secondary, "justify-self-start")} type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}</button>}
+    {shown < 4 && <button className={cn(tw.btn, tw.secondary, "justify-self-end")} type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}<Icon name="right" /></button>}
     </div>
     {shown < 4 && <div className="fig-slot self-center max-xl:hidden"><AinaFigure /></div>}
     <section className={cn(tw.card, "theory")} hidden={shown < 4}>

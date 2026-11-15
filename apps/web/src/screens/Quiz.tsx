@@ -56,7 +56,7 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
         <p className={cn(tw.label, "mt-2")}>{T["pre.confidence"]}</p>
         <Choices seg label={T["pre.confidence"]!} options={[["1", T["pre.conf1"]!], ["2", T["pre.conf2"]!], ["3", T["pre.conf3"]!]]} value={conf} onChange={setConf} />
         {checked && <Feedback ok={ok} text={msg} />}
-        <button className={cn(tw.btn, tw.primary, "justify-self-start")} type="button" disabled={!ready} onClick={next}>
+        <button className={cn(tw.btn, tw.primary, "justify-self-end")} type="button" disabled={!ready} onClick={next}>
           {withFeedback && !checked ? T["btn.check"] : <>{T["btn.next"]}<Icon name="right" /></>}
         </button>
       </div>

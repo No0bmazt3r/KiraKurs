@@ -198,7 +198,7 @@ export function Feedback({ ok, text, onContinue, continueText = T["btn.continue"
   return <div className={cn(tw.feedback, ok ? "ok text-success" : "no text-danger")} role="status">
     <div className="flex items-center gap-2 font-semibold"><Icon name={ok ? "ok" : "no"} />{T[ok ? "fb.correct" : "fb.wrong"]}</div>
     <p>{text}</p>
-    {onContinue && <button className={cn(tw.btn, tw.primary)} type="button" autoFocus onClick={onContinue}>{continueText}<Icon name="right" /></button>}
+    {onContinue && <button className={cn(tw.btn, tw.primary, "justify-self-end")} type="button" autoFocus onClick={onContinue}>{continueText}<Icon name="right" /></button>}
   </div>;
 }
 

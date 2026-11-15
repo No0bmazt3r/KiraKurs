@@ -20,7 +20,7 @@ export function Predict() {
     <div className={cn(tw.stack)}>
     <Choices label={T["predict.h1"]!} options={(["up", "down", "same"] as const).map((k) => [k, T["predict." + k]!])}
       value={picked} onChange={setPicked} locked={checked} correct="up" />
-    {!checked && <button className={cn(tw.btn, tw.primary)} type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
+    {!checked && <button className={cn(tw.btn, tw.primary, "justify-self-end")} type="button" disabled={!picked} onClick={check}>{T["btn.check"]}</button>}
     {checked && picked && <Feedback ok={picked === "up"} text={fill(T["predict.fb." + picked]!, v)}
       onContinue={() => { set({ unlocked: true }); go("map"); }} />}
     <p className={cn(tw.caption)}>{T["predict.note"]}</p>
