@@ -173,7 +173,7 @@ export const PRESETS = {
     S:4.50, T:12000, n:365, iH:0.03, iF:0.045, piH:0.02, piF:0.03, q10:null, q90:null,
     badge:"Classroom: illustrative numbers" },
   snapshot: { id:"snapshot", label:"Scenario 2 · Snapshot 6 Nov 2026", kind:"dated", ccy:"USD",
-    S:4.0565, T:12000, n:270, iH:0.0275, iF:0.03875, piH:0.018, piF:0.037, q10:-0.071662, q90:0.068668,
+    S:4.0565, T:12000, n:270, iH:0.0275, iF:0.03875, piH:0.018, piF:0.037, q10:-0.07166234059361243, q90:0.06866828786747892, // full precision (band.py); 4-dp rounding shifts range lo by RM 0.02
     badge:"Snapshot: FX 6 Nov · OPR 5 Nov · Fed 28 Oct · CPI Sep 2026 (released Oct) · not live",
     sources:[ /* ref ids from CONTENT.md §9 */ ] },
   // stretch: gbpClassroom, audClassroom (illustrative, from idea §3)
