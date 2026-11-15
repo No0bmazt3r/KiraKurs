@@ -4,6 +4,7 @@ import { T, QUIZ, fill, makeVars } from "@kirakurs/core/content";
 import { PRESETS } from "@kirakurs/core/presets";
 import { itemScore, type Answer, type Answers, type Form } from "@kirakurs/core/quiz";
 import { Choices, Feedback, Icon } from "../ui";
+import { ThinkFigure } from "../figures";
 
 const v = makeVars(PRESETS.snapshot);
 
@@ -32,24 +33,32 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
     else onDone(answers.current);
   };
 
-  return <div key={i} className="grid items-start gap-5 lg:grid-cols-2 animate-[slide-in_420ms_var(--ease-out)_both]">
-    <div className="stack">
-    <div className="row">
-      <div className="dots" aria-hidden="true">{items.map((_, k) => <span key={k} className={k <= i ? "on" : ""} />)}</div>
-      <span className="small">{fill(T["pre.dots"]!, { s: { qn: String(i + 1), qtotal: String(items.length) }, num: {} })}</span>
-    </div>
-    <h2 ref={stemRef} tabIndex={-1}>{stem}</h2>
-    {q.pick2 && <p className="small">{T["pre.pickTwo"]}</p>}
-    </div>
-    <div className="stack">
-    <Choices key={q.id} label={stem} options={q.options} multi={q.pick2 ? 2 : 1} value={answer} onChange={setAnswer}
-      locked={checked} correct={q.pick2 ? q.correctSet : q.correct} />
-    <p className="label">{T["pre.confidence"]}</p>
-    <Choices seg label={T["pre.confidence"]!} options={[["1", T["pre.conf1"]!], ["2", T["pre.conf2"]!], ["3", T["pre.conf3"]!]]} value={conf} onChange={setConf} />
-    {checked && <Feedback ok={ok} text={msg} />}
-    <button className="btn primary" type="button" disabled={!ready} onClick={next}>
-      {withFeedback && !checked ? T["btn.check"] : <>{T["btn.next"]}<Icon name="right" /></>}
-    </button>
+  // Container query: two columns only when the quiz itself is wide (full-page Pre-check), one column inside the Check card.
+  return <div className="@container">
+    <div key={i} className="grid items-stretch gap-5 @3xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] @3xl:gap-8 animate-[slide-in_420ms_var(--ease-out)_both]">
+      <div className="grid content-between gap-6 rounded-md bg-surface-2 p-5 @3xl:p-7">
+        <div className="grid gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-line" aria-hidden="true">
+              <div className="h-full rounded-sm bg-primary transition-[width] duration-500 ease-out" style={{ width: `${((i + 1) / items.length) * 100}%` }} />
+            </div>
+            <span className="text-sm text-muted tabular-nums">{fill(T["pre.dots"]!, { s: { qn: String(i + 1), qtotal: String(items.length) }, num: {} })}</span>
+          </div>
+          <h2 ref={stemRef} tabIndex={-1} className="text-xl leading-snug @3xl:text-2xl">{stem}</h2>
+          {q.pick2 && <p className="text-sm text-muted">{T["pre.pickTwo"]}</p>}
+        </div>
+        <div className="hidden max-w-[16rem] @3xl:block"><ThinkFigure /></div>
+      </div>
+      <div className="grid content-start gap-3">
+        <Choices key={q.id} label={stem} options={q.options} multi={q.pick2 ? 2 : 1} value={answer} onChange={setAnswer}
+          locked={checked} correct={q.pick2 ? q.correctSet : q.correct} />
+        <p className="label mt-2">{T["pre.confidence"]}</p>
+        <Choices seg label={T["pre.confidence"]!} options={[["1", T["pre.conf1"]!], ["2", T["pre.conf2"]!], ["3", T["pre.conf3"]!]]} value={conf} onChange={setConf} />
+        {checked && <Feedback ok={ok} text={msg} />}
+        <button className="btn primary justify-self-start" type="button" disabled={!ready} onClick={next}>
+          {withFeedback && !checked ? T["btn.check"] : <>{T["btn.next"]}<Icon name="right" /></>}
+        </button>
+      </div>
     </div>
   </div>;
 }
