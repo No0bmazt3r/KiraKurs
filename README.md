@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.png">
+    <img alt="KiraKurs logo: a lock and an hourglass where a straight lock path and a wavy wait path cross" src="docs/assets/logo-light.png" width="120">
+  </picture>
+</p>
+
 <h1 align="center">KiraKurs</h1>
 
 <p align="center">
