@@ -1,34 +1,33 @@
 # ARCHITECTURE.md
 
-The app is a single-page static web app: plain HTML, one stylesheet and ES modules. There is no build step. The guiding rule is
-the fewest files that keep the engine, the copy and the UI separate.
+The app is a single-page static web app built with Vite + React + TypeScript, in a pnpm workspace with a small API. The guiding
+rule is the fewest files that keep the engine, the copy and the UI separate. `pnpm dev` runs the web app and the API together.
 
 ## 1. File tree
 ```
 KiraKurs/
-├── index.html                 app shell: header, <main id="view">, sticky action bar, tab bar, footer, dialogs
-├── styles.css                 §1 tokens · §2 base · §3 layout · §4 components · §5 screens · §6 utilities (DESIGN.md)
-├── js/
-│   ├── engine.mjs             finance only (ENGINE.md). Pure. No imports.
-│   ├── presets.js             PRESETS data (ENGINE.md §9)
-│   ├── format.js              Intl formatting, % ↔ decimal, signed values, input parsing
-│   ├── content.js             ALL user-facing copy and templates (mirrors CONTENT.md)
-│   ├── store.js               state + subscribe + localStorage persistence (try/catch)
-│   ├── router.js              hash router: #/precheck #/learn #/predict #/map #/coach #/check
-│   ├── ui.js                  small DOM helpers + components (card, badge, tooltip, slider, segmented, sheet, toast)
-│   ├── chart.js               inline-SVG line chart for "C − A against Malaysian inflation"
-│   ├── icons.js               inline SVG strings (Lucide, ISC licence), ~12 icons
-│   ├── app.js                 boot: read URL, init store, mount shell, start router
-│   └── screens/
-│       ├── precheck.js  learn.js  predict.js  map.js  coach.js  check.js
-│       └── limits.js          "How far can I trust this?" sheet (opened from any screen)
-├── test/
-│   ├── engine.test.mjs        golden values + identities + validation (ENGINE.md §7–8)
-│   ├── content.test.mjs       wording guard ("today" near Snapshot), placeholder coverage
-│   └── engine.version.json
-├── assets/                    favicon.svg, og-image.png (poster screenshot later)
-├── manifest.webmanifest       (stretch: PWA)
-├── sw.js                      (stretch: PWA)
+├── package.json  pnpm-workspace.yaml  tsconfig.base.json  vitest.config.ts
+├── packages/core/             pure TypeScript, shared by web and API, no runtime deps
+│   ├── src/engine.ts          finance only (ENGINE.md). Pure. No imports.
+│   ├── src/presets.ts         PRESETS data (ENGINE.md §9)
+│   ├── src/format.ts          Intl formatting, % ↔ decimal, signed values
+│   ├── src/content.ts         ALL user-facing copy and templates (mirrors CONTENT.md) + makeVars/fill
+│   ├── src/quiz.ts            quiz scoring and result code
+│   ├── src/ask.ts             Ask ids + PII guard (shared with the API)
+│   └── test/                  engine / content / format tests (Vitest) + engine.version.json
+├── apps/web/                  Vite + React
+│   ├── index.html  public/favicon.svg  vite.config.ts (proxy /api → :8787)
+│   ├── src/main.tsx           boot: legacy ?preset= links, free mode, TanStack Router (hash history)
+│   ├── src/Shell.tsx          top bar, tabs, progress, action bar, footer
+│   ├── src/store.ts           Zustand store + persist (localStorage, try/catch), raw → engine inputs, useData()
+│   ├── src/ui.tsx             Icon, Field, Choices, Feedback, Badge, Rich (glossary), Sheet, Toast
+│   ├── src/chart.tsx          inline-SVG chart "C − A against Malaysian inflation"
+│   ├── src/icons.ts           Lucide SVG bodies (ISC licence)
+│   ├── src/styles.css         tokens · base · layout · components (DESIGN.md)
+│   ├── src/screens/           Precheck Learn Predict Map Coach Check Quiz Ask (.tsx)
+│   └── e2e/smoke.mjs          headless-Chrome smoke test (`pnpm e2e`)
+├── apps/api/                  Cloudflare Worker: src/index.ts, test.ts, wrangler.toml, .dev.vars.example
+├── .github/workflows/pages.yml  typecheck + test + build → GitHub Pages
 ├── AGENTS.md  README.md  LICENSE
 └── docs/                      these specs
 ```
@@ -95,13 +94,15 @@ One chart: **C − A (y, RM) against Malaysian inflation % (x, 0–6%)**, for th
 - `role="img"` + `aria-label` summary + a visually-hidden `<table>` of the 5 sensitivity rows.
 
 ## 7. Deployment
-- GitHub Pages from `main`, root folder. All paths are **relative** (`./js/app.js`), because Pages serves under `/KiraKurs/`.
-- Before each deploy: `node --test` passes, `ENGINE_VERSION` bumped if the engine changed.
+- GitHub Pages via GitHub Actions (`.github/workflows/pages.yml`): on push to `main` it runs typecheck, tests and `pnpm build`,
+  then publishes `apps/web/dist`. Vite `base: "./"` + hash routing, so it works under `/KiraKurs/`. Settings → Pages → Source:
+  "GitHub Actions".
+- Before each push: `pnpm test` and `pnpm e2e` pass, `ENGINE_VERSION` bumped if the engine changed.
 - (Stretch) PWA: `sw.js` caches the app shell named `kirakurs-${ENGINE_VERSION}`; a new version shows the toast
   "Update available, reload".
-- (Stretch) AI router: a separate Cloudflare Worker in `worker/` (`wrangler deploy`), calling Groq. See idea §10. Set `ASK_URL` in
-  `js/ask.js` to the Worker URL; while it is empty the Ask button is hidden. The client gets `{explanation_id}` only, and renders the
-  template from content.js with `textContent`.
+- (Stretch) AI router: the Cloudflare Worker in `apps/api` (`pnpm --filter api deploy`), calling Groq. See idea §10. Set the repo
+  variable `VITE_ASK_URL` to the Worker URL; while it is empty the production Ask button is hidden (in `pnpm dev` it uses `/api/ask`). The client gets `{explanation_id}` only, and renders the
+  template from content.ts as React text (never `dangerouslySetInnerHTML`).
 
 ## 8. Security and privacy
 No accounts, no analytics, no cookies, no network calls (except Google Fonts, and the optional Ask Worker, which receives only the typed question). Quiz answers stay in localStorage. A "Clear my data"

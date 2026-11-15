@@ -19,18 +19,20 @@ disagree, **these documents win** (they are newer and were reconciled against th
 8. `docs/TESTING.md`: what to test, how to log results honestly.
 
 ## Non-negotiable rules
-1. **Every number shown to a user comes from `js/engine.mjs`.** No number is hard-coded in HTML, CSS, copy templates or the
+1. **Every number shown to a user comes from `packages/core/src/engine.ts`.** No number is hard-coded in HTML, CSS, copy templates or the
    AI. Copy uses `{{placeholders}}` filled from engine output (see CONTENT.md §0).
-2. **Write the engine and its tests first.** `node --test` must pass before you build any screen that shows a number.
-3. **Full precision inside, round only at display**, using `js/format.js` (ENGINE.md §6). Never round and then reuse.
-4. **Rates are decimals inside the engine** (0.0275), **percent in the UI** (2.75). Convert only in `js/format.js` and the input
+2. **Write the engine and its tests first.** `pnpm test` must pass before you build any screen that shows a number.
+3. **Full precision inside, round only at display**, using `packages/core/src/format.ts` (ENGINE.md §6). Never round and then reuse.
+4. **Rates are decimals inside the engine** (0.0275), **percent in the UI** (2.75). Convert only in `format.ts` and the input
    parser. Mixing these is the single most common fatal error.
 5. **Quote convention everywhere: S = MYR per 1 unit of foreign currency.** "↑ = ringgit weaker" sits beside every FX output.
 6. **The Snapshot data is dated, frozen and not live.** Never write "today", "current", "latest" or "live" next to a Snapshot
    value. Say "the 6 Nov rate". "Now" appears only in "set aside now" / "convert now" (Aina's decision moment). Every card and
    chart carries the data badge (DESIGN.md §5.6). A test enforces this (CONTENT.md §0).
-7. **No dependencies, no build step, no framework.** Plain HTML + CSS + ES modules. Inline SVG for the chart and icons. The only
-   external requests allowed are Google Fonts and (stretch) the Ask Worker in `worker/`, and the app must look fine if fonts fail to load.
+7. **Small, fixed stack.** pnpm workspace: `packages/core` (engine, format, copy, presets, quiz scoring; pure TypeScript, no
+   runtime deps), `apps/web` (Vite + React + TypeScript, TanStack Router with hash history, Zustand, one global `styles.css`),
+   `apps/api` (Cloudflare Worker). Strict TypeScript. No UI kit, no CSS framework, no chart library: inline SVG for the chart and
+   icons. The only external requests allowed are Google Fonts and (stretch) the Ask API, and the app must look fine if fonts fail.
 8. **Accessibility is part of done:** visible labels, keyboard operable, focus visible, contrast ≥ 4.5:1, `prefers-reduced-motion`
    honoured, works at 375 px wide with no horizontal scroll.
 9. **Do not fabricate evidence.** Never write test results, survey numbers, user quotes or "verified" chips that did not come from a
@@ -41,10 +43,16 @@ disagree, **these documents win** (they are newer and were reconciled against th
 
 ## Run
 ```
-python3 -m http.server 8000      # then open http://localhost:8000  (ES modules do not load from file://)
-node --test                      # runs test/*.test.mjs
+pnpm install       # once (Node ≥ 20, pnpm via `corepack enable`)
+pnpm dev           # web on http://localhost:5173 + API (wrangler dev) on :8787, one command
+pnpm test          # Vitest: engine, content, format, quiz, API
+pnpm typecheck     # strict TypeScript, all packages
+pnpm e2e           # build + headless-Chrome smoke test (golden numbers on screen, 375 px, themes, deep links)
+pnpm build         # apps/web/dist
 ```
+For the Ask feature locally, copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars` and add a Groq key (never commit it).
+Without a key the API runs and always returns the topic menu.
 
 ## Definition of done (whole app)
-All TASKS.md "must" tasks ticked, `node --test` green, TESTING.md manual checklist run and **logged as observed**, deployed to
+All TASKS.md "must" tasks ticked, `pnpm test`, `pnpm typecheck` and `pnpm e2e` green, TESTING.md manual checklist run and **logged as observed**, deployed to
 GitHub Pages, and the G1–G7 + Snapshot values on screen match ENGINE.md §7 on both a phone and a laptop.

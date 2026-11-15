@@ -7,9 +7,15 @@ exchange rates (IRP, PPP, Fisher/IFE) to one decision: **lock the rate now, or w
 GFB3043/GEB3043 International Financial Management, FinBridge AI project.
 
 ```
-python3 -m http.server 8000     # open http://localhost:8000
-node --test                     # engine, content and format tests
+pnpm install       # once (Node ≥ 20, pnpm via `corepack enable`)
+pnpm dev           # web on http://localhost:5173 + API (wrangler dev) on :8787, one command
+pnpm test          # Vitest: engine, content, format, quiz, API
+pnpm typecheck     # strict TypeScript, all packages
+pnpm e2e           # build + headless-Chrome smoke test (golden numbers on screen, 375 px, themes, deep links)
+pnpm build         # apps/web/dist
 ```
+For the Ask feature locally, copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars` and add a Groq key (never commit it).
+Without a key the API runs and always returns the topic menu.
 
 Snapshot data is dated 6 Nov 2026 and is **not live**. Classroom data is illustrative. Parity theory, not a prediction. Not
 financial advice.

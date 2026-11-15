@@ -3,14 +3,16 @@
 **Rule: log results exactly as observed, including failures.** Never pre-write a result. If a test was not run, write "not conducted".
 The log lives in `../evidence/test-log.md` (date, who, what, command/device, result).
 
-## 1. Automated (`node --test`)
+## 1. Automated (`pnpm test` = Vitest, `pnpm e2e` = browser smoke test)
 | File | Covers |
 |---|---|
-| `test/engine.test.mjs` | G1–G7 · Scenario 1 · Scenario 2 (1-yr and 270-day) · Sensitivity 1 (5 rows) · Sensitivity 2 (linked) · range, split, margin, allowance · identities ENGINE §8 on ≥ 200 random valid input sets × n ∈ {1, 90, 270, 365, 1000} · validation (each rule + hint + out-of-range) · version guard |
-| `test/content.test.mjs` | Wording guard (CONTENT §0) on every Snapshot-capable string · every `{{placeholder}}` has a resolver · tooltips ≤ 15 words · card sentences ≤ 30 words |
-| `test/format.test.mjs` | "2,75" → 0.0275 · "3.875%" → 0.03875 · minus sign U+2212 · RM grouping `en-MY` · 0 dp vs 2 dp |
+| `packages/core/test/engine.test.ts` | G1–G7 · Scenario 1 · Scenario 2 (1-yr and 270-day) · Sensitivity 1 (5 rows) · Sensitivity 2 (linked) · range, split, margin, allowance · identities ENGINE §8 on ≥ 200 random valid input sets × n ∈ {1, 90, 270, 365, 1000} · validation (each rule + hint + out-of-range) · version guard |
+| `packages/core/test/content.test.ts` | Wording guard (CONTENT §0) on every Snapshot-capable string · every `{{placeholder}}` has a resolver · tooltips ≤ 15 words · card sentences ≤ 30 words |
+| `packages/core/test/format.test.ts` | "2,75" → 0.0275 · "3.875%" → 0.03875 · minus sign U+2212 · RM grouping `en-MY` · 0 dp vs 2 dp |
 
-Test style: `node:test` + `node:assert/strict`. Values: `assert.equal(round(x, dp), expected)` using the display precision in
+Also `apps/api/test.ts` (PII guard, Ask ids, Worker origin/limits/fallbacks, quiz scoring) and `apps/web/e2e/smoke.mjs` (M3–M8
+numbers on screen at 375 px, no sideways scroll, dark theme, deep links, sheets). The smoke test is automated, not the manual
+checklist below. Test style: Vitest `test` + `node:assert/strict`. Values: `assert.equal(round(x, dp), expected)` using the display precision in
 ENGINE §7. Identities: `assert.ok(Math.abs(a/b − 1) < 1e-9)`. Record the pass line (e.g. `# pass 63`) in the test log and show it in
 the video.
 

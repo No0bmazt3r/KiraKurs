@@ -11,14 +11,14 @@ whose message starts with its ID.
 | ID | Task | Owner | Box | Done when |
 |---|---|---|---|---|
 | S0 | Fill the team table in `../idea.md` §1 (names, IDs, programmes, group no., leader) | All | 15 m | No `[TO FILL]` left |
-| S1 | Repo skeleton: index.html shell, styles.css §1 tokens + §2 base, empty modules per ARCHITECTURE §1, README | M1 | 45 m | `python3 -m http.server` shows the shell with header/footer, light+dark |
-| E1 | `engine.mjs`: conventions, forward, forwardBank, premium, ppp, ife, Fisher, breakEven, linkRates | M1 | 1 h | G1–G7 tests pass |
+| S1 | Repo skeleton: index.html shell, styles.css §1 tokens + §2 base, empty modules per ARCHITECTURE §1, README | M1 | 45 m | `pnpm dev` shows the shell with header/footer, light+dark |
+| E1 | `engine.ts`: conventions, forward, forwardBank, premium, ppp, ife, Fisher, breakEven, linkRates | M1 | 1 h | G1–G7 tests pass |
 | E2 | `parityMap`, `coach` (A/B/C, range, split, margin), `allowance`, `sensitivity` | M1 | 1.5 h | Every ENGINE §7.2–7.5 value asserted and passing |
-| E3 | Identity tests (ENGINE §8) on a random grid; `validate()` + its tests; version guard | M1 | 1 h | `node --test` green, ≥ 40 assertions |
+| E3 | Identity tests (ENGINE §8) on a random grid; `validate()` + its tests; version guard | M1 | 1 h | `pnpm test` green, ≥ 40 assertions |
 | E4 | `presets.js`, `format.js` (+ tests for formatting/parsing "2,75", "%", minus sign) | M1 | 45 m | Format tests pass |
 | C1 | `content.js` from CONTENT.md; `content.test.mjs` wording guard + every `{{placeholder}}` resolvable | M4 | 1.5 h | Test passes; no copy outside content.js |
-| U1 | `ui.js` components: Card, Badge, Tooltip, Slider, NumberField, Segmented, Sheet, Toast, Arrow | M2 | 2 h | Components page `#/dev` (removed before deploy) renders all states |
-| U2 | `store.js` + `router.js` + app shell behaviour (guided vs free, progress, tab bar, focus on route change) | M3 | 1.5 h | Back/forward work; deep link `?preset=classroom#/map` works |
+| U1 | `ui.tsx` components: Card, Badge, Tooltip, Slider, NumberField, Segmented, Sheet, Toast, Arrow | M2 | 2 h | Components page `#/dev` (removed before deploy) renders all states |
+| U2 | `store.ts` (Zustand) + TanStack Router + app shell behaviour (guided vs free, progress, tab bar, focus on route change) | M3 | 1.5 h | Back/forward work; deep link `?preset=classroom#/map` works |
 | P3 | Screen 3 Parity Map: beginner cards, inputs, linked mode, equal-real-rates, show the maths | M2 | 3 h | Snapshot shows F 4.0240 / PPP 4.0014 / IFE 4.0240 / real 0.93 vs 0.17 at n = 270; linked mode moves i fields |
 | P4 | Screen 4 Coach: hero tiles, range bar, verdict, split slider, fees, spot line, access note | M3 | 3 h | A 47,328 · C 47,063 · range 44,292–50,987 · split 50% numbers match |
 | P4b | Coach chart (`chart.js`) + allowance card | M2/M3 | 2 h | Break-even marked at 2.58%; allowance RM 6,165.58 / 6,250.50 |
@@ -43,7 +43,7 @@ whose message starts with its ID.
 ## Stretch (only after every must task is done)
 | ID | Task | Box |
 |---|---|---|
-| X-AI | Ask KiraKurs: Worker (`worker/ask.js`) → Groq `openai/gpt-oss-20b`; M5 makes the Groq account + Worker secret; set `ASK_URL` (idea §10). Build first, after D1; cut at 20:00 16 Nov | 3 h |
+| X-AI | Ask KiraKurs: Worker (`apps/api/src/index.ts`) → Groq `openai/gpt-oss-20b`; M5 makes the Groq account + Worker secret; set repo variable `VITE_ASK_URL` (idea §10). Build first, after D1; cut at 20:00 16 Nov | 3 h |
 | X-PWA | manifest + sw.js + update toast | 1 h |
 | X-CCY | GBP and AUD classroom presets | 45 m |
 

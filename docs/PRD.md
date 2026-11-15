@@ -30,7 +30,7 @@ After using KiraKurs, a learner can:
 ### 4.1 Must-build (graded; without these the project is capped)
 | ID | Feature | Notes |
 |---|---|---|
-| M-E | Engine `js/engine.mjs` + `test/engine.test.mjs` | ENGINE.md. Zero dependencies. |
+| M-E | Engine `packages/core/src/engine.ts` + `packages/core/test/engine.test.ts` | ENGINE.md. Zero dependencies. |
 | M-0 | Screen 0: Pre-check quiz (form A/B, counterbalanced) | 8 items, ~2 min, skippable |
 | M-1 | Screen 1: Learn, Aina's story (4-step worked example + completion step) | "Skip to Parity Map" link |
 | M-2 | Screen 2: Predict (direction question, misconception feedback, revealed in the Coach) | |
@@ -46,7 +46,7 @@ After using KiraKurs, a learner can:
 1. **GBP and AUD Classroom presets.**
 2. **PWA**: manifest + service worker + "Update available" prompt.
 3. **AI router "Ask KiraKurs"**: enum-only explanation picker (idea §10) on Groq (`openai/gpt-oss-20b`) via a Cloudflare Worker.
-   First stretch task to *build* (after D1, 3 h box); dropped if not working by 20:00 on 16 Nov. Hidden unless `ASK_URL` is set.
+   First stretch task to *build* (after D1, 3 h box); dropped if not working by 20:00 on 16 Nov. Hidden in production unless `VITE_ASK_URL` is set.
 4. (Never cut below this line without telling the team.) Allowance card, split slider.
 
 ### 4.3 Out of scope
@@ -66,13 +66,13 @@ teacher dashboard. (These are listed as future work on the poster.)
 | U8 | As a keyboard / screen-reader user, I can complete the flow | Tab order follows visual order; sliders have labels + live value text; result changes are announced politely |
 
 ## 6. Success measures (report what is observed, or "not conducted")
-- Engine: all golden tests pass (`node --test`).
+- Engine: all golden tests pass (`pnpm test`).
 - Learning: pre vs post % correct per quiz item, with confidence; n reported; no inferential claims.
 - Usability: think-aloud with ≥ 5 students; task success for U1, U3, U4; issues logged.
 - Parity: phone and laptop show identical G1–G7 and Snapshot values.
 
 ## 7. Constraints
-- Plain HTML/CSS/JS ES modules, no build, no npm dependencies (Node ≥ 20 only for `node --test`).
+- Vite + React + strict TypeScript in a pnpm workspace (core / web / api); engine has zero runtime dependencies.
 - Works offline-ish (no network calls except fonts); loads in < 1 s on 4G; total JS < 60 KB unminified.
 - English only. Currency formatting `en-MY`.
 - Repository: `github.com/No0bmazt3r/KiraKurs`, deployed from `main` with GitHub Pages.

@@ -1,7 +1,7 @@
-# ENGINE.md: finance engine spec (`js/engine.mjs`)
+# ENGINE.md: finance engine spec (`packages/core/src/engine.ts`)
 
-The engine is the only place where finance is computed. It is a pure ES module: no DOM, no I/O, no randomness, no dependencies.
-The browser imports it and `node --test` imports it. Everything here is checked against `verify_finance.py` and
+The engine is the only place where finance is computed. It is a pure TypeScript module: no DOM, no I/O, no randomness, no dependencies.
+The web app, the API and Vitest import it. Everything here is checked against `verify_finance.py` and
 `../evidence/fx/band.py`.
 
 ## 1. Conventions
@@ -40,7 +40,7 @@ The browser imports it and `node --test` imports it. Everything here is checked 
 
 ## 3. Public API (named exports)
 ```js
-export const ENGINE_VERSION = "1.0.0";           // bump on ANY change to this file (test enforces it)
+export const ENGINE_VERSION = "1.1.0";           // bump on ANY change to this file (test enforces it)
 
 export function yearFrac(n)                       // n/365
 export function forward({ S, iH, iF, t })         // number
@@ -97,7 +97,7 @@ allowance(inp, T0) => { usd, EPPP, rmPPP, naive, A, C, diff }
 - Accept "2,75" → treat a single comma as a decimal point **only** if there is no dot; strip spaces and "%".
 - After compute: if any output is not `Number.isFinite`, the card shows "Result out of range: check the inputs."
 
-## 6. Formatting (`js/format.js`, not the engine)
+## 6. Formatting (`format.ts`, not the engine)
 | Kind | Beginner view | "Show the maths" |
 |---|---|---|
 | MYR amount | `RM 47,328` (0 dp) | `RM 47,328.10` (2 dp) |
@@ -166,7 +166,7 @@ iH 4.9705% · F₁ 4.0993 (+1.0547%) · e_ppp +0.2893%, E_ppp 4.0682 · e_ife +1
 8. Linked mode: changing πH leaves `C_ppp − A` unchanged
 9. `forwardBank` ≠ `forward` for n < 365 (difference shown, not hidden)
 
-## 9. Presets (`js/presets.js`, data only)
+## 9. Presets (`presets.ts`, data only)
 ```js
 export const PRESETS = {
   classroom: { id:"classroom", label:"Scenario 1 · Classroom", kind:"illustrative", ccy:"USD",
@@ -182,5 +182,5 @@ export const PRESETS = {
 Changing a preset value requires a new dated preset id. **Never edit `snapshot` in place.**
 
 ## 10. Version guard
-`test/engine.version.json` = `{ "version": "1.0.0", "sha256": "<hash of js/engine.mjs>" }`. The test recomputes the hash and fails
+`packages/core/test/engine.version.json` = `{ "version": "1.1.0", "sha256": "<hash of engine.ts>" }`. The test recomputes the hash and fails
 if the hash changed but the version did not. Update both together. The footer shows `ENGINE_VERSION`.
