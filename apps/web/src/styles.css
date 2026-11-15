@@ -441,6 +441,14 @@
 /* motion: page cross-fade (View Transitions), smooth accordions, skeleton shimmer. All off under reduced motion. */
 /* page motion: the screen slides in the direction of travel and the page title glides between screens */
 main { view-transition-name: main; }
+/* bars get their own layers: they stay put and stay above the sliding content (mobile tab bar was covered) */
+.topbar { view-transition-name: topbar; }
+.tabs { view-transition-name: tabs; }
+.actionbar { view-transition-name: actionbar; }
+::view-transition-group(topbar), ::view-transition-group(tabs), ::view-transition-group(actionbar) { z-index: 50; animation: none; }
+::view-transition-old(topbar), ::view-transition-new(topbar), ::view-transition-old(tabs), ::view-transition-new(tabs),
+::view-transition-old(actionbar), ::view-transition-new(actionbar) { animation: none; }
+::view-transition-old(tabs), ::view-transition-old(topbar), ::view-transition-old(actionbar) { display: none; }
 main h1 { view-transition-name: title; }
 ::view-transition-old(main) { animation: 220ms ease-in both vt-out-l; }
 ::view-transition-new(main) { animation: 460ms var(--ease-out) both vt-in-r; }
