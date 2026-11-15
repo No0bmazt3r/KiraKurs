@@ -227,7 +227,7 @@ export const T: Record<string, string> = {
   "kira.what.iF": "{{country}} interest", "kira.what.rH": "the Malaysian real rate", "kira.what.rF": "the {{country}} real rate",
   "kira.what.n": "the days until payment", "kira.what.T": "the amount",
 
-  // Play: missions + Fee Day + share card
+  // Play: missions + Fee Day
   "nav.play": "Play",
 
   // Welcome (scroll intro, /welcome). Numbers are filled from the engine and the ECB series (feeday HISTORY).
@@ -298,11 +298,6 @@ export const T: Record<string, string> = {
   "fee.summary": "Across your {{rounds}} past periods, waiting minus locking ranged from {{minDiff}} to {{maxDiff}} (minus means waiting was cheaper). That spread is the risk of waiting.",
   "fee.th": "Period · choice · wait minus lock",
 
-  "share.title": "Your KiraKurs card",
-  "share.style.lock": "Cautious locker", "share.style.wait": "Risk taker", "share.style.split": "Balanced splitter", "share.style.none": "Just starting",
-  "share.text": "KiraKurs: missions done {{doneCount}}/{{missionTotal}}, Fee Day rounds {{rounds}}. My style: {{style}}. Lock or wait? Work it out:",
-  "share.btn": "Share", "share.copied": "Card text copied.",
-  "share.note": "No personal data: only your mission count and play style.",
 };
 
 // List copy (bullets, table headers, segmented options).

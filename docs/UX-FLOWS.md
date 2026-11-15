@@ -71,7 +71,7 @@ Entrances stagger 80 ms; the line draws in. Reduced motion: no snap, no travel, 
    - Code format: `KK-{firstForm}{pre}-{post}` e.g. `KK-A5-7`; pre = `x` if skipped.
 
 ### 2.6 Play (v6, between Coach and Check)
-Built 15 Nov from `../idea-v6-addendum.md` §B. Copy in `packages/core/src/content.ts` (`kira.*`, `play.*`, `fee.*`, `share.*`, `MISSIONS`).
+Built 15 Nov from `../idea-v6-addendum.md` §B. Copy in `packages/core/src/content.ts` (`kira.*`, `play.*`, `fee.*`, `MISSIONS`).
 1. **Inputs + live readout:** the shared inputs card (inflation and interest, Fisher link) and a 3-number readout (bank lock, prices
    theory, waiting vs locking). On phones the inputs come first.
 2. **Kira** (also on the Map): after each input change, one sentence stating what moved and in which direction, plus the reason.
@@ -82,7 +82,6 @@ Built 15 Nov from `../idea-v6-addendum.md` §B. Copy in `packages/core/src/conte
    start whose window ends by 6 Nov 2026). Lock = that period's starting rate × (1 + the Snapshot 270-day forward premium), labelled
    illustrative because historical interest rates are not in the project. Shows dates, both costs, the learner's cost, the risk taken
    (none / half / full), a history list and the spread across rounds. Never scores "wins".
-5. **Share card:** play style (cautious locker / risk taker / balanced splitter) and counts only; Web Share or copy.
 
 ## 3. Presets
 - The preset chip in the top bar opens a sheet: Scenario 1 · Classroom (illustrative), Scenario 2 · Snapshot 6 Nov 2026 (dated),

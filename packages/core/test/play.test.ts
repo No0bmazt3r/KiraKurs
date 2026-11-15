@@ -1,7 +1,7 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import data from "../src/usdmyr.json";
-import { replay, WINDOWS, LOCK_PREMIUM, DAYS, playStyle, HISTORY } from "../src/feeday";
+import { replay, WINDOWS, LOCK_PREMIUM, DAYS, HISTORY } from "../src/feeday";
 import { explainChange, MISSIONS, makeVars, fill, T } from "../src/content";
 import * as E from "../src/engine";
 import { PRESETS } from "../src/presets";
@@ -27,9 +27,6 @@ test("Fee Day: windows, rates and arithmetic", () => {
     const days = (Date.parse(w.end) - Date.parse(w.start)) / 864e5;
     assert.ok(days >= DAYS && days <= DAYS + 4, `${w.start}→${w.end}`);  // first data day on/after +270
   }
-  assert.equal(playStyle([]), "none");
-  assert.equal(playStyle([{ choice: "lock" }, { choice: "lock" }, { choice: "wait" }]), "lock");
-  assert.equal(playStyle([{ choice: "lock" }, { choice: "wait" }]), "split");
 });
 
 test("Kira explains the direction of every change from engine output", () => {

@@ -114,7 +114,6 @@ try {
   }
   expect("fee summary", await txt(p, ".feeday"), /Across your 3 past periods, waiting minus locking ranged from/);
   expect("risk mission done", await p.locator(".mission.done", { hasText: "Feel the risk" }).count(), 1);
-  expect("share card style", await txt(p, ".share-style"), "Cautious locker");
   expect("play no sideways scroll (375)", await hscroll(p), false);
   await p.getByRole("button", { name: /Reset to Scenario/ }).click();
 

@@ -345,10 +345,6 @@
   .pill { @apply rounded-sm border border-line px-2 py-0.5 text-xs whitespace-nowrap text-muted; }
   .pill.ok { @apply border-ink bg-ink text-bg; }
   .rounds { @apply m-0 grid list-decimal gap-0.5 pl-5; font-variant-numeric: tabular-nums; }
-  .share-card { @apply bg-field text-on-field; }
-  .share-card .caption, .share-card .label { color: inherit; opacity: .85; }
-  .share-card .btn.primary { @apply bg-on-field text-field; }
-  .share-style { @apply text-2xl font-semibold tracking-tight text-field-accent; }
 
   /* Welcome */
   .wel-sec { @apply grid items-center px-[clamp(1rem,3vw,3rem)] py-[clamp(3.5rem,7vw,7rem)]; scroll-margin-top: 3.5rem; }

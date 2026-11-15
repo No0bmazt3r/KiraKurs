@@ -86,7 +86,7 @@ Malaysian students who must pay a foreign-currency bill on a known future date (
 | **Predict** | `/predict` | A direction question with misconception feedback; the learner commits before seeing the answer |
 | **Parity Map** | `/map` | Sliders for inflation, interest, days and amount; a reference-rates table (bank lock, prices theory, interest theory, real rates) with arrows and plain-language reasons; linked (Fisher) mode; Kira explains every change; "Show the maths" substitutes every value |
 | **Decision Coach** | `/coach` | Lock vs Wait in ringgit, the 8-of-10 historical range, a split slider, "use my own bill", monthly allowance, fees, a sensitivity chart with the break-even line, and a verdict from the real-rate rule |
-| **Play** | `/play` | Five missions (flip the bank lock, weaken the ringgit, find break-even, link interest to inflation, feel the risk) with a 3-step hint ladder; **Fee Day** replays real past 270-day periods (lock / wait / half); a shareable result card |
+| **Play** | `/play` | Five missions (flip the bank lock, weaken the ringgit, find break-even, link interest to inflation, feel the risk) with a 3-step hint ladder; **Fee Day** replays real past 270-day periods (lock / wait / half) |
 | **Check** | `/check` | Sensitivity table (you-are-here row, break-even), then the post-check with feedback, per-objective bars and a result code |
 
 </div>
@@ -348,8 +348,8 @@ Status: works locally with `pnpm dev` and a key in `.dev.vars`. Hidden in produc
 | `engine.test.ts` | Golden values G1–G7 and both original scenarios, identities (E_ife ≡ F, break-even), validation and hints, engine version hash |
 | `content.test.ts` | No "today/current/latest/live" wording; "now" only as "set aside / convert now"; every `{{placeholder}}` resolves for every scenario; glossary and mission copy |
 | `format.test.ts` | Rounding, percent ↔ decimal, signs |
-| `play.test.ts` | Fee Day windows and arithmetic, play style, Kira explanations, equal-rate wording, missions, welcome history, snapshot rates equal the ECB value on their date |
-| `e2e/smoke.ts` | Full guided flow on a 375 px phone, golden numbers on screen, linked mode, validation, Play (missions, 3 Fee Day rounds, share card), Check, deep links, old hash links, dark theme, no sideways scroll, no console errors |
+| `play.test.ts` | Fee Day windows and arithmetic, Kira explanations, equal-rate wording, missions, welcome history, snapshot rates equal the ECB value on their date |
+| `e2e/smoke.ts` | Full guided flow on a 375 px phone, golden numbers on screen, linked mode, validation, Play (missions, 3 Fee Day rounds), Check, deep links, old hash links, dark theme, no sideways scroll, no console errors |
 
 </div>
 

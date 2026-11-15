@@ -52,7 +52,7 @@ export function Live({ as: Tag = "p", className, children, ...rest }: { as?: Ele
   return <Tag key={n} className={cx(className, n > 0 && "flash")} {...rest}>{mid ?? children}</Tag>;
 }
 
-// "[[tip|text]]" markup → plain text (for aria-live and share text).
+// "[[tip|text]]" markup → plain text (for aria-live text).
 export const plain = (s: string) => s.replace(/\[\[\w+\|([^\]]+)\]\]/g, "$1");
 
 // Copy with [[tip|text]] markup → glossary buttons. A tip opens inline below its paragraph.

@@ -40,15 +40,6 @@ export function replay(k: number, T: number, choice: Choice): Round {
   return { start, end, s0, s1, lock, wait, you: h * lock + (1 - h) * wait, diff: wait - lock, choice };
 }
 
-/** Most frequent choice across rounds (ties → split), for the share card. */
-export function playStyle(rounds: Pick<Round, "choice">[]): Choice | "none" {
-  if (!rounds.length) return "none";
-  const c = { lock: 0, wait: 0, split: 0 };
-  for (const r of rounds) c[r.choice]++;
-  const top = Math.max(c.lock, c.wait, c.split);
-  return c.lock === top && c.wait !== top ? "lock" : c.wait === top && c.lock !== top ? "wait" : "split";
-}
-
 /** Month-end USD/MYR closes over the Fee Day data (for the welcome chart), plus the lowest and highest daily rates. */
 export const HISTORY = (() => {
   const months: { d: string; r: number }[] = [];
