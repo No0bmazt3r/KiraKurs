@@ -28,7 +28,6 @@ export const T: Record<string, string> = {
   "edited": "(edited)",
   "progress": "Step {{step}} of {{total}}",
   "preset.title": "Choose the numbers",
-  "preset.hint": "Each scenario loads a full set of numbers into every screen. Your slider edits are reset. Every dated scenario is frozen and not live.",
   "preset.groupDated": "Real data, frozen on a date", "preset.groupPractice": "Practice",
   "preset.tagDated": "Real data", "preset.tagPractice": "Illustrative",
   "preset.frozen": "Frozen · not live",

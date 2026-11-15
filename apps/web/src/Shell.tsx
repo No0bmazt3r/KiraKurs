@@ -67,25 +67,24 @@ export function Shell() {
       [T["preset.groupDated"]!, PRESET_IDS.map((id) => PRESETS[id]).filter((x) => x.kind === "dated")],
       [T["preset.groupPractice"]!, PRESET_IDS.map((id) => PRESETS[id]).filter((x) => x.kind !== "dated")],
     ];
-    return <div className="grid gap-5" role="radiogroup" aria-label={T["preset.title"]}>
-      <p className={tw.small}>{T["preset.hint"]}</p>
+    return <div className="grid gap-3" role="radiogroup" aria-label={T["preset.title"]}>
       {groups.map(([title, list]) => <div key={title} className="grid gap-2">
         <h3 className="text-xs font-semibold text-muted">{title}</h3>
         {list.map((x) => {
           const on = cur === x.id, fact = "grid gap-0.5", k = "text-[0.7rem] leading-tight text-muted", val = "text-sm font-semibold tabular-nums";
           return <div key={x.id} className={cn("grid rounded-md border-2 border-line bg-surface transition hover:border-line-strong", on && "border-primary bg-primary-soft hover:border-primary")}>
-          <button className="grid w-full cursor-pointer gap-2 rounded-md border-0 bg-transparent p-4 pb-3 text-left" type="button" role="radio" aria-checked={on} onClick={() => pick(x)}>
+          <button className="grid w-full cursor-pointer gap-1.5 rounded-md border-0 bg-transparent px-3.5 py-3 text-left" type="button" role="radio" aria-checked={on} onClick={() => pick(x)}>
             <span className="flex items-center gap-2"><span className="flex-1 font-semibold">{x.label}</span>
               <span className={cn("grid size-6 place-items-center rounded-sm [&_svg]:size-4", on && "bg-primary text-on-primary")} aria-hidden="true">{on && <Icon name="ok" />}</span></span>
-            <span className="text-sm">{x.blurb}</span>
-            <span className={cn("grid grid-cols-3 gap-2 rounded-sm bg-surface-2 p-2", on && "bg-surface")}>
+            <span className={cn("text-sm text-muted", !on && "[@media(max-height:720px)]:hidden")}>{x.blurb}</span>
+            {on && <span className="grid grid-cols-3 gap-2 rounded-sm bg-surface px-2 py-1.5 animate-[up_280ms_var(--ease-out)]">
               <span className={fact}><span className={k}>{T["preset.fx"]}</span><span className={val}>{"RM " + fx(x.S, 4)}</span></span>
               <span className={fact}><span className={k}>{T["preset.int"]}</span><span className={val}>{pct(x.iH) + " / " + pct(x.iF)}</span></span>
               <span className={fact}><span className={k}>{T["preset.inf"]}</span><span className={val}>{pct(x.piH, 1) + " / " + pct(x.piF, 1)}</span></span>
-            </span>
+            </span>}
           </button>
-          <div className="grid gap-2 px-4 pb-4">
-            {x.sources.length > 0 && <ul className="m-0! grid list-none! grid-cols-2 gap-x-4 gap-y-2 p-0! text-xs" aria-label={T["sources.title"]}>
+          {on && <div className="grid gap-2 px-3.5 pb-3.5">
+            {x.sources.length > 0 && <ul className="m-0! grid list-none! animate-[up_280ms_var(--ease-out)] grid-cols-2 gap-x-4 gap-y-2 p-0! text-xs" aria-label={T["sources.title"]}>
               {x.sources.map((src, i) => <li key={src.k} className="min-w-0"><Tip tip={src.by} end={i % 2 === 1} className="max-w-full">
                 <span tabIndex={0} className="grid cursor-help rounded-sm outline-offset-2">
                   <span className="truncate text-muted">{src.k}</span>
@@ -97,7 +96,7 @@ export function Shell() {
                 x.kind === "dated" ? "bg-primary-soft text-primary-ink" : "bg-surface-2 text-muted")}>
                 <Icon name={x.kind === "dated" ? "calendar" : "info"} />{x.kind === "dated" ? T["preset.frozen"] : T["preset.tagPractice"]}</span>
             </Tip>
-          </div>
+          </div>}
         </div>; })}
       </div>)}
     </div>;

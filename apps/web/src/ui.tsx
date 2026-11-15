@@ -216,13 +216,13 @@ export function Sheet() {
     if (sheet) { trigger.current = sheet.trigger; if (!d.open) d.showModal(); d.querySelector(".sheet-body")!.scrollTop = 0; }
     else if (d.open) d.close();
   }, [sheet]);
-  return <dialog className="m-0 mx-auto mt-auto w-full max-w-160 rounded-t-md border-0 bg-surface p-0 text-ink shadow-[0_-8px_32px_rgb(0_0_0/.18)] max-h-[85vh] backdrop:bg-black/45 open:flex open:flex-col open:animate-[up_300ms_var(--ease-out)] lg:ml-auto lg:mr-0 lg:h-dvh lg:max-h-dvh lg:max-w-md lg:rounded-none" id="sheet" aria-labelledby="sheetTitle" ref={ref}
+  return <dialog className="m-0 mx-auto mt-auto w-full max-w-160 rounded-t-md border-0 bg-surface p-0 text-ink shadow-[0_-8px_32px_rgb(0_0_0/.18)] max-h-[90dvh] backdrop:bg-black/45 open:flex open:flex-col open:animate-[up_300ms_var(--ease-out)] lg:ml-auto lg:mr-0 lg:h-dvh lg:max-h-dvh lg:max-w-lg lg:rounded-none" id="sheet" aria-labelledby="sheetTitle" ref={ref}
     onClick={(e) => e.target === e.currentTarget && ref.current!.close()}
     onClose={() => { set({ sheet: null }); (trigger.current as HTMLElement | null)?.focus?.(); }}>
     <div className="mx-auto mt-2 h-1 w-10 rounded-sm bg-line-strong" aria-hidden="true" />
     <div className="flex items-center justify-between px-4 py-2"><h2 id="sheetTitle">{sheet?.title}</h2>
       <button className={tw.iconBtn} type="button" onClick={() => ref.current!.close()}><Icon name="x" label={T["btn.close"]} /></button></div>
-    <div className="sheet-body grid gap-3 overflow-x-clip overflow-y-auto px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] [&_ol]:m-0 [&_ol]:grid [&_ol]:list-decimal [&_ol]:gap-2 [&_ol]:pl-5 [&_ul]:m-0 [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">{sheet && <sheet.Body />}</div>
+    <div className="sheet-body grid gap-3 overflow-x-clip overflow-y-auto px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [&_ol]:m-0 [&_ol]:grid [&_ol]:list-decimal [&_ol]:gap-2 [&_ol]:pl-5 [&_ul]:m-0 [&_ul]:grid [&_ul]:list-disc [&_ul]:gap-2 [&_ul]:pl-5">{sheet && <sheet.Body />}</div>
   </dialog>;
 }
 export const closeSheet = () => (document.getElementById("sheet") as HTMLDialogElement | null)?.close();
