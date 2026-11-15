@@ -73,7 +73,7 @@ export function Shell() {
     <a className="skip-link" href="#view" onClick={(e) => { e.preventDefault(); document.getElementById("view")?.focus(); }}>Skip to content</a>
     <header className="topbar">
       <div className="topbar-inner">
-        <Link className="logo" to="/learn" search={true} aria-label="KiraKurs home"><span className="logo-mark" aria-hidden="true">K</span><span>KiraKurs</span></Link>
+        <Link className="logo" to="/learn" search={true} aria-label="KiraKurs home"><span className="logo-mark" aria-hidden="true" /><span>KiraKurs</span></Link>
         <nav className="tabs" id="tabs" aria-label="Main" hidden={!unlocked}>
           {TABS.map(([k, ic]) => <Link key={k} to={"/" + k} search={true} data-route={k}><Icon name={ic} /><span>{T["nav." + k]}</span></Link>)}
           <button type="button" onClick={(e) => openLimits(e.currentTarget)}><Icon name="shield" /><span>{T["nav.limits"]}</span></button>

@@ -2,6 +2,7 @@
 
 /* §1 tokens */
 :root {
+  --logo: url("/icon-light-96.png");
   --bg: #F6F8F7; --surface: #FFFFFF; --surface-2: #EEF3F1; --text: #0F1F1C; --text-2: #4A5C57;
   --border: #D6E0DC; --border-strong: #7A8C86;
   --primary: #0F766E; --on-primary: #FFFFFF; --primary-soft: #CCFBF1;
@@ -20,6 +21,7 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    --logo: url("/icon-dark-96.png");
     --bg: #0B1513; --surface: #13201D; --surface-2: #1A2B27; --text: #E7F0ED; --text-2: #A8BAB4;
     --border: #2A3D38; --border-strong: #5E726C;
     --primary: #2DD4BF; --on-primary: #04201C; --primary-soft: #0F3B35;
@@ -29,6 +31,7 @@
   }
 }
 :root[data-theme="dark"] {
+  --logo: url("/icon-dark-96.png");
   --bg: #0B1513; --surface: #13201D; --surface-2: #1A2B27; --text: #E7F0ED; --text-2: #A8BAB4;
   --border: #2A3D38; --border-strong: #5E726C;
   --primary: #2DD4BF; --on-primary: #04201C; --primary-soft: #0F3B35;
@@ -64,7 +67,7 @@ svg.i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none;
 .topbar { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
 .topbar-inner { max-width: 1120px; margin: 0 auto; height: 56px; padding: 0 var(--gutter); display: flex; align-items: center; gap: var(--s3); }
 .logo { display: flex; align-items: center; gap: var(--s2); font: 700 1.125rem var(--font-head); color: var(--text); text-decoration: none; margin-right: auto; }
-.logo-mark { width: 28px; height: 28px; border-radius: var(--r-sm); background: var(--primary); color: var(--on-primary); display: grid; place-items: center; font-size: .95rem; }
+.logo-mark { width: 32px; height: 32px; background: var(--logo) center / contain no-repeat; }
 .topbar-actions { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
 .progress { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter) var(--s2); display: flex; align-items: center; gap: var(--s3); }
 .progress-bar { flex: 1; height: 6px; background: var(--surface-2); border-radius: var(--r-pill); overflow: hidden; }
