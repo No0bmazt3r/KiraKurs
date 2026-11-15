@@ -168,6 +168,10 @@ iH 4.9705% · F₁ 4.0993 (+1.0547%) · e_ppp +0.2893%, E_ppp 4.0682 · e_ife +1
 9. `forwardBank` ≠ `forward` for n < 365 (difference shown, not hidden)
 
 ## 9. Presets (`presets.ts`, data only)
+
+> **v6.8 (15 Nov 2026):** two more dated presets, `snap2025` (6 Nov 2025) and `snap2024` (20 Feb 2024), with fields `k`, `date`,
+> `chip` and `blurb`. Their `S` is the ECB reference rate on the date (a test checks this) and their q10/q90 use only 270-day
+> windows that had ended by that date (`band.py` → `band_asof`). Sources: SOURCES.md §F. The original two presets are unchanged.
 ```js
 export const PRESETS = {
   classroom: { id:"classroom", label:"Scenario 1 · Classroom", kind:"illustrative", ccy:"USD",

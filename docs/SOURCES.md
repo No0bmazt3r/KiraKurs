@@ -65,3 +65,21 @@ video, report), it must be listed here with its exact URL/DOI.
 - Groq API, model `openai/gpt-oss-20b`: optional "Ask KiraKurs" router; returns an explanation ID only.
 - Lucide icons (ISC licence), https://lucide.dev. Fonts: Inter, Plus Jakarta Sans (Google Fonts, OFL).
 - React, Vite, TanStack Router, Zustand, Vitest, Playwright (MIT/Apache licences).
+
+## F. Extra dated scenarios (added 15 Nov 2026; web-checked by Claude Code, member check still needed)
+Exchange rates are ECB reference crosses from `../../evidence/fx/usdmyr.json` (via Frankfurter, §A #10). Ranges come from
+`../../evidence/fx/band.py` (`band_asof`): 270-day periods starting 2016-01-01 that had **ended by the snapshot date**.
+
+**Scenario 3 · Snapshot 6 Nov 2025** (S 4.1830, OPR 2.75%, Fed mid 3.875%, CPI MY 1.5% / US 3.0%, q10 −6.679%, q90 +7.070%)
+- Bank Negara Malaysia. (2025, November 6). *Monetary policy statement*. https://www.bnm.gov.my/-/monetary-policy-statement-06112025 (OPR held at 2.75%)
+- Board of Governors of the Federal Reserve System. (2025, October 29). *Federal Reserve issues FOMC statement*. https://www.federalreserve.gov/newsevents/pressreleases/monetary20251029a.htm (target range lowered to 3¾–4%)
+- Department of Statistics Malaysia. (2025, October 22). *Consumer price index Malaysia, September 2025*. https://www.dosm.gov.my/portal-main/release-content/consumer-price-index-september-2025 (1.5%)
+- U.S. Bureau of Labor Statistics. (2025, October 24). *Consumer price index, September 2025*. https://www.bls.gov/news.release/archives/cpi_10242025.htm (3.0% over 12 months)
+
+**Scenario 4 · Snapshot 20 Feb 2024** (S 4.7975 = highest USD/MYR in the 2016–2026 data, OPR 3.00%, Fed mid 5.375%, CPI MY 1.5% / US 3.1%, q10 −6.370%, q90 +7.589%)
+- Bank Negara Malaysia. (2024, January 24). *Monetary policy statement*. https://www.bnm.gov.my/-/monetary-policy-statement-24012024 (OPR held at 3.00%)
+- Board of Governors of the Federal Reserve System. (2024, January 31). *Federal Reserve issues FOMC statement*. https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm (5¼–5½%)
+- Department of Statistics Malaysia. (2024, January 22). *Consumer price index Malaysia, December 2023*. https://www.dosm.gov.my/portal-main/release-content/consumer-price-index-december-2023 (1.5%; the January 2024 release came after 20 Feb)
+- U.S. Bureau of Labor Statistics. (2024, February 13). *Consumer price index, January 2024*. https://www.bls.gov/news.release/archives/cpi_02132024.htm (3.1% over 12 months)
+
+Status: figures matched by web search on 15 Nov 2026 (official pages plus press coverage). Not yet member-checked.
