@@ -32,7 +32,7 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
     else onDone(answers.current);
   };
 
-  return <div className="grid items-start gap-5 lg:grid-cols-2">
+  return <div key={i} className="grid items-start gap-5 lg:grid-cols-2 animate-[slide-in_420ms_var(--ease-out)_both]">
     <div className="stack">
     <div className="row">
       <div className="dots" aria-hidden="true">{items.map((_, k) => <span key={k} className={k <= i ? "on" : ""} />)}</div>

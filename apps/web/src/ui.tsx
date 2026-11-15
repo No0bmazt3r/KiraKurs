@@ -1,5 +1,5 @@
 // Shared components (docs/DESIGN.md §5). Copy is rendered as text only; icons are static SVG strings.
-import { useEffect, useId, useRef, useState, type ElementType, type KeyboardEvent, type ReactNode } from "react";
+import { cloneElement, useEffect, useId, useLayoutEffect, useRef, useState, type ElementType, type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { T, L, TIPS, SOURCES, tipParts, explainChange } from "@kirakurs/core/content";
 import { parseNumber, type Inputs } from "@kirakurs/core/engine";
 import { PRESETS, type PresetId } from "@kirakurs/core/presets";
@@ -74,13 +74,51 @@ export function Rich({ text, className, as: Tag = "p" }: { text: string; classNa
   </>;
 }
 
+// Sliding selection indicator: measures the selected child (`sel`) and exposes its box as CSS vars (--x, --y, --w, --h)
+// on the container, whose ::before draws the highlight. `data-ready` turns the glide on after the first placement.
+export function useSlide<E extends HTMLElement>(sel: string, dep: unknown) {
+  const ref = useRef<E>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const place = () => {
+      const on = el.querySelector<HTMLElement>(sel);
+      el.style.setProperty("--w", on ? on.offsetWidth + "px" : "0px");
+      if (!on) return;
+      el.style.setProperty("--h", on.offsetHeight + "px");
+      el.style.setProperty("--x", on.offsetLeft + "px");
+      el.style.setProperty("--y", on.offsetTop + "px");
+    };
+    place();
+    const raf = requestAnimationFrame(() => { el.dataset.ready = ""; });
+    const ro = new ResizeObserver(place);
+    ro.observe(el);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, [sel, dep]);
+  return ref;
+}
+
+// Tooltip: shows on hover, keyboard focus and tap (focus), dismisses with Esc. The child must be focusable
+// (a button, or an element with tabIndex 0); it is linked to the tip with aria-describedby.
+export function Tip({ tip, children, className }: { tip: string; children: ReactElement<Record<string, unknown>>; className?: string }) {
+  const id = useId();
+  const [hide, setHide] = useState(false);
+  return <span className={cx("tipwrap", hide && "tip-off", className)} onMouseLeave={() => setHide(false)} onFocus={() => setHide(false)}
+    onKeyDown={(e) => e.key === "Escape" && setHide(true)}>
+    {cloneElement(children, { "aria-describedby": id })}
+    <span role="tooltip" id={id} className="tip-pop">{tip}</span>
+  </span>;
+}
+
 // Data badge. `preset` pins it (screens that always use the Snapshot); otherwise it follows the chosen preset.
 export function Badge({ preset: fixed }: { preset?: PresetId }) {
   const chosen = useApp((s) => s.preset), userEdited = useApp((s) => s.edited);
   const p = PRESETS[fixed ?? chosen], edited = !fixed && userEdited;
-  return <button className={cx("badge", p.kind !== "dated" && "illustrative")} type="button" onClick={(e) => openSources(e.currentTarget)}>
-    <Icon name="calendar" /><span className="badge-text">{p.badge + (edited ? " " + T.edited : "")}</span>
-  </button>;
+  return <Tip tip={T[p.kind === "dated" ? "badge.tipDated" : "badge.tipPractice"]!} className="justify-self-start">
+    <button className={cx("badge", p.kind !== "dated" && "illustrative")} type="button" onClick={(e) => openSources(e.currentTarget)}>
+      <Icon name="calendar" /><span className="badge-text">{p.badge + (edited ? " " + T.edited : "")}</span>
+    </button>
+  </Tip>;
 }
 
 export function Card({ title, variant = "neutral", children }: { title: string; variant?: string; children: ReactNode }) {
@@ -143,7 +181,8 @@ export function Choices({ options, label, multi = 1, value, onChange, seg, locke
     const d = ({ ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 } as Record<string, number>)[e.key]; if (!d) return;
     e.preventDefault(); btns[(i + d + btns.length) % btns.length]!.focus();
   };
-  return <div className={seg ? "segmented" : "options"} role={multi > 1 ? "group" : "radiogroup"} aria-label={label} onKeyDown={multi === 1 ? keys : undefined}>
+  const slide = useSlide<HTMLDivElement>('[aria-checked="true"]', picked.join());
+  return <div ref={seg ? slide : undefined} className={seg ? "segmented" : "options"} role={multi > 1 ? "group" : "radiogroup"} aria-label={label} onKeyDown={multi === 1 ? keys : undefined}>
     {options.map(([id, text]) => <button key={id} type="button" role={multi > 1 ? "checkbox" : "radio"} aria-checked={picked.includes(id)}
       className={cx(!seg && "option", locked && (right.includes(id) ? "correct" : picked.includes(id) && "wrong"))}
       disabled={locked} onClick={() => click(id)}>{text}</button>)}

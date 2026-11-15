@@ -9,20 +9,28 @@ export type Preset = Inputs & {
   date: string;         // short date used in copy ("the 6 Nov rate"); "starting" for illustrative
   chip: string;         // top-bar chip
   blurb: string;        // one line in the picker: why this scenario is worth looking at
+  sources: Source[];    // picker chips: what each dated input is, its date, and where it comes from
 };
+export type Source = { k: string; date: string; by: string };
 
 export const PRESETS: Record<PresetId, Preset> = {
   classroom: {
     id: "classroom", k: 1, label: "Scenario 1 · Classroom", kind: "illustrative", ccy: "USD",
     S: 4.50, T: 12000, n: 365, iH: 0.03, iF: 0.045, piH: 0.02, piF: 0.03, q10: null, q90: null,
     badge: "Classroom: illustrative numbers", date: "starting", chip: "Classroom",
-    blurb: "Round, made-up numbers for practising the formulas by hand.",
+    blurb: "Round, made-up numbers for practising the formulas by hand.", sources: [],
   },
   snapshot: {
     id: "snapshot", k: 2, label: "Scenario 2 · Snapshot 6 Nov 2026", kind: "dated", ccy: "USD",
     S: 4.0565, T: 12000, n: 270, iH: 0.0275, iF: 0.03875, piH: 0.018, piF: 0.037, q10: -0.07166234059361243, q90: 0.06866828786747892, // full precision from evidence/fx/band.py
     badge: "Snapshot: FX 6 Nov · OPR 5 Nov · Fed 28 Oct · CPI Sep 2026 (released Oct) · not live", date: "6 Nov", chip: "Snapshot 6 Nov 2026",
     blurb: "Aina's decision on the latest frozen data. US prices rise faster than Malaysia's.",
+    sources: [
+      { k: "Exchange rate", date: "6 Nov 2026", by: "Ringgit closing rate reported by Bernama (ECB reference rate 4.059 as a cross-check)." },
+      { k: "Malaysian interest (OPR)", date: "5 Nov 2026", by: "Overnight Policy Rate, Bank Negara Malaysia monetary policy statement." },
+      { k: "US interest (Fed funds)", date: "28 Oct 2026", by: "Midpoint of the Federal Reserve's target range, FOMC statement." },
+      { k: "Inflation (CPI)", date: "Sep 2026", by: "Consumer price index, 12-month change: DOSM (Malaysia) and BLS (US), both released in October 2026." },
+    ],
   },
   snap2025: {
     id: "snap2025", k: 3, label: "Scenario 3 · Snapshot 6 Nov 2025", kind: "dated", ccy: "USD",
@@ -31,6 +39,12 @@ export const PRESETS: Record<PresetId, Preset> = {
     S: 4.183, T: 12000, n: 270, iH: 0.0275, iF: 0.03875, piH: 0.015, piF: 0.03, q10: -0.06678927065578188, q90: 0.07069540672312047,
     badge: "Snapshot: FX 6 Nov 2025 (ECB) · OPR 6 Nov · Fed 29 Oct · CPI Sep 2025 (released Oct) · not live", date: "6 Nov 2025", chip: "Snapshot 6 Nov 2025",
     blurb: "The same day one year earlier: same interest rates, but the ringgit was weaker (RM 4.18).",
+    sources: [
+      { k: "Exchange rate", date: "6 Nov 2025", by: "European Central Bank reference rate (US dollar in ringgit, via the euro)." },
+      { k: "Malaysian interest (OPR)", date: "6 Nov 2025", by: "Overnight Policy Rate, Bank Negara Malaysia monetary policy statement." },
+      { k: "US interest (Fed funds)", date: "29 Oct 2025", by: "Midpoint of the Federal Reserve's target range, FOMC statement." },
+      { k: "Inflation (CPI)", date: "Sep 2025", by: "Consumer price index, 12-month change: DOSM (Malaysia) and BLS (US), both released in October 2025." },
+    ],
   },
   snap2024: {
     id: "snap2024", k: 4, label: "Scenario 4 · Snapshot 20 Feb 2024", kind: "dated", ccy: "USD",
@@ -39,6 +53,12 @@ export const PRESETS: Record<PresetId, Preset> = {
     S: 4.7975, T: 12000, n: 270, iH: 0.03, iF: 0.05375, piH: 0.015, piF: 0.031, q10: -0.06370023419203763, q90: 0.07589400565989202,
     badge: "Snapshot: FX 20 Feb 2024 (ECB) · OPR 24 Jan · Fed 31 Jan · CPI MY Dec 2023, US Jan 2024 · not live", date: "20 Feb 2024", chip: "Snapshot 20 Feb 2024",
     blurb: "The weakest ringgit in ten years, when US interest was far above Malaysia's.",
+    sources: [
+      { k: "Exchange rate", date: "20 Feb 2024", by: "European Central Bank reference rate; the weakest ringgit in the 2016–2026 data." },
+      { k: "Malaysian interest (OPR)", date: "24 Jan 2024", by: "Overnight Policy Rate, Bank Negara Malaysia monetary policy statement." },
+      { k: "US interest (Fed funds)", date: "31 Jan 2024", by: "Midpoint of the Federal Reserve's target range, FOMC statement." },
+      { k: "Inflation (CPI)", date: "Dec 2023 / Jan 2024", by: "Consumer price index, 12-month change: DOSM Malaysia for Dec 2023 and BLS US for Jan 2024, the latest released by 20 Feb 2024." },
+    ],
   },
 };
 export const PRESET_IDS = Object.keys(PRESETS) as PresetId[];

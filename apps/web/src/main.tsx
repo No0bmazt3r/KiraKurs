@@ -25,6 +25,7 @@ if (presetParam || (path && path !== "precheck" && path !== "welcome")) set({ un
 if (path !== "welcome" && !(SCREENS as readonly string[]).includes(path))
   history.replaceState(null, "", `${BASE}/${useApp.getState().unlocked ? "learn" : "welcome"}${location.search}`);
 
+const ORDER = ["welcome", ...SCREENS];
 export type Search = { preset?: PresetId; maths?: 1 };
 const root = createRootRoute({
   component: Shell,
@@ -38,7 +39,11 @@ const page = (path: string, component: RouteComponent) => createRoute({ getParen
 // Each screen is its own chunk; the skeleton shows while one loads (only if it takes over 120 ms).
 const router = createRouter({
   basepath: BASE || "/",
-  defaultViewTransition: true,                          // cross-fade between screens (CSS: ::view-transition-*(main))
+  // Slide between screens in the direction of travel (forward / back through the guided order); CSS: styles.css "page motion".
+  defaultViewTransition: { types: ({ fromLocation, toLocation }) => {
+    const at = (p?: string) => ORDER.indexOf((p ?? "").replace(/\/$/, "").split("/").pop() ?? "");
+    return [at(toLocation.pathname) < at(fromLocation?.pathname) ? "back" : "forward"];
+  } },
   defaultPendingComponent: ScreenSkeleton, defaultPendingMs: 120, defaultPendingMinMs: 300,
   routeTree: root.addChildren([
     page("/welcome", lazyRouteComponent(() => import("./screens/Welcome"), "Welcome")),
