@@ -30,7 +30,7 @@ function tween(from: string, to: string, t: number) {
   });
 }
 const nudge = (el: Element | null) => el?.animate([{ opacity: 0.4, transform: "translateY(3px)" }, { opacity: 1, transform: "none" }],
-  { duration: 320, easing: "cubic-bezier(.16,1,.3,1)" });
+  { duration: 320, easing: "cubic-bezier(0.22,1,0.36,1)" });
 export function Live({ as: Tag = "p", className, children, ...rest }: { as?: ElementType; className?: string; children: string; [k: string]: unknown }) {
   const prev = useRef(children);
   const el = useRef<HTMLElement>(null);
@@ -236,7 +236,7 @@ export function Toast() {
     const id = setTimeout(() => setShow(false), 4000);
     return () => clearTimeout(id);
   }, [t]);
-  return <div className={cn("toast pointer-events-none fixed bottom-38 left-1/2 z-50 max-w-[calc(100vw-2rem)] -translate-x-1/2 translate-y-5 rounded-md bg-ink px-4 py-3 text-sm text-bg opacity-0 transition duration-200",
+  return <div className={cn("toast pointer-events-none fixed bottom-38 left-1/2 z-50 max-w-[calc(100vw-2rem)] -translate-x-1/2 translate-y-5 rounded-lg bg-ink px-4 py-3 text-sm text-bg opacity-0 transition-[opacity,transform] duration-200",
     show && "translate-y-0 opacity-100")} role="status" aria-live="polite">{t?.msg}</div>;
 }
 
@@ -265,8 +265,8 @@ export function Kira({ inp }: { inp: Inputs }) {
     const e = explainChange(p, inp);
     if (e) setMsg(e);
   }, [inp]);
-  return <div className="kira flex items-start gap-3 rounded-md bg-surface-2 p-4" role="status" aria-live="polite">
-    <div className="size-9 shrink-0 rounded-sm bg-(image:--logo) bg-contain bg-center bg-no-repeat" aria-hidden="true" />
+  return <div className="kira flex items-start gap-3 rounded-xl bg-surface-2 p-4" role="status" aria-live="polite">
+    <div className="size-9 shrink-0 rounded-lg bg-(image:--logo) bg-contain bg-center bg-no-repeat" aria-hidden="true" />
     <div className="grid gap-1">
       <p className={tw.label}>{T["kira.name"]}</p>
       <p key={msg?.text ?? ""} className="animate-[up_320ms_var(--ease-out)]">{msg ? msg.text : T["kira.start"]}</p>

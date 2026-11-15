@@ -20,6 +20,14 @@ no mascots, no claymorphism, no confetti. Inspiration and what we take from each
 6. **Forgiving inputs.** Sliders for exploration, number fields for precision, and a reset on every screen.
 
 ## 2. Tokens (`styles.css` §1)
+> **v6.12 (16 Nov): unslop polish pass** (skill "unslop" by Damir Sokolovsky, @heydamir, CC BY 4.0). Direction: product = shows
+> Malaysian students what inflation and interest rates do to a foreign tuition bill; character = exact, patient, a little warm;
+> world = bank counters, rate boards, a fee invoice, lecture notes; moments = the welcome fork chart and the Coach lock/wait
+> tiles + chart; signature = dotted-underline glossary terms. Changes: no trailing periods or exclamation marks in headings;
+> tight tracking only on display text ≥ 40px; icons 18px / 1.5 stroke; one easing curve `cubic-bezier(0.22,1,0.36,1)`;
+> named transitions only; no parallax or looping pulse; radius by size (controls 8px, cards and panels 12px, inner 6px);
+> hairlines = text colour at ~12%; rates shown with the same decimals everywhere (3.875%).
+>
 > **v6.11 (16 Nov): utilities everywhere.** Every component and screen is styled with Tailwind utilities in its JSX. Shared
 > building blocks (button, card, tile, field, option, segmented control, details, tooltip) are class recipes in `src/tw.ts`,
 > combined with `cn()` (tailwind-merge) so variants override cleanly. `styles.css` keeps only theme tokens, element defaults

@@ -37,7 +37,7 @@ export function Quiz({ form, withFeedback, onDone }: { form: Form; withFeedback:
   // Container query: two columns only when the quiz itself is wide (full-page Pre-check), one column inside the Check card.
   return <div className="@container">
     <div key={i} className="grid items-stretch gap-5 @3xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] @3xl:gap-8 animate-[slide-in_420ms_var(--ease-out)_both]">
-      <div className="grid content-between gap-6 rounded-md bg-surface-2 p-5 @3xl:p-7">
+      <div className="grid content-between gap-6 rounded-xl bg-surface-2 p-5 @3xl:p-7">
         <div className="grid gap-4">
           <div className="flex items-center gap-3">
             <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-line" aria-hidden="true">

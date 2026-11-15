@@ -36,8 +36,8 @@ export function Precheck() {
         </div>
         <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-3">
           {expect.map(([icon, head, sub], k) => <li key={head} style={{ animationDelay: `${120 + k * 90}ms` }}
-            className="grid content-start gap-2 rounded-md border border-line bg-surface p-4 animate-[slide-in_480ms_var(--ease-out)_both]">
-            <span className="grid size-9 place-items-center rounded-sm bg-primary-soft text-primary-ink"><Icon name={icon} /></span>
+            className="grid content-start gap-2 rounded-xl border border-line bg-surface p-4 animate-[slide-in_480ms_var(--ease-out)_both]">
+            <span className="grid size-9 place-items-center rounded-lg bg-primary-soft text-primary-ink"><Icon name={icon} /></span>
             <span className="font-semibold">{head}</span>
             <span className="text-sm text-muted">{sub}</span>
           </li>)}

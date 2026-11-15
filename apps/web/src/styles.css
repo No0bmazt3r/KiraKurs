@@ -7,7 +7,7 @@
 :root {
   --logo: url("/icon-light-96.png");
   --bg: #EEF1EF; --surface: #FFFFFF; --surface-2: #E3E8E5; --ink: #0B1513; --muted: #44544F;
-  --line: #CDD6D2; --line-strong: #5E706A;
+  --line: color-mix(in oklab, #0B1513 13%, transparent); --line-strong: #5E706A;
   --primary: #0F766E; --on-primary: #FFFFFF; --primary-soft: #D3E9E5; --primary-ink: #0B4F49;
   --risk: #A34B07; --risk-fill: #F2A007; --on-risk: #1C1300; --theory: #4338CA;
   --success: #15803D; --danger: #B91C1C; --focus: #0F766E;
@@ -18,7 +18,7 @@
   :root:not([data-theme="light"]) {
     --logo: url("/icon-dark-96.png");
     --bg: #080F0D; --surface: #111C19; --surface-2: #1A2925; --ink: #E9F2EF; --muted: #A6B9B3;
-    --line: #2A3D38; --line-strong: #6B807A;
+    --line: color-mix(in oklab, #E9F2EF 11%, transparent); --line-strong: #6B807A;
     --primary: #2DD4BF; --on-primary: #04201C; --primary-soft: #0F3B35; --primary-ink: #5EEAD4;
     --risk: #FBBF24; --risk-fill: #FBBF24; --on-risk: #1C1300; --theory: #A5B4FC;
     --success: #4ADE80; --danger: #F87171; --focus: #5EEAD4;
@@ -29,7 +29,7 @@
 :root[data-theme="dark"] {
   --logo: url("/icon-dark-96.png");
   --bg: #080F0D; --surface: #111C19; --surface-2: #1A2925; --ink: #E9F2EF; --muted: #A6B9B3;
-  --line: #2A3D38; --line-strong: #6B807A;
+  --line: color-mix(in oklab, #E9F2EF 11%, transparent); --line-strong: #6B807A;
   --primary: #2DD4BF; --on-primary: #04201C; --primary-soft: #0F3B35; --primary-ink: #5EEAD4;
   --risk: #FBBF24; --risk-fill: #FBBF24; --on-risk: #1C1300; --theory: #A5B4FC;
   --success: #4ADE80; --danger: #F87171; --focus: #5EEAD4;
@@ -45,7 +45,7 @@
   --color-success: var(--success); --color-danger: var(--danger); --color-focus: var(--focus);
   --color-field: var(--field); --color-on-field: var(--on-field); --color-field-accent: var(--field-accent);
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* §2 element defaults. The root size is fluid (15px on a phone → ~18px on a wide screen) and every size is in rem,
@@ -53,7 +53,7 @@
 @layer base {
   html { font-size: clamp(0.9375rem, 0.85rem + 0.25vw, 1.15rem); -webkit-text-size-adjust: 100%; }
   body { @apply flex min-h-dvh flex-col overflow-x-hidden bg-bg font-sans leading-relaxed text-ink antialiased; }
-  h1, h2, h3 { @apply m-0 font-semibold tracking-tight text-balance; }
+  h1, h2, h3 { @apply m-0 font-semibold text-balance; }
   h1 { @apply text-2xl leading-tight lg:text-3xl; }
   h2 { @apply text-lg leading-snug; }
   h3 { @apply text-base; }
@@ -76,7 +76,7 @@
   input[type="range"]:active::-webkit-slider-thumb { @apply scale-110; }
   input[type="range"]::-moz-range-track { @apply h-1.5 rounded-sm bg-line; }
   input[type="range"]::-moz-range-thumb { @apply h-6 w-3 rounded-sm border-0 bg-primary; }
-  svg.i { @apply size-5 shrink-0 fill-none stroke-current stroke-2 align-[-0.2em]; stroke-linecap: round; stroke-linejoin: round; }
+  svg.i { @apply size-[1.125rem] shrink-0 fill-none stroke-current stroke-[1.5] align-[-0.2em]; stroke-linecap: round; stroke-linejoin: round; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; } }
   @media print {
     .topbar, #tabs, #actionbar, footer, input[type="range"], button, dialog, [role="status"].toast { display: none !important; }
@@ -99,7 +99,6 @@
     .wel-list > li:nth-child(3) { animation-name: wel-flow-later; }
     .wel-list > li:nth-child(4) { animation-name: wel-flow-latest; }
     .hero-scene .wel-inner { animation: wel-hero-out linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
-    .wel-sec .fig-slot { animation: wel-par linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
     .wel-line, .wel-sec.in .wel-line { transition: none; animation: wel-draw linear both; animation-timeline: view(); animation-range: entry 40% cover 50%; }
   }
 }
@@ -108,7 +107,6 @@
 @keyframes wel-flow-later { 0% { opacity: 0; transform: translateY(6.5rem); } 40%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
 @keyframes wel-flow-latest { 0% { opacity: 0; transform: translateY(8rem); } 46%, 82% { opacity: 1; transform: none; } 100% { opacity: .25; transform: translateY(-1.5rem); } }
 @keyframes wel-hero-out { to { opacity: .15; transform: translateY(-4rem) scale(.98); } }
-@keyframes wel-par { from { transform: translateY(1.75rem); } to { transform: translateY(-1.75rem); } }
 @keyframes wel-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* page motion: the screen slides in the direction of travel and the page title glides between screens */
@@ -122,11 +120,11 @@ main { view-transition-name: main; }
 ::view-transition-old(actionbar), ::view-transition-new(actionbar) { animation: none; }
 ::view-transition-old(tabs), ::view-transition-old(topbar), ::view-transition-old(actionbar) { display: none; }
 main h1 { view-transition-name: title; }
-::view-transition-old(main) { animation: 220ms ease-in both vt-out-l; }
-::view-transition-new(main) { animation: 460ms var(--ease-out) both vt-in-r; }
+::view-transition-old(main) { animation: 200ms var(--ease-out) both vt-out-l; }
+::view-transition-new(main) { animation: 420ms var(--ease-out) both vt-in-r; }
 html:active-view-transition-type(back)::view-transition-old(main) { animation-name: vt-out-r; }
 html:active-view-transition-type(back)::view-transition-new(main) { animation-name: vt-in-l; }
-::view-transition-group(title) { animation-duration: 460ms; animation-timing-function: var(--ease-out); }
+::view-transition-group(title) { animation-duration: 420ms; animation-timing-function: var(--ease-out); }
 ::view-transition-old(title), ::view-transition-new(title) { height: 100%; object-fit: none; object-position: left top; }
 html:active-view-transition-type(theme)::view-transition-old(main), html:active-view-transition-type(theme)::view-transition-new(main),
 html:active-view-transition-type(theme)::view-transition-group(title) { animation: none; }
@@ -151,16 +149,14 @@ html:active-view-transition-type(theme)::view-transition-group(title) { animatio
 .hc-band, .hc-end { opacity: 0; }
 .wel-sec.in .wel-line { transition: stroke-dashoffset 1.6s var(--ease-out) .2s; stroke-dashoffset: 0; }
 .wel-sec.in .hc-hist { transition: stroke-dashoffset 1.4s var(--ease-out) .2s; stroke-dashoffset: 0; }
-.wel-sec.in .hc-band { transition: opacity .8s ease 1.4s; opacity: 1; }
+.wel-sec.in .hc-band { transition: opacity .8s var(--ease-out) 1.4s; opacity: 1; }
 .wel-sec.in .hc-lock, .wel-sec.in .hc-ppp { transition: stroke-dashoffset .9s var(--ease-out) 1.3s; stroke-dashoffset: 0; }
-.wel-sec.in .hc-end { transition: opacity .3s ease 2.1s; opacity: 1; }
+.wel-sec.in .hc-end { transition: opacity .3s var(--ease-out) 2.1s; opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .wel-line, .hc-hist, .hc-lock, .hc-ppp { stroke-dashoffset: 0; } .hc-band, .hc-end { opacity: 1; } }
 
 /* figures: looping chart draw and "?" pulse */
-.fig-draw { stroke-dasharray: 1; animation: fig-draw 5s var(--ease-out) infinite; }
-@keyframes fig-draw { 0% { stroke-dashoffset: 1; } 45%, 100% { stroke-dashoffset: 0; } }
-.fig-pulse { transform-box: fill-box; transform-origin: center; animation: fig-pulse 2.4s ease-in-out infinite; }
-@keyframes fig-pulse { 50% { transform: scale(1.12); } }
+.fig-draw { stroke-dasharray: 1; animation: fig-draw 1.6s var(--ease-out) .3s both; }
+@keyframes fig-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* skeleton shimmer */
 .sk { background: linear-gradient(90deg, var(--surface-2) 0%, var(--line) 50%, var(--surface-2) 100%) 0 0 / 200% 100%; animation: shimmer 1.3s linear infinite; }

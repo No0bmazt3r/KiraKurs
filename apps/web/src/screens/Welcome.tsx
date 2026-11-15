@@ -25,11 +25,11 @@ const KIND: Record<string, string> = {
   ground: "bg-bg", amber: "bg-surface", "hero-scene": "hero-scene min-h-[calc(100svh-3.5rem)]",
 };
 const INNER = "wel-inner mx-auto grid w-full max-w-[110rem] content-center gap-6";
-const H1 = "max-w-none text-5xl leading-none font-semibold tracking-tight sm:text-6xl 2xl:text-7xl";
+const H1 = "max-w-none text-5xl leading-none font-semibold tracking-[-0.02em] sm:text-6xl sm:tracking-[-0.03em] 2xl:text-7xl";
 const LEAD = "max-w-[38ch] text-lg leading-relaxed lg:text-xl";
-const H2 = "max-w-[20ch] text-3xl leading-tight font-semibold tracking-tight lg:text-5xl";
+const H2 = "max-w-[20ch] text-3xl leading-tight font-semibold lg:text-5xl lg:tracking-[-0.02em]";
 const PARA = "wel-p max-w-[46ch] text-base leading-relaxed lg:text-lg [&_strong]:block [&_strong]:font-semibold";
-const CHART = "m-0 grid gap-2 rounded-md bg-surface p-4 text-ink [&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:overflow-visible";
+const CHART = "m-0 grid gap-2 rounded-xl bg-surface p-4 text-ink [&_svg]:block [&_svg]:h-auto [&_svg]:w-full [&_svg]:overflow-visible";
 const LIST = "wel-list m-0 grid list-none gap-x-8 gap-y-5 p-0 sm:grid-cols-2 xl:grid-cols-4 [&_li]:text-base [&_li]:leading-relaxed lg:[&_li]:text-lg [&_strong]:mb-1 [&_strong]:block [&_strong]:font-semibold";
 const hv = vars({ start: day(H.first), end: day(H.last), rLo: fx(H.lo.r, 4), rHi: fx(H.hi.r, 4), gapRM: rm((H.hi.r - H.lo.r) * P.T) });
 
@@ -121,9 +121,9 @@ export function Welcome() {
       <div className="fig-slot"><ReadyFigure /></div>
     </div>)}
 
-    <nav className="fixed top-1/2 right-3 z-10 hidden -translate-y-1/2 gap-1 rounded-md bg-surface p-1 text-ink sm:grid" aria-label={T["wel.dots"]}>
+    <nav className="fixed top-1/2 right-3 z-10 hidden -translate-y-1/2 gap-1 rounded-lg bg-surface p-1 text-ink sm:grid" aria-label={T["wel.dots"]}>
       {labels.map((l, k) => <button key={k} type="button" aria-label={l} aria-current={active === k || undefined}
-        className="grid size-7 cursor-pointer place-items-center border-0 bg-transparent p-0 after:size-2 after:rounded-xs after:bg-current after:opacity-35 after:transition after:content-[''] aria-[current=true]:after:scale-150 aria-[current=true]:after:opacity-100"
+        className="grid size-7 cursor-pointer place-items-center border-0 bg-transparent p-0 after:size-2 after:rounded-xs after:bg-current after:opacity-35 after:transition-[opacity,transform] after:duration-200 after:content-[''] aria-[current=true]:after:scale-150 aria-[current=true]:after:opacity-100"
         onClick={() => refs.current[k]?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} />)}
     </nav>
   </div>;
@@ -188,14 +188,14 @@ function HistoryChart() {
 function TryIt() {
   const [round, setRound] = useState<Round | null>(null);
   const play = (c: Choice) => setRound(replay(randomWindow(), P.T, c));
-  return <div className="tryit grid gap-3 rounded-md bg-field p-6 text-on-field" role="group" aria-label={T["wel.s3.try"]}>
+  return <div className="tryit grid gap-3 rounded-xl bg-field p-6 text-on-field" role="group" aria-label={T["wel.s3.try"]}>
     <p className={cn(tw.label)}>{T["wel.s3.try"]}</p>
     <div className={cn(tw.row)}>
       <button className={cn(tw.btn, tw.big, "lockbtn flex-1 bg-on-field text-field")} type="button" onClick={() => play("lock")}><Icon name="lock" />{T["fee.lock"]}</button>
       <button className={cn(tw.btn, tw.big, "waitbtn flex-1 bg-risk-fill text-on-risk")} type="button" onClick={() => play("wait")}><Icon name="hourglass" />{T["fee.wait"]}</button>
     </div>
     <div role="status" className={cn(tw.stack)}>{round && <>
-      <p className="tryit-result text-xl leading-snug font-semibold tracking-tight animate-[up_350ms_var(--ease-out)] lg:text-2xl">{fill(T["wel.s3.result"]!, vars({ start: day(round.start), end: day(round.end), lockRM: rm(round.lock), waitRM: rm(round.wait) }))}</p>
+      <p className="tryit-result text-xl leading-snug font-semibold animate-[up_350ms_var(--ease-out)] lg:text-2xl">{fill(T["wel.s3.result"]!, vars({ start: day(round.start), end: day(round.end), lockRM: rm(round.lock), waitRM: rm(round.wait) }))}</p>
       <p>{fill(T[round.diff > 0 ? "fee.verdict.more" : "fee.verdict.less"]!, vars({ absDiff: rm(Math.abs(round.diff)) }))}</p>
       <p className={cn(tw.caption)}>{T["fee.label"]}</p>
     </>}</div>

@@ -32,7 +32,7 @@ export function Learn() {
     <div className="grid items-start gap-5 xl:grid-cols-2">
     <div className={cn(tw.stack, "gap-4")}>
     <div className={cn(tw.card, "flex items-start gap-3")}>
-      <div className="grid size-11 shrink-0 place-items-center rounded-md bg-theory font-semibold text-surface" aria-hidden="true">A</div>
+      <div className="grid size-11 shrink-0 place-items-center rounded-lg bg-theory font-semibold text-surface" aria-hidden="true">A</div>
       <div className={cn(tw.stack)}><p>{fl("learn.intro")}</p><p className={cn(tw.caption)}>{T["persona.tag"]}</p></div>
     </div>
     <details className={tw.details}><summary className={tw.summary}>{T["learn.objTitle"]}</summary>
