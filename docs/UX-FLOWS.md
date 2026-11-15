@@ -8,10 +8,17 @@ Pre-check → Learn → Predict → Parity Map → Coach → Check     Tab bar: 
 ```
 - Guided mode switches to free mode (`state.unlocked = true`) when Learn is finished **or** the learner presses "Skip to Parity Map".
   From then on the tab bar shows and Continue buttons stay (they don't hurt).
-- A URL with `?preset=` or a route other than `/precheck` on first load opens **free mode** directly (lecturer demo).
+- First visit to `/` opens **Welcome** (`/welcome`); its Start button goes to Pre-check (or Learn once unlocked). The logo always
+  returns to Welcome. A URL with `?preset=` or a route other than `/precheck`/`/welcome` on first load opens **free mode** directly (lecturer demo).
 - Pre-check is optional: "Skip" goes to Learn and records `pre = null` (the results then say "no pre-check").
 
 ## 2. Screen by screen
+### Welcome (v6.1, before Pre-check)
+Six full-height sections with snap scrolling and side dots (hidden under 600 px): hook ("Lock [logo] or wait?", Start, Skip to
+the Parity Map) · the ringgit moves (month-end ECB USD/MYR 2016–2026 line, low/high and the RM gap on Aina's bill, all from
+`feeday.HISTORY`) · two ways to pay (lock vs wait, plus one Fee Day replay: tap Lock or Wait) · four ideas · four stops · start.
+Entrances stagger 80 ms; the line draws in. Reduced motion: no snap, no travel, everything shown.
+
 ### 0 Pre-check
 1. Consent line + "Start" / "Skip".
 2. One item per view: stem → options → confidence → Next (enabled once an option is picked; confidence defaults to 2).

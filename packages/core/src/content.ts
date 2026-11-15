@@ -216,6 +216,37 @@ export const T: Record<string, string> = {
 
   // Play: missions + Fee Day + share card
   "nav.play": "Play",
+
+  // Welcome (scroll intro, /welcome). Numbers are filled from the engine and the ECB series (feeday HISTORY).
+  "wel.title": "Welcome",
+  "wel.h1a": "Lock", "wel.h1b": "or wait?",
+  "wel.lead": "Aina has a {{ccy}}{{T}} tuition bill due in {{n}} days. KiraKurs shows what the ringgit could do to it before she pays, using four ideas from international finance.",
+  "wel.start": "Start", "wel.skip": "Skip to the Parity Map",
+  "wel.scroll": "Scroll to see how it works",
+  "wel.dots": "Welcome sections",
+  "wel.s2.h": "The ringgit never sits still.",
+  "wel.s2.p": "From {{start}} to {{end}}, one US dollar cost between RM {{rLo}} and RM {{rHi}}. On Aina's bill, that gap is {{gapRM}}.",
+  "wel.s2.chart": "US dollar in ringgit, month-end ECB reference rates, {{start}} to {{end}}.",
+  "wel.s2.low": "Low RM {{rLo}}", "wel.s2.high": "High RM {{rHi}}",
+  "wel.s3.h": "Two ways to pay.",
+  "wel.s3.lock": "Lock: fix the ringgit cost on day one with a bank forward. You know the price; you give up any luck.",
+  "wel.s3.wait": "Wait: pay at whatever the rate is on payment day. It might be cheaper. It might not.",
+  "wel.s3.try": "Try it on a real past period:",
+  "wel.s3.result": "{{start}} → {{end}}: locking cost {{lockRM}}, waiting cost {{waitRM}}.",
+  "wel.s4.h": "Four ideas do the maths.",
+  "wel.s4.irp": "Interest rate parity: the bank's lock rate builds in the interest gap between the two countries.",
+  "wel.s4.ppp": "Purchasing power parity: the currency whose prices rise faster tends to weaken over time.",
+  "wel.s4.fisher": "Fisher effect: higher expected inflation tends to come with higher interest rates.",
+  "wel.s4.ife": "International Fisher effect: a higher-interest currency is expected to weaken by about the interest gap.",
+  "wel.s5.h": "Four stops, about ten minutes.",
+  "wel.s5.learn": "Learn: meet Aina and see each idea with her bill.",
+  "wel.s5.map": "Parity Map: move inflation and interest, watch every rate respond.",
+  "wel.s5.coach": "Decision Coach: lock, wait or split, with the cost and the risk side by side.",
+  "wel.s5.play": "Play: missions with hints, and Fee Day replays of real past periods.",
+  "wel.s6.h": "Ready when you are.",
+  "wel.s6.p": "Free, no sign-up, nothing leaves your browser. Parity theory, not a prediction, and not financial advice.",
+  "wel.s6.start": "Start with a 2-minute check",
+  "wel.s6.lecturer": "Lecturer? Open the Parity Map",
   "play.h1": "Play: missions and Fee Day",
   "play.sub": "Move the sliders to complete each mission. Stuck? Ask for a hint. Then replay real past periods in Fee Day.",
   "play.missions": "Missions",
@@ -469,7 +500,7 @@ export function makeVars(inp: E.Inputs, extra: Extra = {}) {
     "F1.4": f.fx(m1.F, 4), premium1: f.signedPct(m1.premium), "EPPP1.4": f.fx(m1.EPPP, 4), ePPP1: f.signedPct(m1.ePPP),
     // screen-supplied values (defaults keep every template resolvable)
     step: "", total: "7", verb: "", what: "", to: "", fDir: "", pDir: "", doneCount: "0", missionTotal: String(5), missionTitle: "",
-    start: "", end: "", s0: "", s1: "", move: "", absDiff: "", rounds: "0", minDiff: "", maxDiff: "", style: "", T0: f.amount(extra.T0 ?? 1500), qn: "", qtotal: "8", yourAnswer: "", rightWrong: "", pre: "", post: "", max: "9",
+    start: "", end: "", rLo: "", rHi: "", gapRM: "", lockRM: "", waitRM: "", s0: "", s1: "", move: "", absDiff: "", rounds: "0", minDiff: "", maxDiff: "", style: "", T0: f.amount(extra.T0 ?? 1500), qn: "", qtotal: "8", yourAnswer: "", rightWrong: "", pre: "", post: "", max: "9",
     ...extra.s,
   };
   return { s, num: { "diff.ppp": c.diff.ppp, "diff.rw": c.diff.rw }, results: { m, c, al, sens, half, linked }, finite: ok(m) && ok(c) && ok(al) };

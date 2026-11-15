@@ -8,8 +8,9 @@ import { Icon, Sheet, Toast, closeSheet, openLimits, openSources } from "./ui";
 import type { IconName } from "./icons";
 
 export const SCREENS = ["precheck", "learn", "predict", "map", "coach", "play", "check"] as const;
-export type Screen = (typeof SCREENS)[number];
+export type Screen = (typeof SCREENS)[number] | "welcome";
 const TITLES: Record<Screen, string> = {
+  welcome: "Welcome",
   precheck: "Pre-check", learn: "Learn", predict: "Predict", map: "Parity Map", coach: "Decision Coach", play: "Play", check: "Check",
 };
 const TABS: [Screen, IconName][] = [["learn", "book"], ["map", "map"], ["coach", "scale"], ["play", "flag"], ["check", "check"]];
@@ -29,7 +30,7 @@ export function Shell() {
   const name = useRouterState({ select: (s) => s.location.pathname.slice(1) }) as Screen;
   const { preset, edited, unlocked, theme } = useApp();
   const p = PRESETS[preset];
-  const step = SCREENS.indexOf(name) + 1;
+  const step = (SCREENS as readonly string[]).indexOf(name) + 1;
 
   useEffect(() => {
     if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
@@ -73,7 +74,7 @@ export function Shell() {
     <a className="skip-link" href="#view" onClick={(e) => { e.preventDefault(); document.getElementById("view")?.focus(); }}>Skip to content</a>
     <header className="topbar">
       <div className="topbar-inner">
-        <Link className="logo" to="/learn" search={true} aria-label="KiraKurs home"><span className="logo-mark" aria-hidden="true" /><span>KiraKurs</span></Link>
+        <Link className="logo" to="/welcome" search={true} aria-label="KiraKurs home"><span className="logo-mark" aria-hidden="true" /><span>KiraKurs</span></Link>
         <nav className="tabs" id="tabs" aria-label="Main" hidden={!unlocked}>
           {TABS.map(([k, ic]) => <Link key={k} to={"/" + k} search={true} data-route={k}><Icon name={ic} /><span>{T["nav." + k]}</span></Link>)}
           <button type="button" onClick={(e) => openLimits(e.currentTarget)}><Icon name="shield" /><span>{T["nav.limits"]}</span></button>
@@ -93,7 +94,7 @@ export function Shell() {
       </div>}
     </header>
 
-    <main id="view" tabIndex={-1}><Outlet /></main>
+    <main id="view" tabIndex={-1} className={name === "welcome" ? "wide" : undefined}><Outlet /></main>
 
     <div className="actionbar" id="actionbar" hidden={!step || name === "precheck"}>
       <div className="actionbar-inner">

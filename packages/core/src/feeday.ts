@@ -48,3 +48,16 @@ export function playStyle(rounds: Pick<Round, "choice">[]): Choice | "none" {
   const top = Math.max(c.lock, c.wait, c.split);
   return c.lock === top && c.wait !== top ? "lock" : c.wait === top && c.lock !== top ? "wait" : "split";
 }
+
+/** Month-end USD/MYR closes over the Fee Day data (for the welcome chart), plus the lowest and highest daily rates. */
+export const HISTORY = (() => {
+  const months: { d: string; r: number }[] = [];
+  for (const d of DATES) {
+    const last = months[months.length - 1];
+    if (last && last.d.slice(0, 7) === d.slice(0, 7)) last.d = d, last.r = RATES[d]!;
+    else months.push({ d, r: RATES[d]! });
+  }
+  let lo = DATES[0]!, hi = DATES[0]!;
+  for (const d of DATES) { if (RATES[d]! < RATES[lo]!) lo = d; if (RATES[d]! > RATES[hi]!) hi = d; }
+  return { months, first: DATES[0]!, last: DATES[DATES.length - 1]!, lo: { d: lo, r: RATES[lo]! }, hi: { d: hi, r: RATES[hi]! } };
+})();

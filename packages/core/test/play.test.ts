@@ -1,7 +1,7 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import data from "../src/usdmyr.json";
-import { replay, WINDOWS, LOCK_PREMIUM, DAYS, playStyle } from "../src/feeday";
+import { replay, WINDOWS, LOCK_PREMIUM, DAYS, playStyle, HISTORY } from "../src/feeday";
 import { explainChange, MISSIONS, makeVars, fill, T } from "../src/content";
 import * as E from "../src/engine";
 import { PRESETS } from "../src/presets";
@@ -58,4 +58,12 @@ test("missions start unsolved on the Snapshot and each can be solved", () => {
   assert.ok(by.fisher!.done(ctx(E.linkRates(S2, { piH: 0.03 }), true)));
   assert.ok(by.risk!.done(ctx(S2, false, 3)));
   for (const m of MISSIONS) for (const h of [m.goal, ...m.hints, T[m.maths]!]) assert.ok(!fill(h, makeVars(S2)).includes("?"), m.id);
+});
+
+test("welcome history: month-end series spans the data and brackets every month", () => {
+  const { months, first, last, lo, hi } = HISTORY;
+  assert.equal(months[months.length - 1]!.d, last);
+  assert.ok(first <= months[0]!.d && months.length > 100);
+  for (const m of months) assert.ok(m.r >= lo.r && m.r <= hi.r);
+  assert.ok(lo.r < hi.r);
 });

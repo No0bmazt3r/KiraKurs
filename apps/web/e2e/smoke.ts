@@ -16,7 +16,7 @@ const expect = (label: string, got: unknown, want: unknown) => {
 };
 
 async function page(w: number, h: number, scheme: "light" | "dark" = "light") {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme });
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, reducedMotion: "reduce" });   // count-ups off: read final numbers
   const p = await ctx.newPage();
   p.on("pageerror", (e) => errors.push(`${w} pageerror: ${e.message}`));
   p.on("console", (m) => m.type() === "error" && !/fonts\.g|ERR_INTERNET|ERR_NAME/.test(m.text()) && errors.push(`${w} console: ${m.text()}`));
@@ -30,7 +30,14 @@ try {
   // ---- guided flow on a phone ----
   let p = await page(375, 740);
   await p.goto(B);
-  expect("start route", await p.evaluate(() => location.pathname), "/precheck");
+  expect("first visit lands on welcome", await p.evaluate(() => location.pathname), "/welcome");
+  expect("welcome h1", await txt(p, "h1"), /Lock\s+or wait\?/);
+  expect("welcome gap from ECB series", await txt(p, ".wel-sec:nth-child(2) .wel-p"), /between RM \d\.\d{4} and RM \d\.\d{4}.*RM [\d,]+\.$/);
+  await p.locator(".tryit .lockbtn").click();
+  expect("welcome replay", await txt(p, ".tryit-result"), /locking cost RM [\d,]+, waiting cost RM [\d,]+\./);
+  expect("welcome no sideways scroll (375)", await hscroll(p), false);
+  await p.getByRole("button", { name: "Start", exact: true }).click();
+  expect("start → precheck", await p.evaluate(() => location.pathname), "/precheck");
   await p.getByRole("button", { name: "Start" }).click();
   for (let i = 0; i < 8; i++) {
     const opt = p.locator(".options .option");
@@ -135,7 +142,7 @@ try {
   expect("classroom lock", await txt(p, ".tile.lock .value"), "RM 51,675");
   await p.goto(B + "?preset=snapshot&maths=1#/coach");   // old hash link still works
   expect("old hash link rewritten", await p.evaluate(() => location.pathname + location.search), "/coach?preset=snapshot&maths=1");
-  await p.goto(B + "welcome");
+  await p.goto(B + "nope");
   expect("unknown path → learn", await p.evaluate(() => location.pathname), "/learn");
   await p.goto(B + "coach?preset=snapshot&maths=1");
   expect("maths=1 opens the maths", await p.locator("details.maths[open]").count(), 1);

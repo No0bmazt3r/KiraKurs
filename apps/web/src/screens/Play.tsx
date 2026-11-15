@@ -10,8 +10,8 @@ import { Badge, Choices, Icon, Kira, Live, Rich, cx, plain } from "../ui";
 import { InputsCard } from "./Map";
 
 const dateFmt = new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-const day = (iso: string) => dateFmt.format(new Date(iso + "T00:00:00Z"));
-const randomWindow = () => {
+export const day = (iso: string) => dateFmt.format(new Date(iso + "T00:00:00Z"));
+export const randomWindow = () => {
   try { return crypto.getRandomValues(new Uint32Array(1))[0]! % WINDOWS; } catch { return Math.floor(Math.random() * WINDOWS); }
 };
 

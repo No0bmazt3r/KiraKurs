@@ -20,6 +20,11 @@ no mascots, no claymorphism, no confetti. Inspiration and what we take from each
 6. **Forgiving inputs.** Sliders for exploration, number fields for precision, and a reset on every screen.
 
 ## 2. Tokens (`styles.css` §1)
+> **v6.1 restyle (15 Nov):** pastel tints dropped. Surfaces are separated by a tone step (no borders or shadows at rest); hero blocks
+> and the Lock tile are solid `--field` (ink in light, teal in dark), the Wait tile solid `--risk-fill` (amber); selected options and
+> the active tab are solid ink. Headings use Bricolage Grotesque 800 with tight tracking; body and numbers stay Inter. Big numbers
+> (`.value`, `.hero-value`) count up from the old value in 450 ms (off under reduced motion). Buttons are pill-shaped. The tables
+> below are the original values; `styles.css` is the source of truth.
 ### 2.1 Colour: semantic tokens only; never put raw hex inside a component
 | Token | Light | Dark | Use |
 |---|---|---|---|

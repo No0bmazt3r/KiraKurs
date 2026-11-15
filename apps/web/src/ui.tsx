@@ -15,14 +15,41 @@ export function Icon({ name, label }: { name: IconName; label?: string }) {
 
 const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Text that flashes when its value changes (not on first render).
+// Text that animates when its value changes (not on first render). Big numbers (class value / hero-value) count up
+// from the old figure to the new one with the same decimals and grouping; the final text is always the exact string.
+const NUM = /-?\d[\d,]*(?:\.\d+)?/g;
+function tween(from: string, to: string, t: number) {
+  const a = from.match(NUM), b = to.match(NUM);
+  if (!a || !b || a.length !== b.length || from.replace(NUM, "#") !== to.replace(NUM, "#")) return to;
+  let i = 0;
+  return to.replace(NUM, (tok) => {
+    const x = parseFloat(a[i++]!.replace(/,/g, "")), y = parseFloat(tok.replace(/,/g, ""));
+    const d = (tok.split(".")[1] ?? "").length;
+    return (x + (y - x) * t).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: tok.includes(",") });
+  });
+}
 export function Live({ as: Tag = "p", className, children, ...rest }: { as?: ElementType; className?: string; children: string; [k: string]: unknown }) {
   const prev = useRef(children);
   const [n, setN] = useState(0);
+  const [mid, setMid] = useState<string | null>(null);   // in-between text while counting; null = show children
+  const count = /\b(hero-)?value\b/.test(className ?? "");
   useEffect(() => {
-    if (prev.current !== children) { prev.current = children; if (!reduced()) setN((x) => x + 1); }
-  }, [children]);
-  return <Tag key={n} className={cx(className, n > 0 && "flash")} {...rest}>{children}</Tag>;
+    const from = prev.current;
+    if (from === children) return;
+    prev.current = children;
+    if (reduced()) return;
+    setN((x) => x + 1);
+    if (!count) return;
+    const t0 = performance.now(); let raf = 0;
+    const step = (now: number) => {
+      const t = Math.min(1, (now - t0) / 450), e = 1 - (1 - t) ** 3;
+      setMid(t < 1 ? tween(from, children, e) : null);
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => { cancelAnimationFrame(raf); setMid(null); };
+  }, [children, count]);
+  return <Tag key={n} className={cx(className, n > 0 && "flash")} {...rest}>{mid ?? children}</Tag>;
 }
 
 // "[[tip|text]]" markup → plain text (for aria-live and share text).
@@ -194,7 +221,7 @@ export function Kira({ inp }: { inp: Inputs }) {
     if (e) setMsg(e);
   }, [inp]);
   return <div className="kira" role="status" aria-live="polite">
-    <div className="avatar" aria-hidden="true">K</div>
+    <div className="avatar kira-mark" aria-hidden="true" />
     <div className="stack-sm">
       <p className="label">{T["kira.name"]}</p>
       <p>{msg ? msg.text : T["kira.start"]}</p>

@@ -12,6 +12,7 @@ import { MapScreen } from "./screens/Map";
 import { Coach } from "./screens/Coach";
 import { Check } from "./screens/Check";
 import { Play } from "./screens/Play";
+import { Welcome } from "./screens/Welcome";
 import "./styles.css";
 
 // Clean paths (/learn), served under BASE ("/" or e.g. "/KiraKurs/" on GitHub Pages; dist/404.html handles deep links).
@@ -26,9 +27,10 @@ if (location.hash.startsWith("#/")) {
 const path = location.pathname.slice(BASE.length).replace(/^\/|\/$/g, "");
 const presetParam = new URLSearchParams(location.search).get("preset");
 if (isPreset(presetParam)) setPreset(presetParam);
-if (presetParam || (path && path !== "precheck")) set({ unlocked: true });   // lecturer / deep link → free mode
-if (!(SCREENS as readonly string[]).includes(path))
-  history.replaceState(null, "", `${BASE}/${useApp.getState().unlocked ? "learn" : "precheck"}${location.search}`);
+if (presetParam || (path && path !== "precheck" && path !== "welcome")) set({ unlocked: true });   // lecturer / deep link → free mode
+// First visit lands on the welcome intro; returning visitors (or deep links) go to Learn.
+if (path !== "welcome" && !(SCREENS as readonly string[]).includes(path))
+  history.replaceState(null, "", `${BASE}/${useApp.getState().unlocked ? "learn" : "welcome"}${location.search}`);
 
 export type Search = { preset?: PresetId; maths?: 1 };
 const root = createRootRoute({
@@ -43,7 +45,7 @@ const page = (path: string, component: () => React.ReactNode) => createRoute({ g
 const router = createRouter({
   basepath: BASE || "/",
   routeTree: root.addChildren([
-    page("/precheck", Precheck), page("/learn", Learn), page("/predict", Predict),
+    page("/welcome", Welcome), page("/precheck", Precheck), page("/learn", Learn), page("/predict", Predict),
     page("/map", MapScreen), page("/coach", Coach), page("/play", Play), page("/check", Check),
   ]),
 });
