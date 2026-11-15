@@ -87,6 +87,9 @@ export const T = {
   "map.card.real": "After-inflation interest (real rates)",
   "map.card.real.v": "MY {{rH}} · {{country}} {{rF}}",
   "map.card.real.s": "Malaysian savings earn {{rH}} a year after inflation; {{country}} savings earn {{rF}}. The higher one decides whether waiting is expected to pay.",
+  "map.fwd.arrow": "{{belowAbove}} the {{rateDate}} rate of {{S.2}} · MYR per {{ccy}}1 · ↑ = ringgit weaker",
+  "map.ppp.arrow": "{{ePPP}} vs the {{rateDate}} rate · MYR per {{ccy}}1 · ↑ = ringgit weaker",
+  "err.number": "Enter a number.",
   "map.perUnit": "per {{ccy}}1",
   "map.gap": "The two theories disagree by {{gapPP}} because the two countries' after-inflation interest rates differ. Make them equal and the theories agree.",
   "map.gapZero": "After-inflation interest rates are equal, so the two theories agree.",
@@ -107,6 +110,13 @@ export const T = {
   "map.m.forecasts": "Four forecasts side by side",
   "map.m.forecastsCaption": "The forward is not a reliable forecast of the future rate (Fama 1984). Each row is a theory, not a prediction.",
   "map.m.f.forward": "Bank lock (forward)", "map.m.f.ppp": "Prices theory (PPP)", "map.m.f.ife": "Interest theory (IFE)", "map.m.f.rw": "No change (random walk)",
+  "map.m.t": "t = {{n}} / 365 = {{t4}} years. Rates are annual, compounded over t.",
+  "map.m.fwd": "Bank lock: F = S × ((1 + MY interest) / (1 + {{country}} interest))^t = {{S.4}} × ({{gH}} / {{gF}})^{{t4}} = {{F.4}}. Premium F/S − 1 = {{premium.4}}.",
+  "map.m.ppp": "Prices theory: e = ((1 + MY inflation) / (1 + {{country}} inflation))^t − 1 = {{ePPP.4}}, so E = S(1 + e) = {{EPPP.4}}.",
+  "map.m.ife": "Interest theory: e = ((1 + MY interest) / (1 + {{country}} interest))^t − 1 = {{eIFE.4}}, so E = {{EIFE.4}}, the same as F.",
+  "map.m.fisher": "Fisher: real = (1 + interest) / (1 + inflation) − 1. MY {{rH.4}} (≈ interest − inflation = {{rHapprox}}); {{country}} {{rF.4}} (≈ {{rFapprox}}).",
+  "map.m.gap": "Parity gap {{gapPP.4}} vs real-rate gap {{realGap.4}}: close, not equal.",
+  "map.m.oneYearV": "Over 1 year: bank lock {{F1.4}} ({{premium1}}), prices theory {{EPPP1.4}} ({{ePPP1}}), interest theory {{F1.4}}.",
   "map.m.colTheory": "Theory", "map.m.colRate": "RM per {{ccy}}1", "map.m.colChange": "Change",
   "map.explainQ": "Why does the news say higher rates strengthen a currency?",
   "map.explainA": "In the short run, a rise in real interest rates can attract investors' money and strengthen a currency. That is a different effect from parity, which is about inflation-driven rates over longer horizons.",
@@ -331,6 +341,7 @@ const COUNTRY = { USD: ["US$", "US"], GBP: ["£", "UK"], AUD: ["A$", "Australian
 // Build every placeholder value for one input set. `num` keeps raw numbers for helpers like lessMore.
 export function makeVars(inp, extra = {}) {
   const ok = (o) => E.allFinite(o);
+  const m1 = E.parityMap(inp, 365);
   const m = E.parityMap(inp), c = E.coach(inp), al = E.allowance(inp, extra.T0 ?? 1500);
   const target = extra.target ?? 0.04;
   const sens = E.sensitivity(inp, [inp.piH, target]);
@@ -366,6 +377,11 @@ export function makeVars(inp, extra = {}) {
     "al.usd": ccy + f.amount(al.usd, 2), "al.rmPPP": f.rm(al.rmPPP, 2), "al.naive": f.rm(al.naive, 2), "al.A": f.rm(al.A, 2), "al.C": f.rm(al.C, 2),
     C_at_base: f.rm(sens[0].Cppp), C_at_target: f.rm(sens[1].Cppp), diffLinked: f.signedRM(linked.diff.ppp),
     "q.rH": f.pct(E.realRate(PRESETS.snapshot.iH, PRESETS.snapshot.piH)), "q.rF": f.pct(E.realRate(PRESETS.snapshot.iF, PRESETS.snapshot.piF)),
+    t4: f.amount(m.t, 4), gH: f.amount(1 + inp.iH, 6), gF: f.amount(1 + inp.iF, 6),
+    "premium.4": f.signedPct(m.premium, 4), "ePPP.4": f.signedPct(m.ePPP, 4), "eIFE.4": f.signedPct(m.eIFE, 4),
+    "rH.4": f.pct(m.rH, 4), "rF.4": f.pct(m.rF, 4), rHapprox: f.pct(m.approx.rH), rFapprox: f.pct(m.approx.rF),
+    "gapPP.4": f.pp(m.parityGapPP, 4), "realGap.4": f.pp(m.realGapPP, 4),
+    "F1.4": f.fx(m1.F, 4), premium1: f.signedPct(m1.premium), "EPPP1.4": f.fx(m1.EPPP, 4), ePPP1: f.signedPct(m1.ePPP),
     // screen-supplied values (defaults keep every template resolvable)
     step: "", qn: "", qtotal: "8", yourAnswer: "", rightWrong: "", pre: "", post: "", max: "9",
     ...extra.s,
