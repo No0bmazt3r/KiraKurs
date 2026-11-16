@@ -6,7 +6,6 @@ import { useApp, setRaw, setLinked, setPreset, toast, useData, type RawKey } fro
 import { Arrow, Badge, Field, Icon, Kira, LimitsNote, Live, Maths, Rich } from "../ui";
 import { tw, cn } from "../tw";
 import { useMaths } from "../Shell";
-import { AskButton } from "./Ask";
 
 const SLIDERS: Partial<Record<RawKey, { min: number; max: number; step: number }>> = {
   piH: { min: 0, max: 10, step: 0.01 }, piF: { min: 0, max: 10, step: 0.01 },
@@ -86,7 +85,6 @@ export function MapScreen() {
       </table></div>
     </Maths>
     <Maths summary={T["map.explainQ"]!} icon="info"><p>{T["map.explainA"]}</p></Maths>
-    <AskButton />
   </div>;
 }
 

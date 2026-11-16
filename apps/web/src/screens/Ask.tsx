@@ -1,8 +1,8 @@
 // The three AI features (idea.md §10). The API returns only an id or numbers copied from the learner's text;
 // every sentence the learner reads was written by the team and every number comes from the engine.
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ASK, ASK_UI, BILL_UI, REASON, REASON_UI, fill } from "@kirakurs/core/content";
-import { MAX_LEN, piiBlocked, REASON_IDS, type AskId, type Bill, type ReasonId } from "@kirakurs/core/ask";
+import { ASK_IDS, MAX_LEN, piiBlocked, REASON_IDS, type AskId, type Bill, type ReasonId } from "@kirakurs/core/ask";
 import { amount } from "@kirakurs/core/format";
 import { openSheet, setRaw, toast, useData } from "../store";
 import { Choices, Icon, LinesSkeleton } from "../ui";
@@ -41,13 +41,37 @@ function AiForm({ id, label, notice, send, busy, onSend }: { id: string; label: 
 }
 
 // ---- 1. Ask KiraKurs: free question → one of 20 explanations ----
-export function AskButton() {
-  if (!aiOn) return null;
-  return <button className={cn(tw.btn, tw.secondary, "justify-self-start")} type="button" onClick={(e) => openSheet(ASK_UI.title!, AskBody, e.currentTarget)}>
-    <Icon name="ask" />{ASK_UI.btn}</button>;
+// Three questions per screen, shown first so a beginner never faces an empty box. Predict avoids why_ppp_down (it would give the answer away).
+const SUGGEST: Record<string, AskId[]> = {
+  welcome: ["real_rate_rule", "forward_not_forecast", "what_real_rate"],
+  learn: ["what_real_rate", "why_ppp_down", "forward_not_forecast"],
+  predict: ["what_real_rate", "forward_not_forecast", "data_dates"],
+  map: ["why_forward_below_spot", "why_ife_equals_forward", "what_real_rate"],
+  coach: ["why_wait_cheaper_ppp", "why_range_wide", "what_split"],
+  play: ["why_range_wide", "forward_not_forecast", "how_reliable"],
+  check: ["break_even", "linked_mode", "real_rate_rule"],
+};
+
+// Floating launcher on every screen except quizzes (Pre-check, and Check while its after-quiz card is on screen).
+// Sits above the guided action bar / phone tab bar (both 5rem incl. gap); bottom-6 where nothing is fixed at the bottom.
+export function AskLauncher({ screen }: { screen: string }) {
+  const [quizInView, setQuizInView] = useState(false);
+  useEffect(() => {
+    const el = document.getElementById("postquiz");
+    if (!el) return setQuizInView(false);
+    const io = new IntersectionObserver(([e]) => setQuizInView(!!e?.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [screen]);
+  if (screen === "precheck" || quizInView) return null;
+  const Body = () => <AskBody screen={screen} />;
+  return <button type="button" aria-haspopup="dialog" onClick={(e) => openSheet(ASK_UI.title!, Body, e.currentTarget)}
+    className={cn(tw.btn, "fixed right-[clamp(1rem,3vw,3rem)] z-20 border-line-strong bg-surface text-ink shadow-[0_4px_16px_rgb(0_0_0/.14)] enabled:hover:bg-surface-2",
+      "bottom-[calc(5rem+env(safe-area-inset-bottom))] max-[399px]:px-3", (screen === "welcome") ? "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]" : "lg:in-[.unlocked]:bottom-6")}>
+    <Icon name="ask" /><span className="max-[399px]:sr-only">{ASK_UI.title}</span></button>;
 }
 
-function AskBody() {
+function AskBody({ screen }: { screen: string }) {
   const { v } = useData();
   const [busy, setBusy] = useState(false);
   const [shown, setShown] = useState<AskId | "menu" | null>(null);
@@ -58,17 +82,20 @@ function AskBody() {
     setBusy(false);
     setShown(r && r.explanation_id in ASK ? (r.explanation_id as AskId) : "menu");
   };
+  const answer = shown && shown !== "menu" ? shown : null;
+  const list = (ids: AskId[]) => <div className={tw.options}>
+    {ids.map((k) => <button key={k} className={tw.option} type="button" aria-pressed={answer === k} onClick={() => setShown(k)}>{ASK[k].q}</button>)}</div>;
   return <>
-    <AiForm id="askQ" label={ASK_UI.label} notice={ASK_UI.notice} send={ASK_UI.send} busy={busy} onSend={send} />
+    <p className={cn(tw.label)}>{ASK_UI.suggest}</p>
+    {list(SUGGEST[screen] ?? SUGGEST.welcome!)}
+    {aiOn && <AiForm id="askQ" label={ASK_UI.label} notice={ASK_UI.notice} send={ASK_UI.send} busy={busy} onSend={send} />}
     <div className={cn(tw.stack)} aria-live="polite">
       {busy && <LinesSkeleton />}
-      {shown === "menu" && <><p className={cn(tw.label)}>{ASK_UI.menu}</p><div className={tw.options}>
-        {(Object.keys(ASK) as AskId[]).map((k) => <button key={k} className={tw.option} type="button" onClick={() => setShown(k)}>{ASK[k].q}</button>)}
-      </div></>}
-      {shown && shown !== "menu" && <div className={cn(tw.callout)}>
-        <h3>{ASK[shown].q}</h3><p>{fill(ASK[shown].a, v)}</p>
+      {answer && <div className={cn(tw.callout)}>
+        <h3>{ASK[answer].q}</h3><p>{fill(ASK[answer].a, v)}</p>
         <p className={cn(tw.caption)}><Icon name="ok" />{" " + ASK_UI.chip}</p>
       </div>}
+      {(!aiOn || shown === "menu") && <><p className={cn(tw.label)}>{ASK_UI.menu}</p>{list(ASK_IDS.filter((k) => !SUGGEST[screen]?.includes(k)))}</>}
     </div>
   </>;
 }

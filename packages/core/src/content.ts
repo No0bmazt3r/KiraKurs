@@ -460,7 +460,7 @@ export const ASK: Record<AskId, { q: string; a: string }> = {
   random_walk: { q: "What if the rate does not change?", a: "If the rate stays at its {{rateDate}} level, waiting costs {{C.rw}}, which is {{lessMore diff.rw}} than locking. In practice no-change is a hard guess to beat." },
 };
 export const ASK_UI = {
-  title: "Ask KiraKurs", btn: "Ask a question",
+  title: "Ask KiraKurs", btn: "Ask a question", suggest: "Questions about this screen:",
   label: "Your question (max 300 characters)",
   notice: "Don't type names or personal details. Questions are sent to Groq's API. KiraKurs stores nothing. Groq may keep logs for up to 30 days. Cloudflare and Groq keep their standard logs.",
   send: "Ask", menu: "Pick a topic:", pii: "That looks like personal information. Please remove it and ask again.",

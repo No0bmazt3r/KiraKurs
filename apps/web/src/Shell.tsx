@@ -7,6 +7,7 @@ import { fx, pct } from "@kirakurs/core/format";
 import { useApp, set, setPreset, clearData, toast, openSheet } from "./store";
 import { Icon, Sheet, Tip, useSlide, Toast, closeSheet, openLimits, openSources } from "./ui";
 import type { IconName } from "./icons";
+import { AskLauncher } from "./screens/Ask";
 import { tw, cn } from "./tw";
 
 export const SCREENS = ["precheck", "learn", "predict", "map", "coach", "play", "check"] as const;
@@ -148,7 +149,7 @@ export function Shell() {
       </div>
     </div>
 
-    <footer id="footer" className="bg-surface-2 px-4 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-center text-sm text-muted in-[.guided]:pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-6! [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:p-2 [&_button]:text-primary-ink [&_button]:underline [&_p]:mx-auto [&_p]:max-w-none">
+    <footer id="footer" className="bg-surface-2 px-4 pt-6 pb-[calc(9.5rem+env(safe-area-inset-bottom))] text-center text-sm text-muted in-[.guided]:pb-[calc(10.5rem+env(safe-area-inset-bottom))] lg:in-[.unlocked]:pb-20! [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:p-2 [&_button]:text-primary-ink [&_button]:underline [&_p]:mx-auto [&_p]:max-w-none">
       <p>{fill(T["footer.engine"]!, footerVars) + " · " + T["footer.rest"] + " · "}
         <button type="button" onClick={(e) => openSources(e.currentTarget)}>{T["footer.sources"]}</button>{" · "}
         <button type="button" onClick={(e) => openLimits(e.currentTarget)}>{T["nav.limits"]}</button>{" · "}
@@ -158,6 +159,7 @@ export function Shell() {
       </p>
       <p className={tw.small}>{T["persona.tag"]}</p>
     </footer>
+    <AskLauncher screen={name} />
     <Sheet />
     <Toast />
   </>;

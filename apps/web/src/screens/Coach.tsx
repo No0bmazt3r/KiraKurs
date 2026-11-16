@@ -7,7 +7,7 @@ import { Badge, Field, Icon, LimitsNote, Live, Maths, Rich, plain } from "../ui"
 import { tw, cn } from "../tw";
 import { useMaths } from "../Shell";
 import { Chart } from "../chart";
-import { AskButton, BillReader } from "./Ask";
+import { BillReader } from "./Ask";
 
 export function Coach() {
   const openMaths = useMaths();
@@ -103,7 +103,6 @@ export function Coach() {
     </Maths>
     <p className={cn(tw.caption)}>{T["coach.access"]}</p>
     <p className={cn(tw.caption)}>{T["coach.disclaimer"]}</p>
-    <AskButton />
     </div>
     </div>
   </div>;

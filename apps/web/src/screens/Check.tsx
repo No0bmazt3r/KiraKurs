@@ -8,7 +8,6 @@ import { useApp, set, setRaw, toast, useData } from "../store";
 import { Badge, Choices, Field, Icon, LimitsNote, Live, Rich, openLimits, openSources } from "../ui";
 import { tw, cn } from "../tw";
 import { Quiz } from "./Quiz";
-import { AskButton } from "./Ask";
 
 const ROWS = [0.01, 0.018, 0.03, 0.04, 0.05];
 
@@ -40,9 +39,8 @@ export function Check() {
       <Live className={cn(tw.small)}>{fill(T["check.linked"]!, v)}</Live>
       <LimitsNote />
       <Badge />
-      <AskButton />
     </section>
-    <section className={cn(tw.card, tw.stack)}><PostQuiz /></section>
+    <section id="postquiz" className={cn(tw.card, tw.stack)}><PostQuiz /></section>
     </div>
   </div>;
 }
