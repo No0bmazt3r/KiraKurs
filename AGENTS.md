@@ -50,7 +50,7 @@ pnpm typecheck     # strict TypeScript, all packages
 pnpm e2e           # build + headless-Chrome smoke test (golden numbers on screen, 375 px, themes, deep links)
 pnpm build         # apps/web/dist
 ```
-For the Ask feature locally, copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars` and add a Groq key (never commit it).
+For the Ask feature locally, copy `apps/api/.env.example` to `apps/api/.env` and add a Groq key (never commit it).
 Without a key the API runs and always returns the topic menu.
 
 ## Definition of done (whole app)

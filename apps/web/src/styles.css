@@ -162,3 +162,41 @@ html:active-view-transition-type(theme)::view-transition-group(title) { animatio
 .sk { background: linear-gradient(90deg, var(--surface-2) 0%, var(--line) 50%, var(--surface-2) 100%) 0 0 / 200% 100%; animation: shimmer 1.3s linear infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+
+/* Kiri, the Ask avatar (Ask.tsx): idle float/blink/glance, working dart + glow, click hop-and-flip; bubble pops from it */
+.kiri .kiri-body, .kiri .kiri-eyes, .kiri .kiri-tip, .kiri .kiri-shadow { transform-box: fill-box; transform-origin: 50% 100%; }
+.kiri .kiri-eyes, .kiri .kiri-tip { transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .kiri[data-state="idle"] .kiri-body { animation: kiri-float 3.2s ease-in-out infinite; }
+  .kiri[data-state="idle"] .kiri-shadow { animation: kiri-shadow 3.2s ease-in-out infinite; }
+  .kiri[data-state="idle"] .kiri-eyes { animation: kiri-blink 4.6s infinite, kiri-look 9s ease-in-out infinite; }
+  .kiri[data-state="working"] .kiri-eyes { animation: kiri-dart .9s ease-in-out infinite; }
+  .kiri[data-state="working"] .kiri-tip { animation: kiri-glow .8s ease-in-out infinite alternate; }
+  .kiri[data-state="hop"] .kiri-body { animation: kiri-hop 520ms var(--ease-out) both; }
+  button:hover > .kiri[data-state="idle"] .kiri-body { animation: kiri-wiggle .5s ease-in-out; }
+  .ask-pop { transform-origin: calc(100% - 2.25rem) calc(100% + 1rem); animation: ask-pop 320ms var(--ease-out) both; }
+  .orb { animation: orb-spin 1.6s linear infinite, orb-breathe 1.6s ease-in-out infinite; }
+}
+@keyframes kiri-float { 50% { transform: translateY(-3px); } }
+@keyframes kiri-shadow { 50% { transform: scaleX(.8); opacity: .1; } }
+@keyframes kiri-blink { 0%, 94%, 100% { scale: 1 1; } 96% { scale: 1 .1; } }
+@keyframes kiri-look { 0%, 30%, 100% { translate: 0 0; } 38%, 48% { translate: -2.5px 0; } 56%, 66% { translate: 2.5px -1px; } 74% { translate: 0 0; } }
+@keyframes kiri-dart { 0%, 100% { translate: -2px -1.5px; } 50% { translate: 2px -1.5px; } }
+@keyframes kiri-glow { to { transform: scale(1.35); filter: drop-shadow(0 0 4px var(--risk-fill)); } }
+@keyframes kiri-wiggle { 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+@keyframes kiri-hop {
+  0% { transform: none; } 18% { transform: scale(1.15, .8); }
+  55% { transform: translateY(-14px) scale(.92, 1.1) rotateY(180deg); } 82% { transform: translateY(0) scale(1.08, .9) rotateY(360deg); }
+  100% { transform: rotateY(360deg); }
+}
+@keyframes ask-pop { from { opacity: 0; transform: scale(.4) translateY(1rem); } 70% { opacity: 1; transform: scale(1.02); } to { transform: none; } }
+.orb { background: conic-gradient(from 0deg, var(--primary), var(--theory), var(--risk-fill), var(--primary)); filter: blur(.5px);
+  box-shadow: inset 0 0 0 3px color-mix(in oklab, var(--surface) 40%, transparent), 0 0 14px color-mix(in oklab, var(--primary) 50%, transparent); }
+@keyframes orb-spin { to { rotate: 360deg; } }
+@keyframes orb-breathe { 50% { scale: .85; } }
+/* The Ask bubble is always light (white card), whatever the page theme; still scrolls, but with no visible scrollbar. */
+.ask-pop { --surface: #FFFFFF; --surface-2: #EEF1EF; --ink: #0B1513; --muted: #44544F; --line: color-mix(in oklab, #0B1513 13%, transparent);
+  --line-strong: #5E706A; --primary: #0F766E; --on-primary: #FFFFFF; --primary-soft: #D3E9E5; --primary-ink: #0B4F49; --focus: #0F766E;
+  --danger: #B91C1C; color-scheme: light; }
+.ask-pop .overflow-y-auto { scrollbar-width: none; overscroll-behavior: contain; }
+.ask-pop .overflow-y-auto::-webkit-scrollbar { display: none; }

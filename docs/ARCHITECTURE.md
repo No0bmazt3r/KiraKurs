@@ -26,7 +26,7 @@ KiraKurs/
 │   ├── src/styles.css         tokens · base · layout · components (DESIGN.md)
 │   ├── src/screens/           Precheck Learn Predict Map Coach Check Quiz Ask (.tsx)
 │   └── e2e/smoke.ts          headless-Chrome smoke test (`pnpm e2e`)
-├── apps/api/                  Cloudflare Worker: src/index.ts, test.ts, wrangler.toml, .dev.vars.example
+├── apps/api/                  Cloudflare Worker: src/index.ts, test.ts, wrangler.toml, .env.example
 ├── .github/workflows/pages.yml  typecheck + test + build → GitHub Pages
 ├── AGENTS.md  README.md  LICENSE
 └── docs/                      these specs

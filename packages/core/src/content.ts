@@ -463,8 +463,12 @@ export const ASK_UI = {
   title: "Ask KiraKurs", btn: "Ask a question", suggest: "Questions about this screen:",
   label: "Your question (max 300 characters)",
   notice: "Don't type names or personal details. Questions are sent to Groq's API. KiraKurs stores nothing. Groq may keep logs for up to 30 days. Cloudflare and Groq keep their standard logs.",
-  send: "Ask", menu: "Pick a topic:", pii: "That looks like personal information. Please remove it and ask again.",
-  chip: "Explanation checked by the engine",
+  send: "Ask", menu: "Pick a topic:", placeholder: "Ask a question…", more: "More topics",
+  hi: "Hi, I'm Kiri. Tap a question, or type your own.", hiNoAi: "Hi, I'm Kiri. Tap a question to see the explanation.",
+  unsure: "I'm not sure which topic you mean. Pick the closest one:", pii: "That looks like personal information. Please remove it and ask again.",
+  chip: "Team-written answer",
+  chipWhy: "Written by the KiraKurs team. The numbers come from the KiraKurs calculator, not the AI.",
+  sub: "The AI only picks the topic. Every answer is written by our team.",
 };
 
 // AI feature 2: "Explain your thinking" on Predict. The AI only picks the id; every reply below was written by the team.

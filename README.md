@@ -160,9 +160,9 @@ Open http://localhost:5173. A first visit lands on `/welcome`; returning visitor
 
 | Setting | Where | Purpose |
 |---|---|---|
-| `GROQ_API_KEY` | `apps/api/.dev.vars` (copy from `.dev.vars.example`; gitignored) | Enables Ask locally. Without it the API returns the topic menu |
-| `VITE_ASK_URL` | build-time env for `apps/web` | Deployed Worker URL. Empty = Ask hidden in production builds |
-| `ALLOWED_ORIGIN` | `apps/api/wrangler.toml` | CORS origin of the deployed site |
+| `GROQ_API_KEY` | `apps/api/.env` (copy from `apps/api/.env.example`; gitignored) | Enables Ask locally. Without it the API returns the topic menu |
+| `ALLOWED_ORIGIN` | `apps/api/.env` locally (`http://localhost:5173`); `wrangler.toml` in production | The only site the Worker answers. Wrong value = every question gets the topic menu |
+| `VITE_ASK_URL` | `apps/web/.env.production` (copy from `apps/web/.env.example`) or the CI repository variable | Deployed Worker URL. Empty = Ask hidden in production builds |
 | `BASE` | build-time env | Sub-path hosting, e.g. `BASE=/KiraKurs/ pnpm build` for a GitHub Pages project site |
 
 </div>
@@ -328,7 +328,7 @@ user input → Field (parse via format.ts) → store.setRaw(patch)
 
 </div>
 
-Before anything is sent, the browser blocks text that looks like personal data (email, phone, IC, passport, account number). Status: works locally with `pnpm dev` and `GROQ_API_KEY` in `apps/api/.dev.vars`; hidden in production builds until the Worker is deployed (`wrangler deploy`, `wrangler secret put GROQ_API_KEY`) and the site is built with `VITE_ASK_URL`. Without it, Predict still shows the reasoning pick-list.
+Before anything is sent, the browser blocks text that looks like personal data (email, phone, IC, passport, account number). Status: works locally with `pnpm dev` and `GROQ_API_KEY` in `apps/api/.env`; hidden in production builds until the Worker is deployed (`wrangler deploy`, `wrangler secret put GROQ_API_KEY`) and the site is built with `VITE_ASK_URL`. Without it, Predict still shows the reasoning pick-list.
 
 ---
 
@@ -383,7 +383,7 @@ All 34 unit tests and the browser walkthrough pass on the current `main`.
 
 ## Privacy & security
 
-No accounts, no analytics, no cookies. The only network requests are Google Fonts and, if enabled, the Ask Worker, which receives only the typed question after a personal-data check (Cloudflare may log requests). Quiz answers, missions and Fee Day rounds stay in `localStorage`; "Clear my data" in the footer deletes them. The result code is shown and copied, never sent. User and AI text is never inserted as HTML. API keys live only in the Worker's secrets or the gitignored `.dev.vars`.
+No accounts, no analytics, no cookies. The only network requests are Google Fonts and, if enabled, the Ask Worker, which receives only the typed question after a personal-data check (Cloudflare may log requests). Quiz answers, missions and Fee Day rounds stay in `localStorage`; "Clear my data" in the footer deletes them. The result code is shown and copied, never sent. User and AI text is never inserted as HTML. API keys live only in the Worker's secrets or the gitignored `apps/api/.env`.
 
 ## Sources & academic integrity
 

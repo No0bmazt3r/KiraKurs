@@ -1,4 +1,4 @@
-# Local: `pnpm dev` from the repo root (key in apps/api/.dev.vars, see .dev.vars.example).
+# Local: `pnpm dev` from the repo root (key in apps/api/.env, copied from .env.example).
 # Deploy (M5): pnpm --filter api deploy && pnpm --filter api exec wrangler secret put GROQ_API_KEY
 # Then set the Worker URL as the VITE_ASK_URL repository variable (Settings → Variables) and redeploy Pages.
 name = "kirakurs-ask"
