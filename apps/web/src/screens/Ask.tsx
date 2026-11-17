@@ -81,12 +81,12 @@ export function AskLauncher({ screen }: { screen: string }) {
       screen === "welcome" && "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]")}>
     {phase === "open" && <div ref={panel} role="dialog" aria-labelledby="askTitle" tabIndex={-1}
       onKeyDown={(e) => e.key === "Escape" && close()}
-      className="ask-pop absolute right-0 bottom-full mb-3 flex h-[min(32rem,calc(100dvh-10rem))] w-[min(23rem,calc(100vw-2rem))] flex-col rounded-2xl border border-line bg-surface text-ink shadow-[0_12px_40px_rgb(0_0_0/.28)]">
-      <div className="flex items-center gap-3 rounded-t-2xl bg-primary py-2 pr-2 pl-3 text-on-primary">
-        <span className="grid size-9 place-items-center rounded-full bg-white/90"><Kiri state="idle" small /></span>
-        <div className="grid flex-1 leading-tight"><h2 id="askTitle" className="text-base">{ASK_UI.title}</h2>
-          <span className="text-xs opacity-85">{ASK_UI.sub}</span></div>
-        <button className={cn(tw.iconBtn, "text-on-primary hover:bg-white/15")} type="button" onClick={close}><Icon name="x" label={T["btn.close"]} /></button>
+      className="ask-pop absolute right-0 bottom-full mb-3 flex max-h-[min(36rem,calc(100dvh-10rem))] w-[min(24rem,calc(100vw-2rem))] flex-col rounded-3xl border border-line bg-surface text-ink shadow-[0_12px_40px_rgb(0_0_0/.28)]">
+      <div className="flex items-center gap-3 rounded-t-3xl border-b border-line bg-linear-to-b from-primary-soft/70 to-surface py-3 pr-2 pl-4">
+        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-surface shadow-sm ring-1 ring-line"><Kiri state="still" small /></span>
+        <div className="grid min-w-0 flex-1 gap-0.5 leading-tight"><h2 id="askTitle" className="text-base">{ASK_UI.title}</h2>
+          <span className="flex items-center gap-1 text-xs text-muted"><Icon name="shield" />{ASK_UI.sub}</span></div>
+        <button className={tw.iconBtn} type="button" onClick={close}><Icon name="x" label={T["btn.close"]} /></button>
       </div>
       <AskBody screen={screen} busy={busy} setBusy={setBusy} />
       <span aria-hidden="true" className="absolute -bottom-2 right-7 size-4 rotate-45 border-r border-b border-line bg-surface" />
@@ -101,8 +101,8 @@ export function AskLauncher({ screen }: { screen: string }) {
 
 // Kiri: a ringgit/dollar coin-creature. Teal half = ringgit, amber half = dollar; the antenna is the exchange swirl.
 // Idle: floats, blinks, glances around. Working: eyes dart, antenna glows. Hop: squash, jump and flip (click).
-function Kiri({ state, small }: { state: "idle" | "working" | "hop"; small?: boolean }) {
-  return <svg className={cn("kiri overflow-visible", small ? "size-7" : "size-16")} data-state={state} viewBox="0 0 64 64" aria-hidden="true">
+function Kiri({ state, small }: { state: "idle" | "working" | "hop" | "still"; small?: boolean }) {
+  return <svg className={cn("kiri overflow-visible", small ? "size-[70%]" : "size-16")} data-state={state} viewBox="0 0 64 64" aria-hidden="true">
     <ellipse className="kiri-shadow" cx="32" cy="61" rx="15" ry="2.5" fill="currentColor" opacity=".18" />
     <g className="kiri-body">
       <path className="kiri-ant" d="M32 12c0-5 4-8 8-6.5" fill="none" stroke="var(--line-strong)" strokeWidth="2" strokeLinecap="round" />
@@ -123,9 +123,9 @@ function Kiri({ state, small }: { state: "idle" | "working" | "hop"; small?: boo
 // Topic list: four chips first, the rest behind "More topics" so the thread stays short.
 function Topics({ ids, chips }: { ids: readonly AskId[]; chips: (ids: readonly AskId[]) => ReactNode }) {
   const [all, setAll] = useState(false);
-  return <div className="grid gap-2">{chips(all ? ids : ids.slice(0, 4))}
+  return <div className="grid gap-1.5">{chips(all ? ids : ids.slice(0, 4))}
     {!all && ids.length > 4 && <button type="button" onClick={() => setAll(true)}
-      className="cursor-pointer justify-self-start rounded-full border border-line-strong bg-transparent px-3 py-1.5 text-sm text-ink hover:bg-surface-2">
+      className="ml-9 cursor-pointer justify-self-start rounded-full border-0 bg-transparent px-1 py-1 text-sm font-semibold text-primary-ink underline-offset-2 hover:underline">
       {ASK_UI.more} ({ids.length - 4})</button>}</div>;
 }
 
@@ -134,6 +134,13 @@ function ThinkingOrb() {
   return <div className="flex items-center gap-2" role="status" aria-label={T["loading"]}>
     <span className="orb size-5 rounded-full" aria-hidden="true" /><span className={cn(tw.caption)}>Thinking…</span>
   </div>;
+}
+
+// Kiri's messages: small static avatar beside the bubble, like any chat app.
+function Bot({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className="flex items-end gap-2">
+    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-soft"><Kiri state="still" small /></span>
+    <div className={cn("max-w-[85%] rounded-2xl rounded-bl-sm bg-surface-2 px-3.5 py-2.5 text-sm", className)}>{children}</div></div>;
 }
 
 // Chat thread: Kiri greets, suggestions are chips, every reply is a team-written explanation picked by id.
@@ -158,10 +165,11 @@ function AskBody({ screen, busy, setBusy }: { screen: string; busy: boolean; set
     setMsgs((m) => [...m, r && r.explanation_id in ASK ? { id: r.explanation_id as AskId } : { menu: true }]);
   };
   const suggested = SUGGEST[screen] ?? SUGGEST.welcome!;
-  const chips = (ids: readonly AskId[]) => <div className="flex flex-wrap gap-2">
+  // Suggestions: a tidy list under Kiri's message (indented to the bubble), one tap = question + answer.
+  const chips = (ids: readonly AskId[]) => <div className="grid gap-1.5 pl-9">
     {ids.map((k) => <button key={k} type="button" onClick={() => pick(k)} disabled={busy}
-      className="cursor-pointer rounded-full border border-primary/40 bg-primary-soft/60 px-3 py-1.5 text-left text-sm text-primary-ink enabled:hover:bg-primary-soft">{ASK[k].q}</button>)}</div>;
-  const bot = "max-w-[88%] justify-self-start rounded-2xl rounded-bl-sm bg-surface-2 px-3.5 py-2.5 text-sm";
+      className="group flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-line bg-surface px-3 py-2 text-left text-sm text-ink transition-colors enabled:hover:border-primary enabled:hover:bg-primary-soft/50 disabled:opacity-50">
+      {ASK[k].q}<span className="text-primary transition-transform group-hover:translate-x-0.5"><Icon name="right" /></span></button>)}</div>;
   const inputRow = <div className="flex items-center gap-2 rounded-full border border-line-strong bg-surface-2 in-data-active:border-transparent py-1 pr-1 pl-4">
     <label htmlFor="askQ" className="sr-only">{ASK_UI.label}</label>
     <input id="askQ" maxLength={MAX_LEN} autoComplete="off" aria-describedby="askQNotice" placeholder={ASK_UI.placeholder}
@@ -172,19 +180,20 @@ function AskBody({ screen, busy, setBusy }: { screen: string; busy: boolean; set
   const others = ASK_IDS.filter((k) => !suggested.includes(k));
   const topics = <Topics ids={others} chips={chips} />;
   return <>
-    <div className="grid min-h-0 flex-1 content-start gap-3 overflow-y-auto px-4 py-4" aria-live="polite">
-      <p className={bot}>{aiOn ? ASK_UI.hi : ASK_UI.hiNoAi}</p>
+    <div className="grid min-h-0 flex-1 content-start gap-3 overflow-y-auto px-4 pt-4 pb-5" aria-live="polite">
+      <Bot>{aiOn ? ASK_UI.hi : ASK_UI.hiNoAi}</Bot>
+      <p className="pl-9 text-xs font-semibold text-muted">{ASK_UI.suggest.replace(/:$/, "")}</p>
       {chips(suggested)}
       {msgs.map((m, i) => "me" in m
         ? <p key={i} className="max-w-[85%] justify-self-end rounded-2xl rounded-br-sm bg-primary px-3.5 py-2.5 text-sm text-on-primary">{m.me}</p>
         : "id" in m
-          ? <div key={i} className={cn(bot, "grid gap-1.5")}><p>{fill(ASK[m.id].a, v)}</p>
+          ? <Bot key={i} className="grid gap-1.5"><p>{fill(ASK[m.id].a, v)}</p>
               <p className="mt-1 flex items-start gap-2 border-t border-line pt-2 text-xs leading-snug text-muted">
                 <span className="mt-px grid size-4 shrink-0 place-items-center rounded-full bg-success text-white"><Icon name="ok" /></span>
-                <span><b className="font-semibold text-success">{ASK_UI.chip}.</b> {ASK_UI.chipWhy}</span></p></div>
-          : <div key={i} className="grid gap-2"><p className={bot}>{ASK_UI.unsure}</p>{topics}</div>)}
-      {busy && <div className={bot}><ThinkingOrb /></div>}
-      {!aiOn && <><p className={bot}>{ASK_UI.menu}</p>{topics}</>}
+                <span><b className="font-semibold text-success">{ASK_UI.chip}.</b> {ASK_UI.chipWhy}</span></p></Bot>
+          : <div key={i} className="grid gap-2"><Bot>{ASK_UI.unsure}</Bot>{topics}</div>)}
+      {busy && <Bot><ThinkingOrb /></Bot>}
+      {!aiOn && <><Bot>{ASK_UI.menu}</Bot>{topics}</>}
       <div ref={end} />
     </div>
     {aiOn && <form onSubmit={submit} className="grid gap-1.5 border-t border-line px-3 pt-3 pb-2">
@@ -193,7 +202,9 @@ function AskBody({ screen, busy, setBusy }: { screen: string; busy: boolean; set
       <Suspense fallback={inputRow}><BorderBeam size="md" colorVariant="forest" theme="light" strength={1} borderRadius={999} active={busy || focus} className="rounded-full">
       {inputRow}
       </BorderBeam></Suspense>
-      <p id="askQNotice" className="text-[0.6875rem] leading-snug text-muted">{ASK_UI.notice}</p>
+      <details className="group px-1 text-[0.6875rem] leading-snug text-muted">
+        <summary id="askQNotice" className="cursor-pointer list-none">{ASK_UI.noticeShort} <span className="underline underline-offset-2">{ASK_UI.privacy}</span></summary>
+        <p className="mt-1">{ASK_UI.notice}</p></details>
     </form>}
   </>;
 }

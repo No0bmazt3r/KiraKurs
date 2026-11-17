@@ -468,7 +468,8 @@ export const ASK_UI = {
   unsure: "I'm not sure which topic you mean. Pick the closest one:", pii: "That looks like personal information. Please remove it and ask again.",
   chip: "Team-written answer",
   chipWhy: "Written by the KiraKurs team. The numbers come from the KiraKurs calculator, not the AI.",
-  sub: "The AI only picks the topic. Every answer is written by our team.",
+  sub: "Answers written by our team",
+  noticeShort: "Don't type names or personal details.", privacy: "How your question is handled",
 };
 
 // AI feature 2: "Explain your thinking" on Predict. The AI only picks the id; every reply below was written by the team.
