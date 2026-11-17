@@ -28,7 +28,7 @@ export function InputsCard({ full = true }: { full?: boolean }) {
   };
   return <section className={cn(tw.card, "inputs lg:sticky lg:top-20 lg:col-start-1 lg:row-start-1")}>
     <h2>{T["map.inputs"]}</h2>
-    <label className={tw.switch}><input type="checkbox" role="switch" className={tw.switchInput} checked={L} onChange={(e) => setLinked(e.target.checked)} />{T["map.linked"]}</label>
+    <label className={tw.switch}><input type="checkbox" role="switch" className={tw.switchInput} checked={L} onChange={(e) => setLinked(e.target.checked)} /><Rich as="span" text={T["map.linked"]!} /></label>
     {L && <p className={cn(tw.banner)}><Icon name="info" />{T["map.linkedBanner"]}</p>}
     {field("piH")}{field("piF")}
     {L ? <>{field("rH")}{field("rF")}{derived("iH")}{derived("iF")}<p className={cn(tw.caption)}>{T["map.derived"]}</p></> : <>{field("iH")}{field("iF")}</>}
@@ -43,7 +43,7 @@ export function InputsCard({ full = true }: { full?: boolean }) {
 
 export function MapScreen() {
   const openMaths = useMaths();
-  const { v, inp, ok } = useData();
+  const { v, inp, ok, errors } = useData();
   const fl = (k: string) => fill(T[k]!, v);
   const m = v.results.m;
 
@@ -53,7 +53,7 @@ export function MapScreen() {
       <div className={cn(tw.stack, "outputs gap-4 lg:col-start-2 lg:row-start-1")}>
         <section className={cn(tw.card, "lock tint-lock gap-3 border-transparent bg-field text-on-field")}><Live className={cn(tw.heroValue, !ok && "opacity-50")}>{v.finite ? fl("map.hero") : T.outOfRange!}</Live><Badge /></section>
         <Kira inp={inp} />
-        <p className={tw.fieldError} hidden={ok}>{T.fixInput}</p>
+        <p className={tw.fieldError} hidden={ok}>{errors.range ?? T.fixInput}</p>
         <section className={cn(tw.card, "rates gap-0", !ok && "dim opacity-50")} aria-label={T["map.ratesTitle"]}>
           <h2 className="pb-3">{T["map.ratesTitle"]}</h2>
           <Rate title={T["map.card.fwd"]!} value={"RM " + v.s.F} unit={fl("map.perUnit")}

@@ -2,7 +2,7 @@
 // Quote: S = MYR per 1 unit of foreign currency. Rates are decimals per annum. t = n / 365.
 // Teaching model: annual effective rates compounded over t, so every identity holds at any n.
 
-export const ENGINE_VERSION = "1.2.0";
+export const ENGINE_VERSION = "1.2.1";
 
 export type Ccy = "USD" | "GBP" | "AUD";
 export interface Inputs {
@@ -112,6 +112,7 @@ export function parseNumber(str: unknown): number {
   const commas = (s.match(/,/g) || []).length;
   // "2,75" → 2.75 (single comma, no dot, not a thousands group); "12,000" → 12000
   if (commas === 1 && !s.includes(".") && !/,\d{3}$/.test(s)) s = s.replace(",", ".");
+  else if (commas && !/^[+-]?\d{1,3}(,\d{3})+(\.\d*)?$/.test(s)) return NaN;   // "3,5,0" is a typo, not 350
   else s = s.replace(/,/g, "");
   return /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s) ? Number(s) : NaN;
 }

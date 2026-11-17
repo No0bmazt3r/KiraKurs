@@ -66,7 +66,7 @@ Malaysian students who must pay a foreign-currency bill on a known future date (
 |---|---|
 | The same US\$12,000 cost **RM 57,570** on 20 Feb 2024 and **RM 46,632** on 26 Feb 2026 (ECB reference rates) | An RM 10,938 swing on the same bill |
 | Over **50,000 Malaysian students** study abroad | Many face this decision with no framework |
-| Malaysians aged 19–30 score **below** the national financial-literacy average (BNM MYFLIC) | The knowledge gap is real |
+| Malaysians aged 19–30 score **below** the national financial-literacy average (The Star, 23 Nov 2025, on BNM MYFLIC data) | The knowledge gap is real |
 
 </div>
 
@@ -287,7 +287,7 @@ user input → Field (parse via format.ts) → store.setRaw(patch)
 
 ## How the engine works
 
-`packages/core/src/engine.ts` (version **1.2.0**, guarded by a hash test) implements the textbook parity formulas as pure functions. Rates are annual effective decimals, compounded over `t = n/365`.
+`packages/core/src/engine.ts` (version **1.2.1**, guarded by a hash test) implements the textbook parity formulas as pure functions. Rates are annual effective decimals, compounded over `t = n/365`.
 
 <div align="center">
 

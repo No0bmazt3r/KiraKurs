@@ -1,5 +1,5 @@
 // Screen 5: Check: sensitivity table, post-quiz, results + code (docs/UX-FLOWS.md §2.5, CONTENT.md §8).
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { T, L, fill, makeVars } from "@kirakurs/core/content";
 import { breakEvenPiH, sensitivity } from "@kirakurs/core/engine";
 import { pct, rm, signedRM } from "@kirakurs/core/format";
@@ -22,11 +22,17 @@ export function Check() {
   const all = rows.map((r) => ({ r, here: Math.abs(r.piH - live.piH) < 1e-9, be: r.piH === be }));
   if (!all.some((x) => x.here)) all.push({ r: live, here: true, be: false });
   all.sort((a, b) => a.r.piH - b.r.piH);
+  const quizRef = useRef<HTMLElement>(null);
+  useEffect(() => {   // tell the Ask bubble when the post-quiz is visible (it would cover the answers)
+    const io = new IntersectionObserver(([e]) => set({ quizInView: !!e?.isIntersecting }));
+    io.observe(quizRef.current!);
+    return () => { io.disconnect(); set({ quizInView: false }); };
+  }, []);
 
   return <div className={cn(tw.screen)}><h1>{T["check.h1"]}</h1>
     <div className="grid items-start gap-5 xl:grid-cols-[3fr_2fr]">
     <section className={cn(tw.card)}>
-      <Field label={T["lbl.piH"]!} raw={raw.piH} error={d.errors.piH} hint={d.hints.piH} suffix="%" slider={{ min: 0, max: 6, step: 0.01 }} onInput={(x) => setRaw({ piH: x })} />
+      <Field label={T["lbl.piH"]!} raw={raw.piH} error={d.errors.piH ?? d.errors.range} hint={d.hints.piH} suffix="%" slider={{ min: 0, max: 6, step: 0.01 }} onInput={(x) => setRaw({ piH: x })} />
       <div className={cn("overflow-x-auto")}><table>
         <thead><tr>{L["check.th"]!.map((t) => <th key={t} scope="col">{t}</th>)}</tr></thead>
         <tbody>{all.map(({ r, here, be }) => <tr key={r.piH + (be ? "be" : "")} className={cn(here && "here bg-primary-soft! font-semibold", be && "be italic")}>
@@ -40,7 +46,7 @@ export function Check() {
       <LimitsNote />
       <Badge />
     </section>
-    <section id="postquiz" className={cn(tw.card, tw.stack)}><PostQuiz /></section>
+    <section ref={quizRef} id="postquiz" className={cn(tw.card, tw.stack)}><PostQuiz /></section>
     </div>
   </div>;
 }

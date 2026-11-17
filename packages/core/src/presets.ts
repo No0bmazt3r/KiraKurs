@@ -24,7 +24,7 @@ export const PRESETS: Record<PresetId, Preset> = {
     id: "snapshot", k: 2, label: "Scenario 2 · Snapshot 6 Nov 2026", kind: "dated", ccy: "USD",
     S: 4.0565, T: 12000, n: 270, iH: 0.0275, iF: 0.03875, piH: 0.018, piF: 0.037, q10: -0.07166234059361243, q90: 0.06866828786747892, // full precision from evidence/fx/band.py
     badge: "Snapshot: FX 6 Nov · OPR 5 Nov · Fed 28 Oct · CPI Sep 2026 (released Oct) · not live", date: "6 Nov", chip: "Snapshot 6 Nov 2026",
-    blurb: "Aina's decision on the latest frozen data. US prices rise faster than Malaysia's.",
+    blurb: "Aina's decision on data frozen on 6 Nov 2026. US prices rise faster than Malaysia's.",
     sources: [
       { k: "Exchange rate", date: "6 Nov 2026", by: "Ringgit closing rate reported by Bernama (ECB reference rate 4.059 as a cross-check)." },
       { k: "Malaysian interest (OPR)", date: "5 Nov 2026", by: "Overnight Policy Rate, Bank Negara Malaysia monetary policy statement." },

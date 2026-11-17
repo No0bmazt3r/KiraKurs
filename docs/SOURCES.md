@@ -63,7 +63,7 @@ video, report), it must be listed here with its exact URL/DOI.
 - Claude Code (Anthropic), Claude Opus models: drafted the idea and specs, and **generated the app code** (`packages/`, `apps/`) from the
   AGENTS.md/docs spec on 15 Nov 2026, plus the v6 features. Humans review and verify (see idea.md §12 disclosure; update it to say this).
 - Groq API, model `openai/gpt-oss-20b`: optional "Ask KiraKurs" router; returns an explanation ID only.
-- Lucide icons (ISC licence), https://lucide.dev. Fonts: Inter, Plus Jakarta Sans (Google Fonts, OFL).
+- Lucide icons (ISC licence), https://lucide.dev. Fonts: IBM Plex Sans (Google Fonts, OFL).
 - React, Vite, TanStack Router, Zustand, Vitest, Playwright (MIT/Apache licences).
 
 ## F. Extra dated scenarios (added 15 Nov 2026; web-checked by Claude Code, member check still needed)

@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { T, L, fill, makeVars } from "@kirakurs/core/content";
 import { PRESETS } from "@kirakurs/core/presets";
-import { parsePct, signedPct } from "@kirakurs/core/format";
+import { signedPct } from "@kirakurs/core/format";
+import { validate } from "@kirakurs/core/engine";
 import { useApp, set } from "../store";
 import { Arrow, Badge, Choices, Field, Icon, Live, Rich } from "../ui";
 import { tw, cn } from "../tw";
@@ -10,6 +11,7 @@ import { useGo } from "../Shell";
 import { AinaFigure } from "../figures";
 
 const TARGET = 0.04;
+const STEPS = 5;
 const base = PRESETS.snapshot;
 const v = makeVars(base, { target: TARGET });
 const fl = (k: string) => fill(T[k]!, v);
@@ -17,9 +19,10 @@ const fl = (k: string) => fill(T[k]!, v);
 export function Learn() {
   const go = useGo();
   const learned = useApp((s) => s.progress.learn);
-  const [shown, setShown] = useState(learned ? 4 : 1);
+  const [shown, setShown] = useState(learned ? STEPS : 1);
   const [committed, setCommitted] = useState<string | null>(null);
   const [piH, setPiH] = useState(base.piH);
+  const [piErr, setPiErr] = useState<string | undefined>();
   const vv = makeVars({ ...base, piH }, { target: TARGET });
   const m0 = v.results.m.EPPP, m1 = vv.results.m.EPPP;
   const atTarget = Math.abs(piH - TARGET) < 0.0005;          // reveal only once the slider reaches the target
@@ -37,22 +40,28 @@ export function Learn() {
     </div>
     <details className={tw.details}><summary className={tw.summary}>{T["learn.objTitle"]}</summary>
       <div className={tw.detailsBody}><ol>{L["learn.obj"]!.map((o) => <li key={o}>{o}</li>)}</ol></div></details>
-    <ol className={cn(tw.card, "m-0 list-none gap-3 p-5 [counter-reset:step]")}>{[1, 2, 3, 4].map((k) => <li key={k} hidden={k > shown}
+    <ol className={cn(tw.card, "m-0 list-none gap-3 p-5 [counter-reset:step]")}>{[1, 2, 3, 4, 5].map((k) => <li key={k} hidden={k > shown}
       className="grid grid-cols-[2rem_1fr] items-start gap-x-3 gap-y-1 animate-[up_320ms_var(--ease-out)] *:col-start-2 before:row-span-2 before:grid before:size-8 before:place-items-center before:rounded-sm before:bg-ink before:font-semibold before:text-bg before:content-[counter(step)] before:[counter-increment:step]">
       <Rich text={fl("learn.step" + k)} />
       {k === 2 && <Rich className={cn(tw.formula)} text={fl("map.m.ppp")} />}
       {k === 3 && <Rich className={cn(tw.formula)} text={fl("map.m.fwd")} />}
+      {k === 4 && <Rich className={cn(tw.formula)} text={fl("coach.m.ab")} />}
+      {k === 5 && <Rich className={cn(tw.formula)} text={fl("map.m.fisher")} />}
     </li>)}</ol>
     <Badge preset="snapshot" />
-    {shown < 4 && <button className={cn(tw.btn, tw.secondary, "justify-self-end")} type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}<Icon name="right" /></button>}
+    {shown < STEPS && <button className={cn(tw.btn, tw.secondary, "justify-self-end")} type="button" onClick={() => setShown(shown + 1)}>{T["btn.nextStep"]}<Icon name="right" /></button>}
     </div>
-    {shown < 4 && <div className="fig-slot self-center max-xl:hidden"><AinaFigure /></div>}
-    <section className={cn(tw.card, "theory")} hidden={shown < 4}>
+    {shown < STEPS && <div className="fig-slot self-center max-xl:hidden"><AinaFigure /></div>}
+    <section className={cn(tw.card, "theory")} hidden={shown < STEPS}>
       <p className={cn(tw.label)}>{fl("learn.taskPrompt")}</p>
       <Choices label={fl("learn.taskPrompt")} options={[["up", T["learn.taskUp"]!], ["down", T["learn.taskDown"]!], ["same", T["learn.taskSame"]!]]}
         value={committed} onChange={(id: string) => committed || setCommitted(id)} locked={!!committed} correct="up" />
-      <Field label={T["lbl.piH"]!} raw={String(Number((piH * 100).toFixed(1)))} suffix="%" slider={{ min: 0, max: 6, step: 0.1 }}
-        onInput={(x) => { const d = parsePct(x); if (Number.isFinite(d)) setPiH(d); }} />
+      <Field label={T["lbl.piH"]!} raw={String(Number((piH * 100).toFixed(1)))} suffix="%" slider={{ min: 0, max: 6, step: 0.1 }} error={piErr}
+        onInput={(x) => {   // same validation as every other rate field; the task only needs 0–6%
+          const r = validate({ piH: x }), d = r.values?.piH;
+          setPiErr(r.errors.piH ?? (d != null && (d < 0 || d > 0.06) ? T["learn.range"] : undefined));
+          if (d != null && d >= 0 && d <= 0.06) setPiH(d);
+        }} />
       <div className={cn(tw.tile)}>
         <p className={cn(tw.small)}>{T["learn.pppMini"]}</p>
         {committed ? <>
@@ -61,7 +70,7 @@ export function Learn() {
             : <span className={cn(tw.small)}>{T["learn.noChange"]}</span>}</div>
         </> : <div className={cn(tw.value)}>?</div>}
       </div>
-      <p role="status">{committed && atTarget ? T[committed === "up" ? "learn.revealRight" : "learn.revealWrong"] : fill(T["learn.taskMove"]!, v)}</p>
+      <p role="status">{committed && atTarget ? T[committed === "up" ? "learn.revealRight" : committed === "same" ? "learn.revealSame" : "learn.revealWrong"] : fill(T["learn.taskMove"]!, v)}</p>
     </section>
     </div>
   </div>;

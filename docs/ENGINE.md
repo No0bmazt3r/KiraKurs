@@ -40,7 +40,7 @@ The web app, the API and Vitest import it. Everything here is checked against `v
 
 ## 3. Public API (named exports)
 ```js
-export const ENGINE_VERSION = "1.2.0";           // bump on ANY change to this file (test enforces it)
+export const ENGINE_VERSION = "1.2.1";           // bump on ANY change to this file (test enforces it)
 
 export function yearFrac(n)                       // n/365
 export function forward({ S, iH, iF, t })         // number
@@ -96,7 +96,8 @@ allowance(inp, T0) => { usd, EPPP, rmPPP, naive, A, C, diff }
 - **Hint (non-blocking):** a rate with 0 < |x| < 0.5 → "Did you mean {{x×100}}%? (Ignore if you meant it.)"
 - **Hint (non-blocking, v1.2.0):** a rate below −10% or above 50% → "This is far outside normal rates, so results may be extreme."
 - Accept "2,75" → treat a single comma as a decimal point **only** if there is no dot; strip spaces and "%".
-- After compute: if any output is not `Number.isFinite`, the card shows "Result out of range: check the inputs."
+- Commas otherwise must be thousands groups ("12,000", "1,000,000"); anything else ("3,5,0") is "Enter a number." (v1.2.1)
+- After compute: if any output is not `Number.isFinite`, or a reference rate (F, E_PPP, E_IFE) is outside 0.01×–100× the spot rate, the card shows "Result out of range: check the inputs." (the range check lives in the web store)
 
 ## 6. Formatting (`format.ts`, not the engine)
 | Kind | Beginner view | "Show the maths" |
@@ -187,5 +188,5 @@ export const PRESETS = {
 Changing a preset value requires a new dated preset id. **Never edit `snapshot` in place.**
 
 ## 10. Version guard
-`packages/core/test/engine.version.json` = `{ "version": "1.2.0", "sha256": "<hash of engine.ts>" }`. The test recomputes the hash and fails
+`packages/core/test/engine.version.json` = `{ "version": "1.2.1", "sha256": "<hash of engine.ts>" }`. The test recomputes the hash and fails
 if the hash changed but the version did not. Update both together. The footer shows `ENGINE_VERSION`.

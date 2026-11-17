@@ -49,9 +49,14 @@ try {
     await p.getByRole("button", { name: "Next" }).click();
   }
   await p.getByRole("button", { name: "Continue" }).first().click();
-  expect("learn h1", await txt(p, "h1"), /./);
-  for (let i = 0; i < 3; i++) await p.getByRole("button", { name: "Next step" }).click();
+  await p.locator("main h1", { hasText: "Should Aina" }).waitFor();
+  expect("learn h1", await txt(p, "main h1"), /^Should Aina convert now or later\?/);
+  for (let i = 0; i < 4; i++) await p.getByRole("button", { name: "Next step" }).click();
+  expect("learn Fisher step", await txt(p, "main ol.card > li:nth-child(5)"), /real rate.*0\.93%.*0\.17%/s);
   await p.locator(".card.theory .option").first().click();
+  await enter(p.locator(".card.theory .field input[type=text]"), "-500");
+  expect("learn rejects -500 (no NaN)", (await txt(p, ".card.theory")).includes("NaN"), false);
+  expect("learn shows the range error", await txt(p, ".card.theory .field"), /0% to 6%|above −100%/);
   expect("learn waits for the slider", await txt(p, ".card.theory [role=status]"), /^Move the slider to 4\.0%/);
   await enter(p.locator(".card.theory .field input[type=text]"), "4");
   expect("learn reveal at target", await txt(p, ".card.theory [role=status]"), /^Right:/);

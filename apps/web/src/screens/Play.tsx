@@ -41,7 +41,7 @@ export function Play() {
           <div><p className={cn(tw.small)}>{T["play.readout.F"]}</p><Live as="div" className={cn(tw.value)}>{"RM " + v.s["F.4"]}</Live></div>
           <div><p className={cn(tw.small)}>{T["play.readout.P"]}</p><Live as="div" className={cn(tw.value)}>{"RM " + v.s["EPPP.4"]}</Live></div>
           <div><p className={cn(tw.small)}>{T["play.readout.D"]}</p><Live as="div" className={cn(tw.value)}>{v.s.diffSigned!}</Live></div>
-          <p className={cn(tw.caption)}>{fill(T.convention!, v)}</p>
+          <p className={cn(tw.caption)}>{T["play.readout.note"] + " · " + fill(T.convention!, v)}</p>
         </section>
         <Kira inp={inp} />
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">{MISSIONS.map((m) => <MissionCard key={m.id} m={m} v={v} done={done.includes(m.id) || m.done(ctx)} />)}</div>
@@ -107,7 +107,7 @@ function FeeDay() {
       <p>{T["fee.risk." + r.choice]}</p>
       <button className={cn(tw.btn, tw.secondary)} type="button" autoFocus onClick={() => { setShown(null); setChoice(null); }}>{T["fee.again"]}<Icon name="right" /></button>
     </div>}
-    <p className={cn(tw.caption)}>{T["fee.label"]}</p>
+    <Rich className={cn(tw.caption)} text={T["fee.label"]!} />
     {rounds.length > 0 && <>
       <h3>{T["fee.history"]}</h3>
       <ol className={cn(tw.small, "m-0 grid list-decimal gap-0.5 pl-5 tabular-nums")}>{rounds.map((x, k) => <li key={k}>

@@ -3,10 +3,10 @@ import { useMemo, type ReactNode, useDeferredValue } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
 import { useShallow } from "zustand/react/shallow";
-import { validate, nominalFromReal, realRate, type Inputs } from "@kirakurs/core/engine";
+import { validate, nominalFromReal, parityMap, realRate, type Inputs } from "@kirakurs/core/engine";
 import { PRESETS, type Preset, type PresetId } from "@kirakurs/core/presets";
 import { toPctInput } from "@kirakurs/core/format";
-import { makeVars } from "@kirakurs/core/content";
+import { makeVars, T } from "@kirakurs/core/content";
 import type { Answers, Form } from "@kirakurs/core/quiz";
 import type { Round } from "@kirakurs/core/feeday";
 
@@ -31,6 +31,7 @@ export interface State {
   missions: string[]; rounds: Round[];
   sheet: { title: string; Body: () => ReactNode; trigger: Element | null } | null;
   toast: { msg: string; n: number } | null;
+  quizInView: boolean;   // Check's post-quiz is on screen: the Ask bubble steps aside
 }
 
 const fresh = () => ({
@@ -50,7 +51,7 @@ const safe: StateStorage = {
 
 export const useApp = create<State>()(persist(() => ({
   preset: "snapshot", raw: rawFromPreset(PRESETS.snapshot), edited: false, linked: false,
-  ...fresh(), theme: "system", dismissedReveal: false, sheet: null, toast: null,
+  ...fresh(), theme: "system", dismissedReveal: false, sheet: null, toast: null, quizInView: false,
 } as State), {
   name: "kirakurs:v2",
   storage: createJSONStorage(() => safe),
@@ -92,13 +93,19 @@ export function inputs(s: Pick<State, "preset" | "raw" | "linked">) {
   const p = PRESETS[s.preset];
   const keys: RawKey[] = ["S", "T", "n", "piH", "piF", "margin", "h", ...(s.linked ? ["rH", "rF"] as const : ["iH", "iF"] as const)];
   const v = validate(Object.fromEntries(keys.map((k) => [k, s.raw[k]])));
-  if (v.ok) {
+  let ok = v.ok;
+  const errors: Record<string, string | undefined> = v.errors;
+  if (ok) {
     const x = v.values!;
     const inp = { ...p, ...x } as Inputs & Preset;
     if (s.linked) { inp.iH = nominalFromReal(x.rH!, x.piH!); inp.iF = nominalFromReal(x.rF!, x.piF!); }
-    lastValid = inp;
+    // Each input can be valid on its own yet combine into nonsense (100% interest for 10 years): every reference rate
+    // must stay within 0.01×–100× the spot rate, else keep the last sensible result and say why.
+    const m = parityMap(inp);
+    if ([m.F, m.EPPP, m.EIFE].every((r) => Number.isFinite(r) && r / inp.S > 0.01 && r / inp.S < 100)) lastValid = inp;
+    else { ok = false; errors.range = T.outOfRange; }
   }
-  return { ok: v.ok, inp: lastValid ?? { ...p }, errors: v.errors, hints: v.hints };
+  return { ok, inp: lastValid ?? { ...p }, errors, hints: v.hints };
 }
 
 // Derived data shared by every screen.

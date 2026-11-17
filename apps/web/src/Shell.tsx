@@ -139,7 +139,7 @@ export function Shell() {
       </div>}
     </header>
 
-    <main id="view" tabIndex={-1} className={cn("mx-auto w-full max-w-[110rem] flex-1 px-[clamp(1rem,3vw,3rem)] pt-6 pb-12 outline-none", name === "welcome" && "max-w-none p-0")}><Outlet /></main>
+    <main id="view" tabIndex={-1} className={cn("mx-auto w-full max-w-[110rem] flex-1 px-[clamp(1rem,3vw,3rem)] pt-6 pb-24 outline-none", name === "welcome" && "max-w-none p-0")}><Outlet /></main>
 
     <div id="actionbar" hidden={!step || name === "precheck"} className="fixed inset-x-0 bottom-0 z-10 bg-bg px-[clamp(1rem,3vw,3rem)] pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-1px_0_var(--line)] in-[.unlocked]:static in-[.unlocked]:bg-transparent in-[.unlocked]:pb-6 in-[.unlocked]:shadow-none">
       <div className="mx-auto flex w-full max-w-[110rem] justify-between gap-3">

@@ -8,6 +8,8 @@ test("parsing percent strings", () => {
   assert.equal(f.parsePct(" 1.8 "), 0.018);
   assert.equal(f.parsePct("−1"), -0.01);
   assert.ok(Number.isNaN(f.parsePct("abc")));
+  assert.ok(Number.isNaN(f.parsePct("3,5,0")));   // malformed commas are a typo, not 350
+  assert.equal(f.parsePct("1,000,000"), 10000);
   assert.equal(f.toPctInput(0.03875), "3.875");
   assert.equal(f.toPctInput(0.049705), "4.9705");
 });

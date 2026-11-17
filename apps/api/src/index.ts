@@ -117,7 +117,7 @@ export default {
       const { success } = await env.ASK_LIMITER.limit({ key: req.headers.get("cf-connecting-ip") ?? "anon" });
       if (!success) return json(fallback, 200, origin);
     }
-    if (!question || question.length > MAX_LEN || piiBlocked(question)) return json(fallback, 200, origin);
+    if (!env.GROQ_API_KEY || !question || question.length > MAX_LEN || piiBlocked(question)) return json(fallback, 200, origin);
     if (task === "reason" && !(pick in PICKS)) return json(fallback, 200, origin);
 
     try {

@@ -1,10 +1,10 @@
 // The three AI features (idea.md §10). The API returns only an id or numbers copied from the learner's text;
 // every sentence the learner reads was written by the team and every number comes from the engine.
-import { Suspense, lazy, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Suspense, lazy, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ASK, ASK_UI, BILL_UI, REASON, REASON_UI, T, fill } from "@kirakurs/core/content";
 import { ASK_IDS, MAX_LEN, piiBlocked, REASON_IDS, type AskId, type Bill, type ReasonId } from "@kirakurs/core/ask";
 import { amount } from "@kirakurs/core/format";
-import { setRaw, toast, useData } from "../store";
+import { setRaw, toast, useApp, useData } from "../store";
 import { Choices, Icon, LinesSkeleton } from "../ui";
 import { tw, cn } from "../tw";
 
@@ -59,18 +59,11 @@ const SUGGEST: Record<string, AskId[]> = {
 // Click → Kiri hops and flips, then a small chat bubble opens above it. Non-modal: the screen stays usable; Esc or × closes.
 // Sits above the action bar / phone tab bar (both 5rem incl. gap) so it never covers Continue; lower on Welcome.
 export function AskLauncher({ screen }: { screen: string }) {
-  const [quizInView, setQuizInView] = useState(false);
+  const quizInView = useApp((s) => s.quizInView);
   const [phase, setPhase] = useState<"closed" | "hop" | "open">("closed");
   const [busy, setBusy] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = document.getElementById("postquiz");
-    if (!el) return setQuizInView(false);
-    const io = new IntersectionObserver(([e]) => setQuizInView(!!e?.isIntersecting));
-    io.observe(el);
-    return () => io.disconnect();
-  }, [screen]);
   useEffect(() => {
     if (phase === "hop") { const t = setTimeout(() => setPhase("open"), matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 520); return () => clearTimeout(t); }
     if (phase === "open") panel.current?.focus();
@@ -102,13 +95,14 @@ export function AskLauncher({ screen }: { screen: string }) {
 // Kiri: a ringgit/dollar coin-creature. Teal half = ringgit, amber half = dollar; the antenna is the exchange swirl.
 // Idle: floats, blinks, glances around. Working: eyes dart, antenna glows. Hop: squash, jump and flip (click).
 function Kiri({ state, small }: { state: "idle" | "working" | "hop" | "still"; small?: boolean }) {
+  const clip = useId();   // one Kiri per chat message: each needs its own clipPath id
   return <svg className={cn("kiri overflow-visible", small ? "size-[70%]" : "size-16")} data-state={state} viewBox="0 0 64 64" aria-hidden="true">
     <ellipse className="kiri-shadow" cx="32" cy="61" rx="15" ry="2.5" fill="currentColor" opacity=".18" />
     <g className="kiri-body">
       <path className="kiri-ant" d="M32 12c0-5 4-8 8-6.5" fill="none" stroke="var(--line-strong)" strokeWidth="2" strokeLinecap="round" />
       <circle className="kiri-tip" cx="40.5" cy="5.5" r="3" fill="var(--risk-fill)" />
-      <clipPath id="kiriClip"><rect x="6" y="11" width="52" height="46" rx="20" /></clipPath>
-      <g clipPath="url(#kiriClip)">
+      <clipPath id={clip}><rect x="6" y="11" width="52" height="46" rx="20" /></clipPath>
+      <g clipPath={`url(#${clip})`}>
         <rect x="6" y="11" width="52" height="46" fill="var(--primary)" />
         <path d="M60 9v50H18Z" fill="var(--risk-fill)" />
       </g>
