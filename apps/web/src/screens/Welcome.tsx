@@ -7,7 +7,7 @@ import { PRESETS } from "@kirakurs/core/presets";
 import { rm, fx } from "@kirakurs/core/format";
 import { useApp, set } from "../store";
 import { useGo } from "../Shell";
-import { Icon } from "../ui";
+import { Icon, plain } from "../ui";
 import { tw, cn } from "../tw";
 import { randomWindow, day } from "./Play";
 import { HeroFigure, ThinkFigure, TwoPathsFigure, IdeasFigure, StopsFigure, ReadyFigure } from "../figures";
@@ -197,7 +197,7 @@ function TryIt() {
     <div role="status" className={cn(tw.stack)}>{round && <>
       <p className="tryit-result text-xl leading-snug font-semibold animate-[up_350ms_var(--ease-out)] lg:text-2xl">{fill(T["wel.s3.result"]!, vars({ start: day(round.start), end: day(round.end), lockRM: rm(round.lock), waitRM: rm(round.wait) }))}</p>
       <p>{fill(T[round.diff > 0 ? "fee.verdict.more" : "fee.verdict.less"]!, vars({ absDiff: rm(Math.abs(round.diff)) }))}</p>
-      <p className={cn(tw.caption)}>{T["fee.label"]}</p>
+      <p className={cn(tw.caption)}>{plain(T["fee.label"]!)}</p>
     </>}</div>
   </div>;
 }

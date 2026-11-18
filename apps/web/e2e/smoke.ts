@@ -161,6 +161,12 @@ try {
   await p.goto(B + "coach?preset=snapshot&maths=1");
   await p.locator("main h1", { hasText: "Lock or wait" }).waitFor();
   expect("maths=1 opens the maths", await p.locator("details.maths[open]").count(), 1);
+  expect("no raw [[tip|…]] markup on coach", await p.evaluate(() => /\[\[/.test(document.body.innerText)), false);
+  for (const s of ["learn", "map?maths=1", "welcome"]) {
+    await p.goto(B + s); await p.locator("main h1").first().waitFor(); await settle(p);
+    expect(`no raw [[tip|…]] markup on ${s}`, await p.evaluate(() => /\[\[/.test(document.body.innerText)), false);
+  }
+  await p.goto(B + "coach?preset=snapshot");
   expect("dark theme background", await p.evaluate(() => getComputedStyle(document.body).backgroundColor), /^rgb\((\d|[1-5]\d),/);
 } finally {
   await browser.close();

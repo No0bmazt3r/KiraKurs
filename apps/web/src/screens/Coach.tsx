@@ -94,9 +94,9 @@ export function Coach() {
     </details>
     <Maths summary={T["coach.fees"]!} icon="info">
       <Field label={T["lbl.margin"]!} raw={raw.margin} error={d.errors.margin} suffix="%" onInput={(x) => setRaw({ margin: x })} />
-      <p>{T["coach.fees.help"]}</p><p>{T["coach.fees.wise"]}</p>
+      <Rich text={T["coach.fees.help"]!} /><p>{T["coach.fees.wise"]}</p>
     </Maths>
-    <Live className={cn(tw.small)}>{fl("coach.spot")}</Live>
+    <div aria-live="polite"><Rich className={cn(tw.small)} text={fl("coach.spot")} /></div>
     <Maths summary={T["btn.showMaths"]!} open={openMaths}>
       <Rich className={cn(tw.formula)} text={fl("coach.m.ab")} /><p className={cn(tw.formula)}>{fl("coach.m.c")}</p>
       {range && <p className={cn(tw.formula)}>{fl("coach.m.range")}</p>}<p className={cn(tw.formula)}>{fl("coach.m.split")}</p>
