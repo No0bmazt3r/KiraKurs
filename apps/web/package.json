@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp dist/index.html dist/404.html",
+    "build": "vite build && cp dist/index.html dist/404.html && node build-api.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "e2e": "pnpm build && node e2e/smoke.ts"

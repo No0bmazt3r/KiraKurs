@@ -1,0 +1,37 @@
+# Runs on every push to main and every pull request: types, unit tests, build, browser smoke test and a secret scan.
+name: KiraKurs checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: Types, tests, build, smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6 # version from package.json#packageManager
+      - uses: actions/setup-node@v7
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test # finance engine + AI guards (vitest)
+      - run: pnpm e2e # builds the site (and api/ask.js), then clicks through it in Chrome
+        env:
+          CHROME_PATH: /usr/bin/google-chrome # preinstalled on GitHub's Ubuntu runners
+      - name: Committed api/ask.js matches its source
+        run: git diff --exit-code apps/web/api/ask.js || { echo "Run pnpm build and commit apps/web/api/ask.js." >&2; exit 1; }
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v3 # catches a committed GROQ key
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

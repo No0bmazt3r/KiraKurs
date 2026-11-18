@@ -1,0 +1,67 @@
+# Deploys KiraKurs to Vercel production, only when the repository owner starts it by hand:
+# Actions → "Deploy app (Vercel)" → Run workflow (branch: main). Pushes and pull requests never trigger it.
+# It first checks that "KiraKurs checks" passed for this exact commit.
+#
+# Setup (once):
+#   GitHub → Settings → Environments → new environment "production" (deployment branches: main only), with secrets
+#     VERCEL_TOKEN       vercel.com → Account Settings → Tokens
+#     VERCEL_ORG_ID      "orgId" in .vercel/project.json
+#     VERCEL_PROJECT_ID  "projectId" in .vercel/project.json
+#   App env vars (GROQ_API_KEY, ALLOWED_ORIGIN, VITE_ASK_URL) stay in Vercel; `vercel pull` fetches them.
+name: Deploy app (Vercel)
+
+on:
+  workflow_dispatch:
+
+run-name: Deploy ${{ github.sha }}
+
+concurrency:
+  group: deploy-app
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verify-checks:
+    name: Verify KiraKurs checks
+    runs-on: ubuntu-latest
+    if: github.actor == github.repository_owner && github.triggering_actor == github.repository_owner && github.ref == 'refs/heads/main'
+    steps:
+      - name: Require successful checks for this commit
+        run: |
+          conclusion=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow checks.yml --commit "$GITHUB_SHA" \
+            --status completed --limit 1 --json conclusion --jq '.[0].conclusion // empty')
+          if [ "$conclusion" != "success" ]; then
+            echo "KiraKurs checks has not passed for $GITHUB_SHA (result: ${conclusion:-not found}). Wait for it, then rerun." >&2
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  deploy:
+    name: Deploy to Vercel
+    needs: verify-checks
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 24, cache: pnpm }
+      - run: npm install --global vercel@64.7.0
+      # Run from the repo root: the Vercel project's Root Directory is apps/web
+      - run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - run: vercel build --prod --token="$VERCEL_TOKEN"
+      - id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed to production: $url" >> "$GITHUB_STEP_SUMMARY"
